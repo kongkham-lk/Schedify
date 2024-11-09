@@ -1,0 +1,21 @@
+Accessing Course registration detail of each student, each term:
+    1. Enter: https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registration#
+    2. the login page will pop up -> NEED TO PROVIDE CODE TO INSERT USERNAME AND PASSWORD TO THE CORRECT FIELD + SUBMIT FORM (EQ TO HIT LOGIN BUTTON)
+    3. after login successfully -> navigate to main page -> provide different terms option which will display a list of courses after selected -> which each term have its own code <<TERM_CODE>>
+        -> CANNOT FIND A WAY TO RETRIEVE THE CODE OF EACH TERM YET. MIGHT NEED TO LEARN BY OBSERVATION FOR NOW.
+        -> observation so far, from KL course planning:
+            -> fall 2024 and winter 2025 == sem 1 and sem 2 of the academic year -> 202510 and 202520
+            -> summer 2023 (OL) -> 202335
+    4. Include <<TERM_CODE>> to the following link to get the detail of that ter's course as JSON
+        -> https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/reset?term=<<TERM_CODE>>
+        -> example of JSON: CourseSchedule.json.
+
+    Solution Approach (using observation approach to get the <<TERM_CODE>>):
+        - provide AutoSyn feature and ManualSyn feature.
+        - AutoSyn feature - the app will retrieve course detail and show on app at once.
+        - ManualSync feature - if fail to grab data from <<TERM_CODE>>:
+            1. use WebView component (for user to manually select the term).
+            2. when user click Sync, the app will check the <<TERM_CODE>> from earlier step and remember for the next time use.
+            3. app the retrieve data from the return JSON and display to user.
+
+REMARK: TURN OFF VPN IF NEED TO APP TO SEND REQUEST, ELSE WILL FAIL.
