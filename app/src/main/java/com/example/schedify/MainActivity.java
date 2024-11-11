@@ -2,87 +2,91 @@ package com.example.schedify;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.FrameLayout;
 
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
+import androidx.viewpager2.widget.ViewPager2;
 
 public class MainActivity extends AppCompatActivity {
 
-    private BottomNavigationView bottomNavigationView;
-    private FrameLayout frameLayout;
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager2;
+    private TabAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        frameLayout = findViewById(R.id.frameLayout);
+        tabLayout = findViewById(R.id.bottom_navigation_bar);
+        viewPager2 = findViewById(R.id.viewPager);
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        adapter = new TabAdapter(getSupportFragmentManager(), getLifecycle());  // Your TabAdapter for managing fragments
+        adapter.setContext(this);
+        viewPager2.setAdapter(adapter);
+
+
+        // Set up TabLayout with ViewPager2 using TabLayoutMediator
+        new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
+            switch (position) {
+                case 0:
+                    tab.setText("Home");
+                    tab.setIcon(R.drawable.home);
+                    break;
+                case 1:
+                    tab.setText("Create");
+                    tab.setIcon(R.drawable.add);
+                    break;
+                case 2:
+                    tab.setText("Profile");
+                    tab.setIcon(R.drawable.user);
+                    break;
+                case 3:
+                    tab.setText("Settings");
+                    tab.setIcon(R.drawable.setting);
+                    break;
+            }
+        }).attach();
+
+        String frag = getIntent().getStringExtra("Fragment");
+        if ("CreateFragment".equals(frag)) {
+            viewPager2.setCurrentItem(1, false);
+            String title = getIntent().getStringExtra("title");
+            if (title != null) {
+                String description = getIntent().getStringExtra("description");
+                String date = getIntent().getStringExtra("date");
+
+                CreateFragment fragment = new CreateFragment();
+                Bundle args = new Bundle();
+                args.putString("title", title);
+                args.putString("description", description);
+                args.putString("date", date);
+                fragment.setArguments(args);
+
+            }
+        }
+
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment fragment = null;
+            public void onTabSelected(TabLayout.Tab tab) {
 
-                if (item.getItemId() == R.id.nav_home) {
-                    fragment = new com.example.schedify.HomeFragment();
-                } else if (item.getItemId() == R.id.nav_create) {
-                    fragment = new com.example.schedify.CreateFragment();
-                } else if (item.getItemId() == R.id.nav_profile) {
-                    fragment = new ProfileFragment();
-                } else if (item.getItemId() == R.id.nav_settings) {
-                    fragment = new SettingsFragment();
-                }
-
-                if (fragment != null) {
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.frameLayout, fragment);
-                    fragmentTransaction.commit();
-                }
-
-                return true;
             }
-        });
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.frameLayout, new com.example.schedify.HomeFragment())
-                    .commit();
-        }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
 
-        String fragmentToLoad = getIntent().getStringExtra("FragmentToLoad");
-        if (fragmentToLoad != null) {
-            Fragment fragment = null;
-            if ("CreateFragment".equals(fragmentToLoad)) {
-                fragment = new com.example.schedify.CreateFragment();
-                bottomNavigationView.setSelectedItemId(R.id.nav_create);
-            } else if ("CreateFragment2".equals(fragmentToLoad)) {
-                fragment = new com.example.schedify.CreateFragment();
-                bottomNavigationView.setSelectedItemId(R.id.nav_create);
             }
-            if (fragment != null) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.frameLayout, fragment)
-                        .commit();
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
-        }
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
         });
     }
 }

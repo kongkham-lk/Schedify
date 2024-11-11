@@ -1,23 +1,93 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreateTaskActivity">
+    tools:context=".CreateTaskActivity"
+    android:background="#FAE5AE">
 
+    <!-- Return Button -->
     <Button
         android:id="@+id/return_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="11dp"
-        android:layout_marginEnd="307dp"
-        android:layout_marginBottom="672dp"
-        android:text="Back"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="280dp"
+        android:layout_marginBottom="640dp"
+        android:background="@drawable/left_arrow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.115"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <!-- Title Input -->
+
+    <!-- Description Input -->
+
+    <!-- DatePicker (Calendar-like Interface) -->
+
+    <EditText
+        android:id="@+id/title_input"
+        android:layout_width="280dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:autofillHints=""
+        android:background="@drawable/border_box"
+        android:hint="@string/create_page_title_hint"
+        android:inputType="text"
+        android:padding="12dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/return_btn" />
+
+    <!-- Save Button -->
+
+    <EditText
+        android:id="@+id/description_input"
+        android:layout_width="280dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="4dp"
+        android:autofillHints=""
+        android:background="@drawable/border_box"
+        android:gravity="top|start"
+        android:hint="@string/create_page_title_desc"
+        android:inputType="text"
+        android:padding="12dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="@+id/title_input"
+        app:layout_constraintStart_toStartOf="@+id/title_input"
+        app:layout_constraintTop_toBottomOf="@id/title_input" />
+
+    <android.widget.DatePicker
+        android:id="@+id/date_picker"
+        android:layout_width="392dp"
+        android:layout_height="400dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/description_input"
+        app:layout_constraintHorizontal_bias="0.308"
+        app:layout_constraintStart_toStartOf="@+id/description_input"
+        app:layout_constraintTop_toBottomOf="@id/description_input" />
+
+    <Button
+        android:id="@+id/save_btn"
+        android:layout_width="200dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="41dp"
+        android:text="@string/create_page_save_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/date_picker"
+        app:layout_constraintHorizontal_bias="0.312"
+        app:layout_constraintStart_toStartOf="@+id/date_picker"
+        app:layout_constraintTop_toBottomOf="@id/date_picker"
+        app:layout_constraintVertical_bias="0.0" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
