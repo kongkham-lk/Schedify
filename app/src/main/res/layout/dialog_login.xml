@@ -22,9 +22,7 @@
         <WebView
             android:id="@+id/webViewScreen"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-        </WebView>
+            android:layout_height="match_parent"/>
 
         <ImageButton
             android:id="@+id/backBtn"
