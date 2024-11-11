@@ -14,30 +14,32 @@ import android.view.WindowManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
 public class WebViewLoginDialog extends Dialog {
 
+    public interface LoginCallback {
+        void onLoginResult(boolean isSuccess);
+    }
+
+    private LoginCallback loginCallback;
     private WebView webView;
     private ImageButton backBtn;
     private String courseRegURL;
     private Context context;
-    private boolean isLoginSuccessful = false;
 
-    public WebViewLoginDialog(Context context, String courseRegURL) {
+    public WebViewLoginDialog(Context context, String courseRegURL, LoginCallback loginCallback) {
         super(context);
         this.context = context;
         this.courseRegURL = courseRegURL;
+        this.loginCallback = loginCallback;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
 
         // Remove the default title bar for the dialog
@@ -48,8 +50,9 @@ public class WebViewLoginDialog extends Dialog {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Cancel Login!!!", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "Cancel Login!!!", Toast.LENGTH_SHORT).show();
                 onBackPressed();
+                loginCallback.onLoginResult(false);
             }
         });
 
@@ -64,9 +67,10 @@ public class WebViewLoginDialog extends Dialog {
                 // Check if the user has navigated to the login success page
                 if (url.equals(courseRegURL)) {
                     // If login is successful, dismiss the dialog
-                    isLoginSuccessful = true;
-                    Toast.makeText(context, "Successfully Login!!!", Toast.LENGTH_SHORT).show();
                     dismiss();
+                    if (loginCallback != null) {
+                        loginCallback.onLoginResult(true);
+                    }
                 }
             }
 
@@ -74,7 +78,7 @@ public class WebViewLoginDialog extends Dialog {
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
                 // Log the SSL error for debugging purposes
                 Log.e("SSL_ERROR", "SSL Error: " + error.getPrimaryError());
-                handleSSLError(handler, error);
+//                handleSSLError(handler, error);
                 handler.proceed(); // ignore error and proceed loading login page
             }
         });
@@ -96,13 +100,8 @@ public class WebViewLoginDialog extends Dialog {
         super.onBackPressed();
     }
 
-    public boolean getState() {
-        return isLoginSuccessful;
-    }
-
     private void handleSSLError(SslErrorHandler handler, SslError error) {
-        // If the error is SSL certificate validation failure, you should
-        // show a warning or block access.
+        // If the error is SSL certificate validation failure, you should show a warning or block access.
         switch (error.getPrimaryError()) {
             case SslError.SSL_UNTRUSTED:
                 // Handle untrusted certificate (e.g., expired, self-signed)

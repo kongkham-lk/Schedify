@@ -19,7 +19,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements WebViewLoginDialog.LoginCallback {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +31,8 @@ public class MainActivity extends AppCompatActivity {
         String courseRegURL = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/registrationHistory";
 
         // Create and show the WebView login dialog
-        WebViewLoginDialog webViewLoginDialog = new WebViewLoginDialog(MainActivity.this, courseRegURL);
+        WebViewLoginDialog webViewLoginDialog = new WebViewLoginDialog(MainActivity.this, courseRegURL, this);
         webViewLoginDialog.show();
-        boolean state = webViewLoginDialog.getState();
 
 //        //loginPage
 //        WebView webView = findViewById(R.id.webView);
@@ -131,5 +130,17 @@ public class MainActivity extends AppCompatActivity {
 //                })
 //                .create()
 //                .show();
+    }
+
+    @Override
+    public void onLoginResult(boolean isSuccess) {
+        if (isSuccess) {
+            // Handle successful login here
+            Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show();
+            // Proceed with app functionality after login
+        } else {
+            // Handle login failure here
+            Toast.makeText(this, "Login Failed. Please try again!", Toast.LENGTH_SHORT).show();
+        }
     }
 }
