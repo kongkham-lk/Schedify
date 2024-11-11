@@ -2,6 +2,7 @@ package com.example.schedify;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,11 +13,21 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.widget.ViewPager2;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
     private TabAdapter adapter;
+
+    ListView list_view_one;
+
+
+    ArrayList courses;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +36,23 @@ public class MainActivity extends AppCompatActivity {
 
         tabLayout = findViewById(R.id.bottom_navigation_bar);
         viewPager2 = findViewById(R.id.viewPager);
+        list_view_one = (ListView) findViewById(R.id.list_view_one);
+
+        courses = new ArrayList();
+
+
+        courses.add(new CourseModel("COMP 2160", "Mobile App Development"));
+        courses.add(new CourseModel("COMP 2920", "Software Architecture"));
+        courses.add(new CourseModel("COMP 2230", "Data Structure and Algorithm"));
+        courses.add(new CourseModel("COMP 2120", "Programming Methods"));
+
+
+        HomePageAdaptor homePageAdaptor = new HomePageAdaptor(getApplicationContext(),R.layout.home_items, courses);
+        list_view_one.setAdapter(homePageAdaptor);
+
+
+
+
 
         adapter = new TabAdapter(getSupportFragmentManager(), getLifecycle());  // Your TabAdapter for managing fragments
         adapter.setContext(this);
