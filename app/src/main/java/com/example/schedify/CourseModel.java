@@ -11,9 +11,8 @@ public class CourseModel {
     private String endDate;
     private String startTime; //beginTime
     private String endTime;
-    private String buildingCode;
-    private int roomNumber;
-    private boolean[] classDay; // Class day in a week
+    private String roomNumber;
+    private boolean[] classDayList; // Class day in a week
 
 
     public CourseModel(String courseCode, String courseTitle)
@@ -23,8 +22,8 @@ public class CourseModel {
     }
 
     public CourseModel(String courseCode, String courseTitle, boolean isRegistered, String startDate,
-                       String endDate, String startTime, String endTime, String buildingCode,
-                       int roomNumber, boolean[] classDay) {
+                       String endDate, String startTime, String endTime,
+                       String roomNumber, boolean[] classDayList) {
         this.courseCode = courseCode;
         this.courseTitle = courseTitle;
         this.isRegistered = isRegistered;
@@ -32,9 +31,8 @@ public class CourseModel {
         this.endDate = endDate;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.buildingCode = buildingCode;
         this.roomNumber = roomNumber;
-        this.classDay = classDay;
+        this.classDayList = classDayList;
     }
 
     public String getCourseCode() {
@@ -93,27 +91,19 @@ public class CourseModel {
         this.endTime = endTime;
     }
 
-    public String getBuildingCode() {
-        return buildingCode;
-    }
-
-    public void setBuildingCode(String buildingCode) {
-        this.buildingCode = buildingCode;
-    }
-
-    public int getRoomNumber() {
+    public String getRoomNumber() {
         return roomNumber;
     }
 
-    public void setRoomNumber(int roomNumber) {
+    public void setRoomNumber(String roomNumber) {
         this.roomNumber = roomNumber;
     }
 
-    public boolean[] getClassDay() {
-        return classDay;
+    public boolean[] getClassDayList() {
+        return classDayList;
     }
 
-    public void setClassDay(boolean[] classDay) {
-        this.classDay = classDay;
+    public void setClassDayList(boolean[] classDayList) {
+        this.classDayList = classDayList;
     }
 }
