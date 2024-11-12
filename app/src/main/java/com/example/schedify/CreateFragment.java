@@ -69,7 +69,7 @@ public class CreateFragment extends Fragment {
 
         StringBuilder sb = new StringBuilder();
         for (Task task : taskList) {
-            sb.append(task.getTitle()).append(",").append(task.getDescription()).append(task.getTime()).append(";");
+            sb.append(task.getTitle()).append(",").append(task.getDescription()).append(",").append(task.getTime()).append(";");
         }
 
         editor.putString("taskList", sb.toString());
@@ -78,7 +78,7 @@ public class CreateFragment extends Fragment {
 
     private List<Task> loadTaskList() {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("TaskData", Context.MODE_PRIVATE);
-        String taskData = sharedPreferences.getString("taskList", "");  // Empty string if no data
+        String taskData = sharedPreferences.getString("taskList", "");
 
         List<Task> taskList = new ArrayList<>();
         if (!taskData.isEmpty()) {
