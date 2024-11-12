@@ -19,7 +19,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements WebViewLoginDialog.LoginCallback {
+
+    private List<CourseModel> courseList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +37,6 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
         // Create and show the WebView login dialog
         WebViewLoginDialog webViewLoginDialog = new WebViewLoginDialog(MainActivity.this, courseRegURL, this);
         webViewLoginDialog.show();
-
 //        //loginPage
 //        WebView webView = findViewById(R.id.webView);
 //        webView.getSettings().setJavaScriptEnabled(true); // Enable JavaScript
@@ -135,12 +138,20 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
     @Override
     public void onLoginResult(boolean isSuccess) {
         if (isSuccess) {
-            // Handle successful login here
             Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show();
-            // Proceed with app functionality after login
+
+            // Proceed fetching course schedule
+            fetchCourseAPI();
         } else {
-            // Handle login failure here
-            Toast.makeText(this, "Login Failed. Please try again!", Toast.LENGTH_SHORT).show();
+            // Handle login failure
+            Toast.makeText(this, "Syncing is Cancel!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void fetchCourseAPI() {
+        String url = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/reset?term=202510";
+
+        CourseScheduleRespnse CourseAPIFetcher = new CourseScheduleRespnse();
+        courseList = CourseAPIFetcher.fetchCourseSchedule(url);
     }
 }
