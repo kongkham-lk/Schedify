@@ -1,5 +1,7 @@
 package com.example.schedify;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +17,11 @@ import java.util.List;
 public class taskAdapter extends RecyclerView.Adapter<taskAdapter.taskViewHolder> {
     @NonNull
     private final List<Task> taskList;
+    Context context;
 
-    public taskAdapter(@NonNull List<Task> taskList) {
+    public taskAdapter(@NonNull List<Task> taskList, Context context) {
         this.taskList = taskList;
+        this.context = context;
     }
 
     @NonNull
@@ -33,6 +37,24 @@ public class taskAdapter extends RecyclerView.Adapter<taskAdapter.taskViewHolder
         Task task = taskList.get(position);
         holder.titleText.setText(task.getTitle());
         holder.timeText.setText(task.getTime());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent edit_task = new Intent(context, CreateTaskActivity.class);
+                edit_task.putExtra("title", task.getTitle());
+                String[] lines = task.getTime().split("\n");
+                if (lines.length == 2) {
+                    edit_task.putExtra("date", lines[0]);
+                    edit_task.putExtra("time", lines[1]);
+                } else {
+                    edit_task.putExtra("date", "Unknown date");
+                    edit_task.putExtra("time", "Unknown time");
+                }
+                edit_task.putExtra("description", task.getDescription());
+                context.startActivity(edit_task);
+            }
+        });
     }
 
     @Override

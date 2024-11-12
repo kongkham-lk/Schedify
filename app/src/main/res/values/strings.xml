@@ -11,4 +11,6 @@
     <string name="create_page_save_btn">Save</string>
     <string name="create_fragment_plus">+</string>
     <string name="create_fragment_create_text">Create a task</string>
+    <string name="date_set_text">Set Date</string>
+    <string name="time_set_text">Set Time</string>
 </resources>

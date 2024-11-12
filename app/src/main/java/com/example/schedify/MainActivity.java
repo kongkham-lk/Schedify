@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.widget.ViewPager2;
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

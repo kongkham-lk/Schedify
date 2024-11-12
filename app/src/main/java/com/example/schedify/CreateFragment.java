@@ -1,6 +1,9 @@
+
 package com.example.schedify;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +14,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,11 +40,10 @@ public class CreateFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.recycler_view);
 
-        taskList = new ArrayList<>();
-
+        taskList = loadTaskList();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        taskAdapter = new taskAdapter(taskList);
+        taskAdapter = new taskAdapter(taskList, requireActivity());
         recyclerView.setAdapter(taskAdapter);
 
         if (getActivity() != null && getActivity().getIntent() != null) {
@@ -46,12 +51,50 @@ public class CreateFragment extends Fragment {
             String title = intent.getStringExtra("title");
             String description = intent.getStringExtra("description");
             String date = intent.getStringExtra("date");
+            String time = intent.getStringExtra("time");
 
             if (title != null && description != null && date != null) {
-                taskList.add(new Task(title, date));
+                taskList.add(new Task(title, description, date + "\n" + time));
+                saveTaskList(taskList);
             }
         }
 
         return view;
     }
+
+
+    private void saveTaskList(List<Task> taskList) {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("TaskData", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        StringBuilder sb = new StringBuilder();
+        for (Task task : taskList) {
+            sb.append(task.getTitle()).append(",").append(task.getDescription()).append(task.getTime()).append(";");
+        }
+
+        editor.putString("taskList", sb.toString());
+        editor.apply();
+    }
+
+    private List<Task> loadTaskList() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("TaskData", Context.MODE_PRIVATE);
+        String taskData = sharedPreferences.getString("taskList", "");  // Empty string if no data
+
+        List<Task> taskList = new ArrayList<>();
+        if (!taskData.isEmpty()) {
+            String[] tasks = taskData.split(";");
+            for (String task : tasks) {
+                String[] taskDetails = task.split(",");
+                if (taskDetails.length == 3) {
+                        String title = taskDetails[0];
+                        String description = taskDetails[1];
+                        String time = taskDetails[2];
+                        taskList.add(new Task(title, description, time));
+
+                }
+            }
+        }
+        return taskList;
+    }
+
 }
