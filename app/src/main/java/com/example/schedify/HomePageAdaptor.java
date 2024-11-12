@@ -51,11 +51,11 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View v = layoutInflater.inflate(R.layout.home_items, null);
         TextView text_view_one = (TextView) v.findViewById(R.id.text_view_one);
-        TextView textView_two = (TextView) v.findViewById(R.id.text_view_two);
+        TextView text_view_two = (TextView) v.findViewById(R.id.text_view_two);
 
 
         text_view_one.setText(courses.get(position).getCourse_code());
-        text_view_one.setText(courses.get(position).getCourse_name());
+        text_view_two.setText(courses.get(position).getCourse_name());
 
 
         return v;

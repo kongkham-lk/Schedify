@@ -6,11 +6,11 @@
     android:background="#EB8B8B"
     tools:context=".HomeFragment">
 
-    <TextView
+    <ListView
+        android:id="@+id/list_view_one"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text=""
-        android:gravity="center"
-        android:textSize="30sp" />
+        android:layout_height="wrap_content"
+        android:divider="#ffffff"
+        android:dividerHeight="4dp"/>
 
 </FrameLayout>

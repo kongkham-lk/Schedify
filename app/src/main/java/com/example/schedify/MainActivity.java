@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager2 = findViewById(R.id.viewPager);
         list_view_one = (ListView) findViewById(R.id.list_view_one);
 
-        courses = new ArrayList();
+        courses = new ArrayList<>();
 
 
         courses.add(new CourseModel("COMP 2160", "Mobile App Development"));
