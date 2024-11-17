@@ -1,0 +1,6 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Default background -->
+    <item android:drawable="@drawable/rounded_background" android:state_enabled="true"/>
+    <!-- Highlighted state -->
+    <item android:drawable="@drawable/rounded_background_highlighted" android:state_pressed="true"/>
+</selector>

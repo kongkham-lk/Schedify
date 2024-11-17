@@ -7,10 +7,12 @@
     <string name="profile_fragment_btn">Profile Fragment</string>
     <string name="settings_fragment_btn">Settings Fragment</string>
     <string name="create_page_title_hint">Enter Title</string>
-    <string name="create_page_title_desc">Enter Description</string>
+    <string name="create_page_title_desc">Enter Description (optional)</string>
     <string name="create_page_save_btn">Save</string>
     <string name="create_fragment_plus">+</string>
     <string name="create_fragment_create_text">Create a task</string>
-    <string name="date_set_text">Set Date</string>
-    <string name="time_set_text">Set Time</string>
+    <string name="date_set_text">Start</string>
+    <string name="time_set_text">End</string>
+    <string name="location_set_text">Enter Location</string>
+    <string name="delete_content_desc">Deletes Tasks</string>
 </resources>
