@@ -1,29 +1,19 @@
 package com.example.schedify;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.net.http.SslError;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.webkit.SslErrorHandler;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements WebViewLoginDialog.LoginCallback {
 
     private List<CourseModel> courseList;
+    WebViewLoginDialog webViewLoginDialog;
+    String cookie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +25,7 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
         String courseRegURL = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/registrationHistory";
 
         // Create and show the WebView login dialog
-        WebViewLoginDialog webViewLoginDialog = new WebViewLoginDialog(MainActivity.this, courseRegURL, this);
+        webViewLoginDialog = new WebViewLoginDialog(MainActivity.this, courseRegURL, this);
         webViewLoginDialog.show();
 //        //loginPage
 //        WebView webView = findViewById(R.id.webView);
@@ -139,19 +129,23 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
     public void onLoginResult(boolean isSuccess) {
         if (isSuccess) {
             Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show();
+            cookie = webViewLoginDialog.getCookie();
+            String targetURL = webViewLoginDialog.getTargetURL();
 
-            // Proceed fetching course schedule
-            fetchCourseAPI();
+            if (targetURL.contains("registration"))
+                // Proceed fetching course schedule
+                fetchCourseRegistrationAPI();
         } else {
             // Handle login failure
             Toast.makeText(this, "Syncing is Cancel!", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void fetchCourseAPI() {
+    private void fetchCourseRegistrationAPI() {
         String url = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/reset?term=202510";
 
-        CourseScheduleRespnse CourseAPIFetcher = new CourseScheduleRespnse();
-        courseList = CourseAPIFetcher.fetchCourseSchedule(url);
+        CourseRegistrationResponse CourseAPIFetcher = new CourseRegistrationResponse();
+        CourseAPIFetcher.setRequestMethod("GET");
+        courseList = CourseAPIFetcher.fetchCourseSchedule(url, cookie);
     }
 }

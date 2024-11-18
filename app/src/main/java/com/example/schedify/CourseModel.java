@@ -12,7 +12,7 @@ public class CourseModel {
     private String startTime; //beginTime
     private String endTime;
     private String roomNumber;
-    private boolean[] classDayList; // Class day in a week
+    private boolean[] classDayList; // Class day in a week, start from monday
 
 
     public CourseModel(String courseCode, String courseTitle)

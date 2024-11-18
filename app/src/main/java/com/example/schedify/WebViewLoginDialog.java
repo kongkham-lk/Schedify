@@ -17,6 +17,8 @@ import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatDelegate;
+import android.webkit.CookieManager;
+
 
 public class WebViewLoginDialog extends Dialog {
 
@@ -27,13 +29,14 @@ public class WebViewLoginDialog extends Dialog {
     private LoginCallback loginCallback;
     private WebView webView;
     private ImageButton backBtn;
-    private String courseRegURL;
+    private String targetURL;
     private Context context;
+    private String cookie;
 
-    public WebViewLoginDialog(Context context, String courseRegURL, LoginCallback loginCallback) {
+    public WebViewLoginDialog(Context context, String targetURL, LoginCallback loginCallback) {
         super(context);
         this.context = context;
-        this.courseRegURL = courseRegURL;
+        this.targetURL = targetURL;
         this.loginCallback = loginCallback;
     }
 
@@ -65,7 +68,14 @@ public class WebViewLoginDialog extends Dialog {
                 super.onPageFinished(view, url);
 
                 // Check if the user has navigated to the login success page
-                if (url.equals(courseRegURL)) {
+                if (url.equals(targetURL)) {
+                    // Sync WebView cookies to the app
+                    CookieManager cookieManager = CookieManager.getInstance();
+                    String cookies = cookieManager.getCookie(url);
+
+                    // Save the cookies or apply them to the next request
+                    setCookie(cookies);
+
                     // If login is successful, dismiss the dialog
                     dismiss();
                     if (loginCallback != null) {
@@ -84,7 +94,7 @@ public class WebViewLoginDialog extends Dialog {
         });
 
         // Load the initial login URL
-        webView.loadUrl(courseRegURL);
+        webView.loadUrl(targetURL);
 
         // Customize the dialog to appear as a floating window
         Window window = getWindow();
@@ -143,6 +153,22 @@ public class WebViewLoginDialog extends Dialog {
                 })
                 .create()
                 .show();
+    }
+
+    private void setCookie(String cookie) {
+        this.cookie = cookie;
+    }
+
+    public String getCookie() {
+        return this.cookie;
+    }
+
+    public String getTargetURL() {
+        return targetURL;
+    }
+
+    public void setTargetURL(String targetURL) {
+        this.targetURL = targetURL;
     }
 }
 
