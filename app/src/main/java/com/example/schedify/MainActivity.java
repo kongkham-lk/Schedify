@@ -19,10 +19,9 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager2 viewPager2;
     private TabAdapter adapter;
 
-    ListView list_view_one;
 
 
-    ArrayList courses;
+
 
 
 
@@ -35,19 +34,11 @@ public class MainActivity extends AppCompatActivity {
 
         tabLayout = findViewById(R.id.bottom_navigation_bar);
         viewPager2 = findViewById(R.id.viewPager);
-        list_view_one = (ListView) findViewById(R.id.list_view_one);
-
-        courses = new ArrayList<>();
 
 
-        courses.add(new CourseModel("COMP 2160", "Mobile App Development"));
-        courses.add(new CourseModel("COMP 2920", "Software Architecture"));
-        courses.add(new CourseModel("COMP 2230", "Data Structure and Algorithm"));
-        courses.add(new CourseModel("COMP 2120", "Programming Methods"));
 
 
-        HomePageAdaptor homePageAdaptor = new HomePageAdaptor(getApplicationContext(),R.layout.home_items, courses);
-        list_view_one.setAdapter(homePageAdaptor);
+
 
 
 
@@ -110,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                viewPager2.setCurrentItem(tab.getPosition());
 
             }
 

@@ -1,4 +1,3 @@
-
 package com.example.schedify;
 
 import android.content.Context;
@@ -19,6 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CreateFragment extends Fragment {
+
+    private RecyclerView recyclerView;
+    private taskAdapter taskAdapter;
+    private List<Task> taskList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

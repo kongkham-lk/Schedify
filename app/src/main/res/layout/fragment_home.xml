@@ -1,15 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#A01B1B"
     tools:context=".HomeFragment">
 
-    <ListView
-        android:id="@+id/list_view_one"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="#ffffff"
-        android:dividerHeight="4dp"/>
 
-</FrameLayout>
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/dashboard"
+            android:padding="10dp"
+            android:textStyle="bold"
+            android:textColor="#FFD700"
+            android:textSize="30sp"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"/>
+
+
+
+
+        <ListView
+            android:id="@+id/list_view_home"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@color/design_default_color_secondary_variant"/>
+
+
+
+
+
+
+
+
+</LinearLayout>

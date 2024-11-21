@@ -7,12 +7,15 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ListView
+
+
+
+    <!--<ListView
         android:id="@+id/list_view_one"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="#ffffff"
-        android:dividerHeight="4dp"/>
+        android:divider="#D51010"
+        android:dividerHeight="4dp"/>-->
 
     <!-- ViewPager2 for displaying fragment content -->
     <androidx.viewpager2.widget.ViewPager2

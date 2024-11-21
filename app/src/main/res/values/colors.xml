@@ -12,4 +12,15 @@
     <color name="darkGray">#545454</color>
     <color name="teal_200">#43FBF3</color>
     <color name="teal_700">#00BCD4</color>
+
+    <style name="ListViewTextStyle">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+
 </resources>
+
+
+
+

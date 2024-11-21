@@ -6,15 +6,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ListView;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+
+
 public class HomeFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
@@ -48,11 +47,14 @@ public class HomeFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    private ListView list_view_home;
+    private HomePageAdaptor homePageAdaptor;
+    private ArrayList<CourseModel> courses;
 
+    @Nullable
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -71,6 +73,24 @@ public class HomeFragment extends Fragment {
             textView = view.findViewById(R.id.text_changer);
             textView.setText(title);
         }
+    public View onCreateView(LayoutInflater inflater,  ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        // Initialize the ListView
+        list_view_home = view.findViewById(R.id.list_view_home);
+
+        // Initialize course data (Replace with your data source)
+        courses = new ArrayList<>();
+        courses.add(new CourseModel(R.drawable.gradient_color_1, "COMP 2160", "Mobile App Development", ""));
+        courses.add(new CourseModel(R.drawable.gradient_color_2, "COMP 2210", "Programming Methods"));
+        courses.add(new CourseModel(R.drawable.gradient_color_3, "COMP 2920", "Software Architecture"));
+        courses.add(new CourseModel(R.drawable.gradient_color_4, "COMP 2230", "Data Structure"));
+
+
+
+
+        // Set up the adapter
+        HomePageAdaptor homePageAdaptor = new HomePageAdaptor(requireContext(), R.layout.home_items, courses);
+        list_view_home.setAdapter(homePageAdaptor);
+
         return view;
     }
-}

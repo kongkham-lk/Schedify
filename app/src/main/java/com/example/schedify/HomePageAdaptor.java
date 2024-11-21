@@ -24,9 +24,13 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
     ArrayList<CourseModel> courses;
 
     LayoutInflater layoutInflater;
-
+    ImageView img_resource;
     TextView text_view_one;
-    TextView text_view_two;
+    TextView tv_location;
+    TextView start_time;
+    TextView end_time;
+
+
 
 
 
@@ -50,12 +54,25 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
 
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View v = layoutInflater.inflate(R.layout.home_items, null);
+
+        ImageView course_img = (ImageView) v. findViewById(R.id.course_img);
         TextView text_view_one = (TextView) v.findViewById(R.id.text_view_one);
-        TextView text_view_two = (TextView) v.findViewById(R.id.text_view_two);
+        TextView tv_location = (TextView) v.findViewById(R.id.tv_location);
+        TextView start_time = (TextView) v.findViewById(R.id.start_time);
+        TextView end_time = (TextView) v.findViewById(R.id.end_time);
 
 
+
+
+
+        course_img.setImageResource(courses.get(position).getCourse_img());
         text_view_one.setText(courses.get(position).getCourse_code());
-        text_view_two.setText(courses.get(position).getCourse_name());
+        tv_location.setText(courses.get(position).getTv_location());
+        start_time.setText(courses.get(position).getStart_time());
+        end_time.setText(courses.get(position).getEnd_time());
+
+
+
 
 
         return v;

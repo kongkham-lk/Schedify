@@ -15,4 +15,5 @@
     <string name="time_set_text">End</string>
     <string name="location_set_text">Enter Location</string>
     <string name="delete_content_desc">Deletes Tasks</string>
+    <string name="dashboard">Dashboard</string>
 </resources>
