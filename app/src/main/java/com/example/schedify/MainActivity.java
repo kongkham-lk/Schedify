@@ -2,6 +2,7 @@ package com.example.schedify;
 
 import android.os.Bundle;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,8 +13,15 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.viewpager2.widget.ViewPager2;
 
 import java.util.ArrayList;
+import androidx.appcompat.app.AppCompatDelegate;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements WebViewLoginDialog.LoginCallback {
+
+    private List<CourseModel> courseList;
+    WebViewLoginDialog webViewLoginDialog;
+    String cookie;
 
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
@@ -34,15 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
         tabLayout = findViewById(R.id.bottom_navigation_bar);
         viewPager2 = findViewById(R.id.viewPager);
-
-
-
-
-
-
-
-
-
 
         adapter = new TabAdapter(getSupportFragmentManager(), getLifecycle());  // Your TabAdapter for managing fragments
         adapter.setContext(this);
@@ -115,5 +114,36 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        EdgeToEdge.enable(this);
+
+        // String courseRegURL = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/registrationHistory";
+
+        // // Create and show the WebView login dialog
+        // webViewLoginDialog = new WebViewLoginDialog(MainActivity.this, courseRegURL, this);
+        // webViewLoginDialog.show();
+    }
+
+    @Override
+    public void onLoginResult(boolean isSuccess) {
+        if (isSuccess) {
+            Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show();
+            cookie = webViewLoginDialog.getCookie();
+            String targetURL = webViewLoginDialog.getTargetURL();
+
+            if (targetURL.contains("registration"))
+                // Proceed fetching course schedule
+                fetchCourseRegistrationAPI();
+        } else {
+            // Handle login failure
+            Toast.makeText(this, "Syncing is Cancel!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void fetchCourseRegistrationAPI() {
+        String url = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/reset?term=202510";
+
+        CourseRegistrationResponse CourseAPIFetcher = new CourseRegistrationResponse();
+        CourseAPIFetcher.setRequestMethod("GET");
+        courseList = CourseAPIFetcher.fetchCourseSchedule(url, cookie);
     }
 }

@@ -2,57 +2,118 @@ package com.example.schedify;
 
 public class CourseModel {
 
-    String course_code;
-    String tv_location;
-    int course_img;
-    String start_time;
-    String end_time;
+    private String courseCode; //subject + courseNumber
+    private String courseTitle;
+    private boolean isRegistered;
+
+    // under meetingTime
+    private String startDate;
+    private String endDate;
+    private String startTime; //beginTime
+    private String endTime;
+    private String roomNumber;
+    private boolean[] classDayList; // Class day in a week, start from monday
+    private int urlID;
 
 
-
-    public CourseModel( int course_img, String course_code, String tv_location, String start_time, String end_time)
+    public CourseModel(String courseCode, String courseTitle)
     {
-        this.course_img = course_img;
-        this.course_code = course_code;
-        this.start_time = start_time;
-        this.end_time = end_time;
-
+        this.courseCode = courseCode;
+        this.courseTitle = courseTitle;
     }
 
-
-
-    public int getCourse_img(){
-        return course_img;
+    public CourseModel(String courseCode, String courseTitle, boolean isRegistered, String startDate,
+                       String endDate, String startTime, String endTime,
+                       String roomNumber, boolean[] classDayList, int urlID) {
+        this.courseCode = courseCode;
+        this.courseTitle = courseTitle;
+        this.isRegistered = isRegistered;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.roomNumber = roomNumber;
+        this.classDayList = classDayList;
+        this.urlID = urlID;
     }
 
-
-
-    public String getCourse_code(){
-        return course_code;
+    public String getCourseCode() {
+        return courseCode;
     }
 
-    public String getTv_location(){
-        return tv_location;
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
     }
 
-
-    public String getStart_time(){
-        return start_time;
+    public String getCourseTitle() {
+        return courseTitle;
     }
 
-
-    public String getEnd_time(){
-        return end_time;
+    public void setCourseTitle(String courseTitle) {
+        this.courseTitle = courseTitle;
     }
 
+    public boolean isRegistered() {
+        return isRegistered;
+    }
 
+    public void setRegistered(boolean registered) {
+        isRegistered = registered;
+    }
 
+    public String getStartDate() {
+        return startDate;
+    }
 
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
 
+    public String getEndDate() {
+        return endDate;
+    }
 
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
 
+    public String getStartTime() {
+        return startTime;
+    }
 
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
 
+    public String getEndTime() {
+        return endTime;
+    }
 
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
 
+    public String getRoomNumber() {
+        return roomNumber;
+    }
+
+    public void setRoomNumber(String roomNumber) {
+        this.roomNumber = roomNumber;
+    }
+
+    public boolean[] getClassDayList() {
+        return classDayList;
+    }
+
+    public void setClassDayList(boolean[] classDayList) {
+        this.classDayList = classDayList;
+    }
+
+    public int getUrlID() {
+        return urlID;
+    }
+
+    public void setUrlID(int urlID) {
+        this.urlID = urlID;
+    }
 }
