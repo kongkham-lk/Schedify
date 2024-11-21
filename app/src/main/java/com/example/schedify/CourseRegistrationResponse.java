@@ -16,8 +16,16 @@ public class CourseRegistrationResponse {
         courseList = new ArrayList<>();
     }
 
+    public String getRequestMethod() {
+        return requestMethod;
+    }
+
+    public void setRequestMethod(String requestMethod) {
+        this.requestMethod = requestMethod;
+    }
+
     // Callable task to fetch API data
-    public List<CourseModel> fetchCourseSchedule(String apiUrl, String cookie) {
+    public List<CourseModel> retrievedCourseSchedule(String apiUrl, String cookie) {
         APIFetcher moodleFetcher = new APIFetcher();
         moodleFetcher.setRequestMethod(requestMethod);
         String moodleResponse = moodleFetcher.getResponse(apiUrl, cookie); // fetch course schedule from API
@@ -82,13 +90,5 @@ public class CourseRegistrationResponse {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public String getRequestMethod() {
-        return requestMethod;
-    }
-
-    public void setRequestMethod(String requestMethod) {
-        this.requestMethod = requestMethod;
     }
 }
