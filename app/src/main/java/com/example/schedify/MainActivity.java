@@ -1,6 +1,5 @@
 package com.example.schedify;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ListView;
 
@@ -9,8 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Lifecycle;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.viewpager2.widget.ViewPager2;
 
 import java.util.ArrayList;
@@ -31,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -88,12 +87,20 @@ public class MainActivity extends AppCompatActivity {
             if (title != null) {
                 String description = getIntent().getStringExtra("description");
                 String date = getIntent().getStringExtra("date");
+                String time = getIntent().getStringExtra("time");
+                String location = getIntent().getStringExtra("location");
 
-                CreateFragment fragment = new CreateFragment();
                 Bundle args = new Bundle();
                 args.putString("title", title);
                 args.putString("description", description);
                 args.putString("date", date);
+                args.putString("time", time);
+                args.putString("location", location);
+
+                HomeFragment homeFragment = new HomeFragment();
+                homeFragment.setArguments(args);
+
+                CreateFragment fragment = new CreateFragment();
                 fragment.setArguments(args);
 
             }

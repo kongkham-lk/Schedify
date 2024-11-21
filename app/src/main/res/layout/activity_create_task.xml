@@ -5,9 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CreateTaskActivity"
-    android:background="#FAE5AE">
+    >
 
-    <!-- Return Button -->
     <Button
         android:id="@+id/return_btn"
         android:layout_width="48dp"
@@ -16,6 +15,8 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="280dp"
         android:layout_marginBottom="640dp"
+        android:text="@string/app_name"
+        android:textColor="#00000000"
         android:background="@drawable/left_arrow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,37 +25,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <!-- Title Input -->
-
-    <!-- Description Input -->
-
-    <!-- DatePicker (Calendar-like Interface) -->
-
-    <EditText
-        android:id="@+id/title_input"
-        android:layout_width="280dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:autofillHints=""
-        android:background="@drawable/border_box"
-        android:hint="@string/create_page_title_hint"
-        android:inputType="text"
-        android:padding="12dp"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/return_btn" />
-
-    <!-- Save Button -->
-
     <EditText
         android:id="@+id/description_input"
-        android:layout_width="280dp"
+        android:layout_width="314dp"
         android:layout_height="100dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="52dp"
         android:autofillHints=""
         android:background="@drawable/border_box"
         android:gravity="top|start"
@@ -62,32 +37,139 @@
         android:inputType="text"
         android:padding="12dp"
         android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="@+id/title_input"
-        app:layout_constraintStart_toStartOf="@+id/title_input"
-        app:layout_constraintTop_toBottomOf="@id/title_input" />
+        android:textColorHint="#6B6969"
+        app:layout_constraintEnd_toEndOf="@+id/time_picker_end"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/date_picker_end" />
 
-    <android.widget.DatePicker
+    <Button
+        android:id="@+id/time_picker_end"
+        android:layout_width="102dp"
+        android:layout_height="52dp"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/time_picker"
+        app:layout_constraintTop_toTopOf="@+id/date_picker_end" />
+
+    <Button
         android:id="@+id/date_picker"
-        android:layout_width="392dp"
-        android:layout_height="400dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="@+id/description_input"
-        app:layout_constraintHorizontal_bias="0.308"
-        app:layout_constraintStart_toStartOf="@+id/description_input"
-        app:layout_constraintTop_toBottomOf="@id/description_input" />
+        android:layout_width="102dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="56dp"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/location_input" />
+
+    <Button
+        android:id="@+id/date_picker_end"
+        android:layout_width="102dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/date_picker" />
+
+    <Button
+        android:id="@+id/time_picker"
+        android:layout_width="102dp"
+        android:layout_height="52dp"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/location_input"
+        app:layout_constraintTop_toTopOf="@+id/date_picker" />
+
+    <EditText
+        android:id="@+id/title_input"
+        android:layout_width="314dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:autofillHints=""
+        android:background="@drawable/border_box"
+        android:hint="@string/create_page_title_hint"
+        android:inputType="text"
+        android:padding="12dp"
+        android:textColor="@color/black"
+        android:textColorHint="#6B6969"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/return_btn" />
 
     <Button
         android:id="@+id/save_btn"
-        android:layout_width="200dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="179dp"
+        android:layout_height="61dp"
         android:layout_marginBottom="41dp"
         android:text="@string/create_page_save_btn"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/date_picker"
-        app:layout_constraintHorizontal_bias="0.312"
-        app:layout_constraintStart_toStartOf="@+id/date_picker"
-        app:layout_constraintTop_toBottomOf="@id/date_picker"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/description_input"
+        app:layout_constraintVertical_bias="0.737" />
+
+    <ImageButton
+        android:id="@+id/delete_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/title_input"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.896"
+        app:layout_constraintStart_toEndOf="@+id/return_btn"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/delete_content_desc"
+        app:layout_constraintVertical_bias="0.196"
+        app:srcCompat="@android:drawable/ic_menu_delete" />
+
+    <EditText
+        android:id="@+id/location_input"
+        android:layout_width="314dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="42dp"
+        android:autofillHints=""
+        android:background="@drawable/border_box"
+        android:hint="@string/location_set_text"
+        android:inputType="text"
+        android:padding="12dp"
+        android:textColor="@color/black"
+
+        android:textColorHint="#6B6969"
+        app:layout_constraintEnd_toEndOf="@+id/title_input"
+        app:layout_constraintStart_toStartOf="@+id/title_input"
+        app:layout_constraintTop_toBottomOf="@+id/title_input" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="79dp"
+        android:layout_height="52dp"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:text="@string/date_set_text"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/date_picker"
+        app:layout_constraintStart_toStartOf="@+id/location_input" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="79dp"
+        android:layout_height="52dp"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:text="@string/time_set_text"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/date_picker_end"
+        app:layout_constraintStart_toStartOf="@+id/textView3" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
