@@ -1,4 +1,4 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#6CE0F0"/> <!-- Change to the highlighted color -->
+    <solid android:color="@color/grey"/> <!-- Change to the highlighted color -->
     <corners android:radius="100dp"/> <!-- Keep the same corner radius for consistency -->
 </shape>

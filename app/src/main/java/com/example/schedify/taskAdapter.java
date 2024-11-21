@@ -45,14 +45,8 @@ public class taskAdapter extends RecyclerView.Adapter<taskAdapter.taskViewHolder
             public void onClick(View view) {
                 Intent edit_task = new Intent(context, CreateTaskActivity.class);
                 edit_task.putExtra("title", task.getTitle());
-                String[] lines = task.getTime().split("\n");
-                if (lines.length == 2) {
-                    edit_task.putExtra("date", lines[0]);
-                    edit_task.putExtra("time", lines[1]);
-                } else {
-                    edit_task.putExtra("date", "Unknown date");
-                    edit_task.putExtra("time", "Unknown time");
-                }
+                edit_task.putExtra("date", task.getDate());
+                edit_task.putExtra("time", task.getTime());
                 edit_task.putExtra("index", position);
                 edit_task.putExtra("description", task.getDescription());
                 context.startActivity(edit_task);

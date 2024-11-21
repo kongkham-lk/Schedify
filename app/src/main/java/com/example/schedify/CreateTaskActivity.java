@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -31,7 +32,7 @@ public class CreateTaskActivity extends AppCompatActivity {
     int index = -1;
     private boolean editing = false;
     private ImageButton deleteBtn;
-    private long minDateForEndDate = Long.MIN_VALUE;
+    private long minDateForEndDate = 0;
     private long maxDateForStartDate = Long.MAX_VALUE;
 
     @Override
@@ -85,6 +86,37 @@ public class CreateTaskActivity extends AppCompatActivity {
             }
 
         }
+        if (timePicker.getText().toString().isEmpty()) {
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            int minute = calendar.get(Calendar.MINUTE);
+
+            int secondHour = hour + 1;
+            if (secondHour == 24) {
+                secondHour = 0;
+            }
+
+            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+            String formattedTime = sdf.format(calendar.getTime());
+            timePicker.setText(formattedTime);
+            calendar.set(Calendar.HOUR_OF_DAY, secondHour);
+
+            SimpleDateFormat sdf4 = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+            String formattedTime4 = sdf4.format(calendar.getTime());
+            timePickerEnd.setText(formattedTime4);
+
+            SimpleDateFormat sdf2 = new SimpleDateFormat("MMM d", Locale.ENGLISH);
+            String formattedDate = sdf2.format(calendar.getTime()) + getDayOfMonthSuffix(day);
+            datePicker.setText(formattedDate);
+
+            SimpleDateFormat sdf3 = new SimpleDateFormat("MMM d", Locale.ENGLISH);
+            String formattedDate2 = sdf3.format(calendar.getTime()) + getDayOfMonthSuffix(day);
+            datePickerEnd.setText(formattedDate2);
+
+        }
 
         returnBtn.setOnClickListener(view -> {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -98,7 +130,7 @@ public class CreateTaskActivity extends AppCompatActivity {
             hour = calendar.get(Calendar.HOUR_OF_DAY);
             minute = calendar.get(Calendar.MINUTE);
 
-            TimePickerDialog timePickerDialog = new TimePickerDialog(CreateTaskActivity.this, (view1, hourOfDay, minute) -> {
+            TimePickerDialog timePickerDialog = new TimePickerDialog(CreateTaskActivity.this, 2, (view1, hourOfDay, minute) -> {
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 calendar.set(Calendar.MINUTE, minute);
                 SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
@@ -112,14 +144,14 @@ public class CreateTaskActivity extends AppCompatActivity {
             final Calendar calendar = Calendar.getInstance();
             hour = calendar.get(Calendar.HOUR_OF_DAY);
             minute = calendar.get(Calendar.MINUTE);
-
-            TimePickerDialog timePickerDialog = new TimePickerDialog(CreateTaskActivity.this, (view1, hourOfDay, minute) -> {
+            TimePickerDialog timePickerDialog = new TimePickerDialog(CreateTaskActivity.this, 2,(view1, hourOfDay, minute) -> {
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 calendar.set(Calendar.MINUTE, minute);
                 SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
                 String formattedTime = sdf.format(calendar.getTime());
                 timePickerEnd.setText(formattedTime);
             }, hour, minute, false);
+
             timePickerDialog.show();
         });
 
@@ -176,10 +208,8 @@ public class CreateTaskActivity extends AppCompatActivity {
                 setMaxDateForStartDate(calendar);
             }, year, month, day);
 
-
-            datePickerDialog.getDatePicker().setMinDate(minDateForEndDate);
-
             datePickerDialog.show();
+            datePickerDialog.getDatePicker().setMinDate(minDateForEndDate);
         });
 
         saveBtn.setOnClickListener(view -> {
