@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.tabs.TabLayout;
@@ -26,13 +27,6 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
     private TabAdapter adapter;
-
-
-
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,13 +108,16 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
 
             }
         });
-        EdgeToEdge.enable(this);
 
-        // String courseRegURL = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/registrationHistory";
+//        loadCourse();
+    }
 
-        // // Create and show the WebView login dialog
-        // webViewLoginDialog = new WebViewLoginDialog(MainActivity.this, courseRegURL, this);
-        // webViewLoginDialog.show();
+    public void loadCourse() {
+        String courseRegURL = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/registrationHistory";
+
+        // Create and show the WebView login dialog
+        webViewLoginDialog = new WebViewLoginDialog(MainActivity.this, courseRegURL, this);
+        webViewLoginDialog.show();
     }
 
     @Override
@@ -133,6 +130,11 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
             if (targetURL.contains("registration"))
                 // Proceed fetching course schedule
                 fetchCourseRegistrationAPI();
+
+
+            //---------------------- put the adapter here----------!!!!!!
+
+
         } else {
             // Handle login failure
             Toast.makeText(this, "Syncing is Cancel!", Toast.LENGTH_SHORT).show();
