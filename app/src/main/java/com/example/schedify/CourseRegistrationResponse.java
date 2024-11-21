@@ -35,7 +35,7 @@ public class CourseRegistrationResponse {
                 try {
                     JSONObject courseItem = registeredCourseList.getJSONObject(i);
                     String subject = courseItem.getString("subject");
-                    String courseNumber = courseItem.getString("courseNumber");
+                    int courseNumber = courseItem.getInt("courseNumber");
                     String courseCode = subject + " " + courseNumber;
                     String courseTitle = courseItem.getString("courseTitle");
                     boolean isRegistered = courseItem.getString("statusDescription").toLowerCase().equals("registered") ? true : false;
@@ -54,8 +54,26 @@ public class CourseRegistrationResponse {
                         boolean hasClass = meetingDetail.getBoolean(dayInAWeek);
                         classDayList[day] = hasClass;
                     }
+                    int urlID = 0;
+                    switch (courseNumber) {
+                        case 2130:
+                            urlID = 57100;
+                            break;
+                        case 2160:
+                            urlID = 57049;
+                            break;
+                        case 2210:
+                            urlID = 56936;
+                            break;
+                        case 2230:
+                            urlID = 57127;
+                            break;
+                        case 2920:
+                            urlID = 56165;
+                            break;
+                    }
                     CourseModel course = new CourseModel(courseCode, courseTitle, isRegistered, startDate,
-                            endDate, startTime, endTime, roomNumber, classDayList);
+                            endDate, startTime, endTime, roomNumber, classDayList, urlID);
                     courseList.add(course);
                 } catch (Exception e) {
                     e.printStackTrace();

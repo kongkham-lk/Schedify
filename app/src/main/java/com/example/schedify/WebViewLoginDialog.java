@@ -19,7 +19,6 @@ import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatDelegate;
 import android.webkit.CookieManager;
 
-
 public class WebViewLoginDialog extends Dialog {
 
     public interface LoginCallback {

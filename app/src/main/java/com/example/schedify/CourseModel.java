@@ -13,6 +13,7 @@ public class CourseModel {
     private String endTime;
     private String roomNumber;
     private boolean[] classDayList; // Class day in a week, start from monday
+    private int urlID;
 
 
     public CourseModel(String courseCode, String courseTitle)
@@ -23,7 +24,7 @@ public class CourseModel {
 
     public CourseModel(String courseCode, String courseTitle, boolean isRegistered, String startDate,
                        String endDate, String startTime, String endTime,
-                       String roomNumber, boolean[] classDayList) {
+                       String roomNumber, boolean[] classDayList, int urlID) {
         this.courseCode = courseCode;
         this.courseTitle = courseTitle;
         this.isRegistered = isRegistered;
@@ -33,6 +34,7 @@ public class CourseModel {
         this.endTime = endTime;
         this.roomNumber = roomNumber;
         this.classDayList = classDayList;
+        this.urlID = urlID;
     }
 
     public String getCourseCode() {
@@ -105,5 +107,13 @@ public class CourseModel {
 
     public void setClassDayList(boolean[] classDayList) {
         this.classDayList = classDayList;
+    }
+
+    public int getUrlID() {
+        return urlID;
+    }
+
+    public void setUrlID(int urlID) {
+        this.urlID = urlID;
     }
 }
