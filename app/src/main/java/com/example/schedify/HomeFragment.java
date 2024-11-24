@@ -50,6 +50,7 @@ public class HomeFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
     private ListView list_view_home;
     private HomePageAdaptor homePageAdaptor;
     private ArrayList<CourseModel> courses;
@@ -67,28 +68,22 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        if (getActivity() != null && getActivity().getIntent() != null) {
-            Intent intent = getActivity().getIntent();
-            String title = intent.getStringExtra("title");
+        //if (getActivity() != null && getActivity().getIntent() != null) {
+        // Intent intent = getActivity().getIntent();
+        // String title = intent.getStringExtra("title");
 
-            textView = view.findViewById(R.id.text_changer);
-            textView.setText(title);
-        }
-    public View onCreateView(LayoutInflater inflater,  ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
-        // Initialize the ListView
+        //  textView = view.findViewById(R.id.taskTitle);
+        //  textView.setText(title);
+        // }
         list_view_home = view.findViewById(R.id.list_view_home);
 
         // Initialize course data (Replace with your data source)
         courses = new ArrayList<>();
-        courses.add(new CourseModel(R.drawable.gradient_color_1, "COMP 2210", "Old Main", ));
-        courses.add(new CourseModel(R.drawable.gradient_color_2, "COMP 2210", "Programming Methods"));
-        courses.add(new CourseModel(R.drawable.gradient_color_3, "COMP 2920", "Software Architecture"));
-        courses.add(new CourseModel(R.drawable.gradient_color_4, "COMP 2230", "Data Structure"));
-
-
+        //courses.add(new CourseModel(R.drawable.gradient_color_1, "COMP 2210", "Old Main", ));
+        //courses.add(new CourseModel(R.drawable.gradient_color_2, "COMP 2210", "Programming Methods"));
+        //courses.add(new CourseModel(R.drawable.gradient_color_3, "COMP 2920", "Software Architecture"));
+        // courses.add(new CourseModel(R.drawable.gradient_color_4, "COMP 2230", "Data Structure"));
 
 
         // Set up the adapter
@@ -97,3 +92,4 @@ public class HomeFragment extends Fragment {
 
         return view;
     }
+}
