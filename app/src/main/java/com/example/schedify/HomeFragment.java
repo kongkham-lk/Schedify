@@ -7,6 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
+
+
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -80,7 +83,7 @@ public class HomeFragment extends Fragment {
 
         // Initialize course data (Replace with your data source)
         courses = new ArrayList<>();
-        courses.add(new CourseModel(R.drawable.gradient_color_1, "COMP 2160", "Mobile App Development", ""));
+        courses.add(new CourseModel(R.drawable.gradient_color_1, "COMP 2210", "Old Main", ));
         courses.add(new CourseModel(R.drawable.gradient_color_2, "COMP 2210", "Programming Methods"));
         courses.add(new CourseModel(R.drawable.gradient_color_3, "COMP 2920", "Software Architecture"));
         courses.add(new CourseModel(R.drawable.gradient_color_4, "COMP 2230", "Data Structure"));

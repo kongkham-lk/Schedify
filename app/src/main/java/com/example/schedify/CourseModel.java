@@ -5,6 +5,8 @@ public class CourseModel {
     private String courseCode; //subject + courseNumber
     private String courseTitle;
     private boolean isRegistered;
+    private String tv_location;
+    public int course_img;
 
     // under meetingTime
     private String startDate;
@@ -16,14 +18,8 @@ public class CourseModel {
     private int urlID;
 
 
-    public CourseModel(String courseCode, String courseTitle)
-    {
-        this.courseCode = courseCode;
-        this.courseTitle = courseTitle;
-    }
-
-    public CourseModel(String courseCode, String courseTitle, boolean isRegistered, String startDate,
-                       String endDate, String startTime, String endTime,
+    public CourseModel(int course_img, String courseCode, String tv_location, String startTime, String endTime, String courseTitle, boolean isRegistered, String startDate,
+                       String endDate,
                        String roomNumber, boolean[] classDayList, int urlID) {
         this.courseCode = courseCode;
         this.courseTitle = courseTitle;
@@ -35,7 +31,19 @@ public class CourseModel {
         this.roomNumber = roomNumber;
         this.classDayList = classDayList;
         this.urlID = urlID;
+        this.course_img = course_img;
+        this.tv_location = tv_location;
     }
+
+    public int getCourse_img()
+    {
+        return course_img;
+    }
+
+    public String getTv_location() {
+        return tv_location;
+    }
+
 
     public String getCourseCode() {
         return courseCode;
