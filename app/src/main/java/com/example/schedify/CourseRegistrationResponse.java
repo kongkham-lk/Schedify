@@ -1,5 +1,7 @@
 package com.example.schedify;
 
+import android.content.Context;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,33 +12,33 @@ public class CourseRegistrationResponse {
 
     private List<CourseModel> courseList;
     private static final String[] DayInAWeek = new String[]{"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
-    private String requestMethod = "";
+//    private String requestMethod = "";
+    private Context context;
 
-    public CourseRegistrationResponse() {
+    public CourseRegistrationResponse(Context context) {
         courseList = new ArrayList<>();
+        this.context = context;
     }
 
-    public String getRequestMethod() {
-        return requestMethod;
-    }
-
-    public void setRequestMethod(String requestMethod) {
-        this.requestMethod = requestMethod;
-    }
+//    public String getRequestMethod() {
+//        return requestMethod;
+//    }
+//
+//    public void setRequestMethod(String requestMethod) {
+//        this.requestMethod = requestMethod;
+//    }
 
     // Callable task to fetch API data
-    public List<CourseModel> retrievedCourseSchedule(String apiUrl, String cookie) {
-        APIFetcher moodleFetcher = new APIFetcher();
-        moodleFetcher.setRequestMethod(requestMethod);
-        String moodleResponse = moodleFetcher.getResponse(apiUrl, cookie); // fetch course schedule from API
-        extractJSONResponse(moodleResponse); // Bind data and save to courseList
+    public List<CourseModel> retrievedCourseSchedule() {
+        extractJSONResponse(); // Bind data and save to courseList
         return courseList;
     }
 
     // Parsing logic for the articles
-    private void extractJSONResponse(String jsonResponse) {
+    private void extractJSONResponse() {
         try {
-            JSONObject jsonObject = new JSONObject(jsonResponse);
+//            JSONObject jsonObject = new JSONObject(jsonResponse);
+            JSONObject jsonObject = Helper.loadJsonFromPreferences(context);
             JSONArray registeredCourseList = jsonObject.getJSONObject("data").getJSONArray("registrations");
 
             for (int i = 0; i < registeredCourseList.length(); i++) {

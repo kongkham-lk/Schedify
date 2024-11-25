@@ -7,8 +7,6 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-import org.json.JSONObject;
-
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements WebViewLoginDialog.LoginCallback {
@@ -24,15 +22,20 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        String courseRegURL = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/registrationHistory";
+        String initialCourseRegURL = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/registrationHistory";
+        String finalCourseRegURL = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/reset?term=202510";
         String moodleURL = "https://moodle.tru.ca/my/";
-        fetchcourseRegistrationAPI(courseRegURL);
+//        fetchcourseRegistrationAPI(initialCourseRegURL, finalCourseRegURL);
         fetchcourseRegistrationAPI(moodleURL);
     }
 
     private void fetchcourseRegistrationAPI(String targetURL) {
+        fetchcourseRegistrationAPI(targetURL, targetURL);
+    }
+
+    private void fetchcourseRegistrationAPI(String initialURL, String targetURL) {
         // Create and show the WebView login dialog
-        webViewLoginDialog = new WebViewLoginDialog(MainActivity.this, targetURL, this);
+        webViewLoginDialog = new WebViewLoginDialog(MainActivity.this, initialURL, targetURL, this);
         webViewLoginDialog.show();
     }
 
@@ -58,8 +61,8 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
     public void onLoginResult(boolean isSuccess) {
         if (isSuccess) {
             Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show();
-            cookie = webViewLoginDialog.getCookie();
-            String targetURL = webViewLoginDialog.getTargetURL();
+//            cookie = webViewLoginDialog.getCookie();
+            String targetURL = webViewLoginDialog.getInitialURL();
 
             if (targetURL.contains("registration"))
                 retrievedCourseRegistrationAPI(); // Proceed fetching course schedule
@@ -72,18 +75,15 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
     }
 
     private void retrievedCourseRegistrationAPI() {
-        String courseRegURL = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/reset?term=202510";
-
-        CourseRegistrationResponse CourseAPIFetcher = new CourseRegistrationResponse();
-        CourseAPIFetcher.setRequestMethod("GET");
-        courseList = CourseAPIFetcher.retrievedCourseSchedule(courseRegURL, cookie);
+        CourseRegistrationResponse CourseAPIFetcher = new CourseRegistrationResponse(this);
+        courseList = CourseAPIFetcher.retrievedCourseSchedule();
     }
 
     private void retrievedMoodleCourseAPI() {
         String moodleURL = "https://moodle.tru.ca/my/";
 
-        MoodleApiResponse moodleApiResponse = new MoodleApiResponse();
-        moodleApiResponse.setRequestMethod("GET");
-        courseList = moodleApiResponse.retrievedCourseDataFromMoodle(moodleURL, cookie);
+        MoodleApiResponse moodleApiResponse = new MoodleApiResponse(this);
+//        moodleApiResponse.setRequestMethod("GET");
+        courseList = moodleApiResponse.retrievedCourseDataFromMoodle();
     }
 }

@@ -1,23 +1,29 @@
 package com.example.schedify;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.SslErrorHandler;
+import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import android.webkit.CookieManager;
+
+import org.json.JSONObject;
 
 public class WebViewLoginDialog extends Dialog {
 
@@ -28,14 +34,18 @@ public class WebViewLoginDialog extends Dialog {
     private LoginCallback loginCallback;
     private WebView webView;
     private ImageButton backBtn;
-    private String targetURL;
+    private String initialURL;
+    private String finalURL;
     private Context context;
     private String cookie;
+    private JSONObject jsonObject;
+    private int attemptCount = 3;
 
-    public WebViewLoginDialog(Context context, String targetURL, LoginCallback loginCallback) {
+    public WebViewLoginDialog(Context context, String initialURL, String finalURL, LoginCallback loginCallback) {
         super(context);
         this.context = context;
-        this.targetURL = targetURL;
+        this.initialURL = initialURL;
+        this.finalURL = finalURL;
         this.loginCallback = loginCallback;
     }
 
@@ -61,13 +71,14 @@ public class WebViewLoginDialog extends Dialog {
         // Initialize the WebView
         webView = findViewById(R.id.webViewScreen);
         webView.getSettings().setJavaScriptEnabled(true); // Enable JavaScript
+
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
 
                 // Check if the user has navigated to the login success page
-                if (url.equals(targetURL)) {
+                if (url.equals(initialURL)) {
                     // Sync WebView cookies to the app
                     CookieManager cookieManager = CookieManager.getInstance();
                     String cookies = cookieManager.getCookie(url);
@@ -76,10 +87,18 @@ public class WebViewLoginDialog extends Dialog {
                     setCookie(cookies);
 
                     // If login is successful, dismiss the dialog
-                    dismiss();
-                    if (loginCallback != null) {
-                        loginCallback.onLoginResult(true);
-                    }
+                    if (webView.getVisibility() == View.VISIBLE)
+                        dismiss();
+
+                    if (!url.equals(finalURL))
+                        webView.loadUrl(finalURL);
+                    else
+                        extractHTMLFromWebView();
+                } else if (url.equals(finalURL)) {
+                    extractJsonDataFromWebView();
+                }else {
+                    // Login required, display the WebView
+                    ((Activity) context).findViewById(R.id.cardView).setVisibility(View.VISIBLE);
                 }
             }
 
@@ -93,7 +112,7 @@ public class WebViewLoginDialog extends Dialog {
         });
 
         // Load the initial login URL
-        webView.loadUrl(targetURL);
+        webView.loadUrl(initialURL);
 
         // Customize the dialog to appear as a floating window
         Window window = getWindow();
@@ -102,6 +121,61 @@ public class WebViewLoginDialog extends Dialog {
             window.setGravity(Gravity.CENTER); // Center the dialog on the screen
             window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL); // Non-modal behavior
         }
+    }
+
+    private void extractJsonDataFromWebView() {
+        webView.evaluateJavascript(
+                "(function() { return document.body.innerText; })();",
+                jsonData -> {
+                    // Process the JSON data
+                    Log.d("WebView", "Extracted JSON: " + jsonData);
+
+                    // Example: Parse the JSON (remove quotes from the response string)
+                    try {
+                        String cleanJson = jsonData.replaceAll("^\"|\"$", "").replace("\\n", "").replace("\\\"", "\"").replace("  ", "");
+                        JSONObject jsonObject = new JSONObject(cleanJson);
+                        Helper.saveJsonToPreferences(context, jsonObject);
+                        loginCallback.onLoginResult(true);
+                    } catch (Exception e) {
+                        Log.e("WebView", "Error parsing JSON: " + e.getMessage());
+                    }
+                }
+        );
+    }
+
+    private void extractHTMLFromWebView() {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            webView.evaluateJavascript(
+                    "(function() {\n" +
+                            "    var html = document.documentElement.outerHTML;\n" +
+                            "    return html;\n" +
+                            "})();\n",
+                    html -> {
+                        html = html
+                                .replace("\\u003C", "<")
+                                .replace("\\n", "")
+                                .replace("\\\"", "\"")
+                                .replace("\"<", "<")
+                                .replace(">\"", ">");
+                        if (html != null && !html.equals("null") && html.contains("event-list-wrapper")) {
+                            // Successfully retrieved HTML
+                            Log.d("WebView", "HTML Content: " + html); // Logging the HTML for debugging
+                            Helper.saveHTMLToPreferences(context, html);
+                            loginCallback.onLoginResult(true); // Proceed after data is loaded
+                        } else {
+                            // Retry if not found
+                            if (attemptCount > 0) {
+                                attemptCount--;
+                                new Handler(Looper.getMainLooper()).postDelayed(this::extractHTMLFromWebView, 1000); // Retry after 1 second
+                            } else {
+                                Helper.saveHTMLToPreferences(context, html);
+                                loginCallback.onLoginResult(false); // Indicate failure after max attempts
+                            }
+                        }
+
+                    }
+            );
+        }, 5000);
     }
 
     @Override
@@ -162,12 +236,20 @@ public class WebViewLoginDialog extends Dialog {
         return this.cookie;
     }
 
-    public String getTargetURL() {
-        return targetURL;
+    public String getInitialURL() {
+        return initialURL;
     }
 
-    public void setTargetURL(String targetURL) {
-        this.targetURL = targetURL;
+    public void setInitialURL(String initialURL) {
+        this.initialURL = initialURL;
+    }
+
+    public JSONObject getJsonObject() {
+        return jsonObject;
+    }
+
+    public void setJsonObject(JSONObject jsonObject) {
+        this.jsonObject = jsonObject;
     }
 }
 

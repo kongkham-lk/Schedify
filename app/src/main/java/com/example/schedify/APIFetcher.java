@@ -12,6 +12,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.Cookie;
+
 public class APIFetcher {
 
     private ExecutorService executor = Executors.newSingleThreadExecutor(); // Single-thread executor
@@ -36,6 +40,7 @@ public class APIFetcher {
                 urlConnection.setDoInput(true);  // Optional, for reading response
                 urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0");
                 urlConnection.setRequestProperty("Accept", "application/json");
+                urlConnection.setRequestProperty("Connection", "keep-alive");
                 urlConnection.setRequestProperty("Cookie", cookie); // Apply the cookies to the request
                 urlConnection.setConnectTimeout(10000);
                 urlConnection.setReadTimeout(10000);
@@ -57,9 +62,6 @@ public class APIFetcher {
 
                     // Convert response to String
                     responseData = response.toString();
-
-                } else {
-                    Log.e("API_ERROR", "Response Code: " + responseCode + ", Message: " + urlConnection.getResponseMessage());
                 }
             } catch (Exception e) {
                 Log.e("NETWORK_ERROR", "Exception: " + e.getMessage());
@@ -93,4 +95,40 @@ public class APIFetcher {
     public void setRequestMethod(String requestMethod) {
         this.requestMethod = requestMethod;
     }
+
+    public String fetchDynamicHtml(String url, String cookieValue) {
+        // Set the ChromeDriver executable path
+        System.setProperty("webdriver.chrome.driver", "/path/to/chromedriver");
+
+        WebDriver driver = new ChromeDriver();
+        try {
+            // Navigate to the target URL
+            driver.get(url);
+
+            // Set the cookie
+            Cookie cookie = new Cookie.Builder("SESSIONID", cookieValue)
+                    .domain("moodle.tru.ca") // Replace with the appropriate domain
+                    .path("/") // Path where the cookie is valid
+                    .build();
+            driver.manage().addCookie(cookie);
+
+            // Refresh the page to apply the cookie
+            driver.navigate().refresh();
+
+            // Wait for the page to fully load (use explicit wait for better control in production)
+            Thread.sleep(5000); // Adjust delay based on your requirements
+
+            // Fetch the fully rendered page source
+            String pageSource = driver.getPageSource();
+
+            return pageSource;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            // Quit the driver to release resources
+            driver.quit();
+        }
+    }
+
 }
