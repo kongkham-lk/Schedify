@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
@@ -54,6 +55,9 @@ public class WebViewLoginDialog extends Dialog {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
 
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.setAcceptCookie(true);
+
         // Remove the default title bar for the dialog
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_login); // The layout contains a WebView
@@ -80,11 +84,10 @@ public class WebViewLoginDialog extends Dialog {
                 // Check if the user has navigated to the login success page
                 if (url.equals(initialURL)) {
                     // Sync WebView cookies to the app
-                    CookieManager cookieManager = CookieManager.getInstance();
                     String cookies = cookieManager.getCookie(url);
 
                     // Save the cookies or apply them to the next request
-                    setCookie(cookies);
+                    cookieManager.setCookie(url, cookies);
 
                     // If login is successful, dismiss the dialog
                     if (webView.getVisibility() == View.VISIBLE)
@@ -110,6 +113,13 @@ public class WebViewLoginDialog extends Dialog {
                 handler.proceed(); // ignore error and proceed loading login page
             }
         });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            cookieManager.flush(); // Sync cookies for Lollipop and above
+        } else {
+            CookieSyncManager cookieSyncManager = CookieSyncManager.createInstance(webView.getContext());
+            cookieSyncManager.startSync(); // Sync cookies for older versions
+        }
 
         // Load the initial login URL
         webView.loadUrl(initialURL);
