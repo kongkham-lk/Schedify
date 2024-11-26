@@ -6,11 +6,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.http.SslError;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -22,6 +25,8 @@ import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.cardview.widget.CardView;
+
 import android.webkit.CookieManager;
 
 import org.json.JSONObject;
@@ -76,6 +81,19 @@ public class WebViewLoginDialog extends Dialog {
         webView = findViewById(R.id.webViewScreen);
         webView.getSettings().setJavaScriptEnabled(true); // Enable JavaScript
 
+
+
+        // Customize the dialog to appear as a floating window
+        Window window = getWindow();
+        if (window != null) {
+            // Access the WindowManager from the dialog's context
+            WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+
+            window.setLayout(0, 0); // Full-screen dialog
+            window.setGravity(Gravity.CENTER); // Center the dialog on the screen
+            window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL); // Non-modal behavior
+        }
+
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
@@ -99,9 +117,31 @@ public class WebViewLoginDialog extends Dialog {
                         extractHTMLFromWebView();
                 } else if (url.equals(finalURL)) {
                     extractJsonDataFromWebView();
-                }else {
-                    // Login required, display the WebView
-                    ((Activity) context).findViewById(R.id.cardView).setVisibility(View.VISIBLE);
+                } else {
+                    // Customize the dialog to appear as a floating window
+//                    Window window = getWindow();
+                    if (window != null) {
+                        // Access the WindowManager from the dialog's context
+                        WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+
+                        DisplayMetrics displayMetrics = new DisplayMetrics();
+                        if (windowManager != null) {
+                            windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+                        }
+
+                        int screenWidth = displayMetrics.widthPixels;
+                        int screenHeight = displayMetrics.heightPixels;
+
+                        int desiredWidth = (int) (screenWidth * 0.9); // 80% of the screen width
+                        int desiredHeight = (int) (screenHeight * 0.7); // 60% of the screen height
+
+                        window.setLayout(desiredWidth, desiredHeight); // Full-screen dialog
+                    }
+
+//                    LayoutInflater inflater = getLayoutInflater();
+//                    View cardLayout = inflater.inflate(R.layout.dialog_login, null);
+//                    CardView cardView = cardLayout.findViewById(R.id.cardView);
+//                    cardView.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -123,14 +163,6 @@ public class WebViewLoginDialog extends Dialog {
 
         // Load the initial login URL
         webView.loadUrl(initialURL);
-
-        // Customize the dialog to appear as a floating window
-        Window window = getWindow();
-        if (window != null) {
-            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT); // Full-screen dialog
-            window.setGravity(Gravity.CENTER); // Center the dialog on the screen
-            window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL); // Non-modal behavior
-        }
     }
 
     private void extractJsonDataFromWebView() {
