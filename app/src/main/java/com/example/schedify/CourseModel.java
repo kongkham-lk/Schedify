@@ -1,5 +1,10 @@
 package com.example.schedify;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 public class CourseModel {
 
     private String courseCode; //subject + courseNumber
@@ -7,6 +12,9 @@ public class CourseModel {
     private boolean isRegistered;
     private String tv_location;
     public int course_img;
+    private boolean isExpired;
+
+    // Existing fields and methods...
 
     // under meetingTime
     private String startDate;
@@ -93,6 +101,14 @@ public class CourseModel {
         this.startTime = startTime;
     }
 
+    public boolean isExpire() {
+        return isExpired;
+    }
+
+    public void setExpired(boolean expired) {
+        isExpired = expired;
+    }
+
     public String getEndTime() {
         return endTime;
     }
@@ -112,6 +128,27 @@ public class CourseModel {
     public boolean[] getClassDayList() {
         return classDayList;
     }
+
+    public boolean isExpired() {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+        Calendar currentDate = Calendar.getInstance();
+
+        try {
+            // Parse end time and associate it with today's date
+            Calendar endTime = Calendar.getInstance();
+            endTime.setTime(timeFormat.parse(this.getStartTime()));
+            endTime.set(Calendar.YEAR, currentDate.get(Calendar.YEAR));
+            endTime.set(Calendar.MONTH, currentDate.get(Calendar.MONTH));
+            endTime.set(Calendar.DAY_OF_MONTH, currentDate.get(Calendar.DAY_OF_MONTH));
+
+            // Check if end time is before the current time
+            return endTime.getTime().before(currentDate.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
     public void setClassDayList(boolean[] classDayList) {
         this.classDayList = classDayList;

@@ -1,6 +1,7 @@
 package com.example.schedify;
 
 import android.content.Context;
+import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -10,6 +11,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class TabAdapter extends FragmentStateAdapter {
     Context mainContext;
+    private final SparseArray<Fragment> registeredFragments = new SparseArray<>();
 
     public TabAdapter(@NonNull FragmentManager fragmentManager, Lifecycle lifecycle) {
         super(fragmentManager, lifecycle);
@@ -26,9 +28,9 @@ public class TabAdapter extends FragmentStateAdapter {
                 return new HomeFragment();
             case 1:
                 return  new CreateFragment();
+            /*case 2:
+                return new ProfileFragment();*/
             case 2:
-                return new ProfileFragment();
-            case 3:
                 return new SettingsFragment();
         }
         return null;
@@ -36,6 +38,10 @@ public class TabAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 4;
+        return 3;
+    }
+
+    public Fragment getFragmentAt(int position) {
+        return registeredFragments.get(position);
     }
 }

@@ -1,7 +1,7 @@
 package com.example.schedify;
 
 import android.content.Context;
-import android.os.Bundle;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,75 +9,77 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 
 public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
 
-    ArrayList<CourseModel> courses;
+    private final ArrayList<CourseModel> courses;
+    private final LayoutInflater layoutInflater;
 
-    LayoutInflater layoutInflater;
-    ImageView img_resource;
-    TextView courseCode;
-    TextView tv_location;
-    TextView start_time;
-    TextView end_time;
-
-
-
-
-
-
-
-
-    public HomePageAdaptor(@NonNull Context context, int resource,  ArrayList<CourseModel> objects) {
+    public HomePageAdaptor(@NonNull Context context, int resource, @NonNull ArrayList<CourseModel> objects) {
         super(context, resource, objects);
-
         this.courses = objects;
-        layoutInflater = LayoutInflater.from(context);
-
-
+        this.layoutInflater = LayoutInflater.from(context);
     }
-
 
     @Override
     public int getCount() {
         return courses.size();
     }
 
+    @NonNull
+    @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        View v = layoutInflater.inflate(R.layout.home_items, null);
+        ViewHolder viewHolder;
 
-        ImageView course_img = (ImageView) v. findViewById(R.id.course_img);
-        TextView text_view_one = (TextView) v.findViewById(R.id.courseCode);
-        TextView tv_location = (TextView) v.findViewById(R.id.tv_location);
-        TextView start_time = (TextView) v.findViewById(R.id.startTime);
-        TextView end_time = (TextView) v.findViewById(R.id.endTime);
+        // Check if convertView is null
+        if (convertView == null) {
+            convertView = layoutInflater.inflate(R.layout.home_items, parent, false);
+            viewHolder = new ViewHolder();
 
+            // Initialize the views
+            viewHolder.courseCode = convertView.findViewById(R.id.courseCode);
+            viewHolder.tv_location = convertView.findViewById(R.id.tv_location);
+            viewHolder.start_time = convertView.findViewById(R.id.startTime);
+            viewHolder.end_time = convertView.findViewById(R.id.endTime);
 
+            // Cache the ViewHolder
+            convertView.setTag(viewHolder);
+        } else {
+            // Retrieve the cached ViewHolder
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
 
+        // Get the current CourseModel object
+        CourseModel course = courses.get(position);
 
+        if (course.isExpired()) {
+            convertView.findViewById(R.id.card_container).setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey)); // Replace with your grey color
+        } else {
+            convertView.findViewById(R.id.card_container).setBackgroundColor(ContextCompat.getColor(getContext(), R.color.darkGray)); // Default background
+        }
 
-        course_img.setImageResource(courses.get(position).getCourse_img());
-        text_view_one.setText(courses.get(position).getCourseCode());
-        tv_location.setText(courses.get(position).getTv_location());
-        start_time.setText(courses.get(position).getStartTime());
-        end_time.setText(courses.get(position).getEndTime());
+        // Bind data to the views
+        if (course != null) {
+            viewHolder.courseCode.setText(course.getCourseCode());
+            viewHolder.tv_location.setText(course.getTv_location());
+            viewHolder.start_time.setText(course.getStartTime());
+            viewHolder.end_time.setText(course.getEndTime());
+        }
 
-
-
-
-
-
-        return v;
+        return convertView;
     }
 
-
+    // Static ViewHolder class to cache view references
+    private static class ViewHolder {
+        ImageView img_resource;
+        TextView courseCode;
+        TextView tv_location;
+        TextView start_time;
+        TextView end_time;
+    }
 }

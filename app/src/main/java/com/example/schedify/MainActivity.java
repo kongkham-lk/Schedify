@@ -1,6 +1,9 @@
 package com.example.schedify;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -11,6 +14,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import java.util.ArrayList;
@@ -18,7 +22,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements WebViewLoginDialog.LoginCallback {
+public class MainActivity extends AppCompatActivity implements WebViewLoginDialog.LoginCallback, HomeFragment.OnSyncButtonClickListener {
 
     private List<CourseModel> courseList;
     WebViewLoginDialog webViewLoginDialog;
@@ -27,13 +31,20 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
     private TabAdapter adapter;
+    Button syncBtn;
+
+    public void onSyncButtonClicked() {
+        // Functionality to handle sync button click
+        loadCourse();
+        // Your function logic here
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        EdgeToEdge.enable(this);
         tabLayout = findViewById(R.id.bottom_navigation_bar);
         viewPager2 = findViewById(R.id.viewPager);
 
@@ -53,11 +64,11 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
                     tab.setText("Create");
                     tab.setIcon(R.drawable.add);
                     break;
-                case 2:
+                /*case 2:
                     tab.setText("Profile");
                     tab.setIcon(R.drawable.user);
-                    break;
-                case 3:
+                    break;*/
+                case 2:
                     tab.setText("Settings");
                     tab.setIcon(R.drawable.setting);
                     break;
@@ -109,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
             }
         });
 
-//        loadCourse();
+       //loadCourse();
     }
 
     public void loadCourse() {
@@ -127,9 +138,11 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
             cookie = webViewLoginDialog.getCookie();
             String targetURL = webViewLoginDialog.getTargetURL();
 
-            if (targetURL.contains("registration"))
+            if (targetURL.contains("registration")){
                 // Proceed fetching course schedule
+
                 fetchCourseRegistrationAPI();
+                passCourseListToHomeFragment();}
 
 
             //---------------------- put the adapter here----------!!!!!!
@@ -147,5 +160,21 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
         CourseRegistrationResponse CourseAPIFetcher = new CourseRegistrationResponse();
         CourseAPIFetcher.setRequestMethod("GET");
         courseList = CourseAPIFetcher.fetchCourseSchedule(url, cookie);
+        Log.d("Courses", courseList.get(1).getCourseCode());
     }
+
+    private void passCourseListToHomeFragment() {
+        if (courseList != null && !courseList.isEmpty()) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            HomeFragment homeFragment = (HomeFragment) fragmentManager.findFragmentByTag("f" + 0); // ViewPager2 uses "f" + position for fragment tags
+
+            if (homeFragment != null) {
+                homeFragment.updateCourseList(courseList);
+                Log.e("MainActivity", "COURSE LIST FOUND");
+            } else {
+                Log.e("MainActivity", "HomeFragment is not found");
+            }
+        }
+    }
+
 }
