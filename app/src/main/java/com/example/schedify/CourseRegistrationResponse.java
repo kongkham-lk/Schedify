@@ -82,8 +82,9 @@ public class CourseRegistrationResponse {
                             urlID = 56165;
                             break;
                     }
-                    CourseModel course = new CourseModel(courseCode, courseTitle, isRegistered, startDate,
-                            endDate, startTime, endTime, roomNumber, classDayList, urlID);
+                    CourseModel course = new CourseModel(R.drawable.gradient_color_3, courseCode, roomNumber, startTime, endTime,
+                            courseTitle, isRegistered, startDate,
+                            endDate,  room, classDayList, urlID);
                     courseList.add(course);
                 } catch (Exception e) {
                     e.printStackTrace();

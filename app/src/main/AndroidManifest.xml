@@ -15,6 +15,15 @@
         android:theme="@style/Theme.Schedify"
         tools:targetApi="31">
         <activity
+            android:name=".CourseModel"
+            android:exported="false" />
+        <activity
+            android:name=".HomePageAdaptor"
+            android:exported="false" />
+        <activity
+            android:name=".CreateTaskActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

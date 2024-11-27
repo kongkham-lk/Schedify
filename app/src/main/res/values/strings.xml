@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">Schedify</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="create_plus_text">+</string>
+    <string name="home_fragment_btn">Home Fragment</string>
+    <string name="profile_fragment_btn">Profile Fragment</string>
+    <string name="settings_fragment_btn">Settings Fragment</string>
+    <string name="create_page_title_hint">Enter Title</string>
+    <string name="create_page_title_desc">Enter Description (optional)</string>
+    <string name="create_page_save_btn">Save</string>
+    <string name="create_fragment_plus">+</string>
+    <string name="create_fragment_create_text">Create a task</string>
+    <string name="date_set_text">Start</string>
+    <string name="time_set_text">End</string>
+    <string name="location_set_text">Enter Location</string>
+    <string name="delete_content_desc">Deletes Tasks</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="settings">Settings</string>
+    <string name="sync">Sync</string>
 </resources>

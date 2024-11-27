@@ -1,10 +1,20 @@
 package com.example.schedify;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 public class CourseModel {
 
     private String courseCode; //subject + courseNumber
     private String courseTitle;
     private boolean isRegistered;
+    private String tv_location;
+    public int course_img;
+    private boolean isExpired;
+
+    // Existing fields and methods...
 
     // under meetingTime
     private String startDate;
@@ -16,14 +26,8 @@ public class CourseModel {
     private int urlID;
 
 
-    public CourseModel(String courseCode, String courseTitle)
-    {
-        this.courseCode = courseCode;
-        this.courseTitle = courseTitle;
-    }
-
-    public CourseModel(String courseCode, String courseTitle, boolean isRegistered, String startDate,
-                       String endDate, String startTime, String endTime,
+    public CourseModel(int course_img, String courseCode, String tv_location, String startTime, String endTime, String courseTitle, boolean isRegistered, String startDate,
+                       String endDate,
                        String roomNumber, boolean[] classDayList, int urlID) {
         this.courseCode = courseCode;
         this.courseTitle = courseTitle;
@@ -35,7 +39,19 @@ public class CourseModel {
         this.roomNumber = roomNumber;
         this.classDayList = classDayList;
         this.urlID = urlID;
+        this.course_img = course_img;
+        this.tv_location = tv_location;
     }
+
+    public int getCourse_img()
+    {
+        return course_img;
+    }
+
+    public String getTv_location() {
+        return tv_location;
+    }
+
 
     public String getCourseCode() {
         return courseCode;
@@ -85,6 +101,14 @@ public class CourseModel {
         this.startTime = startTime;
     }
 
+    public boolean isExpire() {
+        return isExpired;
+    }
+
+    public void setExpired(boolean expired) {
+        isExpired = expired;
+    }
+
     public String getEndTime() {
         return endTime;
     }
@@ -104,6 +128,27 @@ public class CourseModel {
     public boolean[] getClassDayList() {
         return classDayList;
     }
+
+    public boolean isExpired() {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+        Calendar currentDate = Calendar.getInstance();
+
+        try {
+            // Parse end time and associate it with today's date
+            Calendar endTime = Calendar.getInstance();
+            endTime.setTime(timeFormat.parse(this.getStartTime()));
+            endTime.set(Calendar.YEAR, currentDate.get(Calendar.YEAR));
+            endTime.set(Calendar.MONTH, currentDate.get(Calendar.MONTH));
+            endTime.set(Calendar.DAY_OF_MONTH, currentDate.get(Calendar.DAY_OF_MONTH));
+
+            // Check if end time is before the current time
+            return endTime.getTime().before(currentDate.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
     public void setClassDayList(boolean[] classDayList) {
         this.classDayList = classDayList;

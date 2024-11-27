@@ -7,5 +7,35 @@
     android:layout_height="match_parent"
     android:layout_marginTop="24dp"
     tools:context=".MainActivity">
-    
+
+    <!--<ListView
+        android:id="@+id/list_view_one"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="#D51010"
+        android:dividerHeight="4dp"/>-->
+
+    <!-- ViewPager2 for displaying fragment content -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- TabLayout at the bottom -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/bottom_navigation_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabGravity="fill"
+        app:tabMode="fixed"
+        android:paddingBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

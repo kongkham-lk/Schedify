@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
+    <color name="grey">#7C7B7B</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="colorCardBackground">#F0F4F8</color>
+    <color name="colorTaskHolderBackground">#E8EAF6</color>
+    <color name="colorPrimary">#0277BD</color>
+    <color name="colorPrimaryDark">#01579B</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="darkGray">#545454</color>
+    <color name="teal_200">#43FBF3</color>
+    <color name="teal_700">#00BCD4</color>
+
+    <style name="ListViewTextStyle">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    
     <color name="btn">#FF0000</color>
 </resources>

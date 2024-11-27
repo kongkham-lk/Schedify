@@ -1,26 +1,130 @@
 package com.example.schedify;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager2.widget.ViewPager2;
+
+import java.util.ArrayList;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements WebViewLoginDialog.LoginCallback {
+public class MainActivity extends AppCompatActivity implements WebViewLoginDialog.LoginCallback, HomeFragment.OnSyncButtonClickListener {
 
     private List<CourseModel> courseList;
     WebViewLoginDialog webViewLoginDialog;
     String cookie;
 
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager2;
+    private TabAdapter adapter;
+    Button syncBtn;
+
+    public void onSyncButtonClicked() {
+        // Functionality to handle sync button click
+        loadCourse();
+        // Your function logic here
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        EdgeToEdge.enable(this);
+        tabLayout = findViewById(R.id.bottom_navigation_bar);
+        viewPager2 = findViewById(R.id.viewPager);
+
+        adapter = new TabAdapter(getSupportFragmentManager(), getLifecycle());  // Your TabAdapter for managing fragments
+        adapter.setContext(this);
+        viewPager2.setAdapter(adapter);
+
+
+        // Set up TabLayout with ViewPager2 using TabLayoutMediator
+        new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
+            switch (position) {
+                case 0:
+                    tab.setText("Home");
+                    tab.setIcon(R.drawable.home);
+                    break;
+                case 1:
+                    tab.setText("Create");
+                    tab.setIcon(R.drawable.add);
+                    break;
+                /*case 2:
+                    tab.setText("Profile");
+                    tab.setIcon(R.drawable.user);
+                    break;*/
+                case 2:
+                    tab.setText("Settings");
+                    tab.setIcon(R.drawable.setting);
+                    break;
+            }
+        }).attach();
+
+        String frag = getIntent().getStringExtra("Fragment");
+        if ("CreateFragment".equals(frag)) {
+            viewPager2.setCurrentItem(1, false);
+            String title = getIntent().getStringExtra("title");
+            if (title != null) {
+                String description = getIntent().getStringExtra("description");
+                String date = getIntent().getStringExtra("date");
+                String time = getIntent().getStringExtra("time");
+                String location = getIntent().getStringExtra("location");
+
+                Bundle args = new Bundle();
+                args.putString("title", title);
+                args.putString("description", description);
+                args.putString("date", date);
+                args.putString("time", time);
+                args.putString("location", location);
+
+                HomeFragment homeFragment = new HomeFragment();
+                homeFragment.setArguments(args);
+
+                CreateFragment fragment = new CreateFragment();
+                fragment.setArguments(args);
+
+            }
+        }
+
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager2.setCurrentItem(tab.getPosition());
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+       //loadCourse();
+    }
+
+    public void loadCourse() {
+        String courseRegURL = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/registrationHistory";
 
         String initialCourseRegURL = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/registrationHistory";
         String finalCourseRegURL = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/reset?term=202510";
@@ -64,10 +168,18 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
 //            cookie = webViewLoginDialog.getCookie();
             String targetURL = webViewLoginDialog.getInitialURL();
 
-            if (targetURL.contains("registration"))
+            if (targetURL.contains("registration")) {
                 retrievedCourseRegistrationAPI(); // Proceed fetching course schedule
-            else if (targetURL.contains("moodle"))
+                passCourseListToHomeFragment();
+            }
+            else if (targetURL.contains("moodle")) {
                 retrievedMoodleCourseAPI();
+            }
+
+
+            //---------------------- put the adapter here----------!!!!!!
+
+
         } else {
             // Handle login failure
             Toast.makeText(this, "Syncing is Cancel!", Toast.LENGTH_SHORT).show();
@@ -85,5 +197,21 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
         MoodleApiResponse moodleApiResponse = new MoodleApiResponse(this);
 //        moodleApiResponse.setRequestMethod("GET");
         courseList = moodleApiResponse.retrievedCourseDataFromMoodle();
+        Log.d("Courses", courseList.get(1).getCourseCode());
     }
+
+    private void passCourseListToHomeFragment() {
+        if (courseList != null && !courseList.isEmpty()) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            HomeFragment homeFragment = (HomeFragment) fragmentManager.findFragmentByTag("f" + 0); // ViewPager2 uses "f" + position for fragment tags
+
+            if (homeFragment != null) {
+                homeFragment.updateCourseList(courseList);
+                Log.e("MainActivity", "COURSE LIST FOUND");
+            } else {
+                Log.e("MainActivity", "HomeFragment is not found");
+            }
+        }
+    }
+
 }
