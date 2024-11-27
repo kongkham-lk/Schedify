@@ -123,10 +123,6 @@ public class HomeFragment extends Fragment {
 
         createList();
 
-        // Set up the adapter
-        HomePageAdaptor homePageAdaptor = new HomePageAdaptor(requireContext(), R.layout.home_items, courses);
-        list_view_home.setAdapter(homePageAdaptor);
-
         return view;
     }
 
@@ -253,6 +249,7 @@ public class HomeFragment extends Fragment {
         }
 
 
+        sortCourses();
 
         courses.sort((course1, course2) -> {
             SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
@@ -282,6 +279,9 @@ public class HomeFragment extends Fragment {
             }
             return 0;
         });
+
+        HomePageAdaptor homePageAdaptor = new HomePageAdaptor(requireContext(), R.layout.home_items, courses);
+        list_view_home.setAdapter(homePageAdaptor);
     }
 
     private String formatTimeToAMPM(String timeString) {
