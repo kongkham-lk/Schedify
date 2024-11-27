@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.CookieSyncManager;
@@ -89,7 +90,8 @@ public class WebViewLoginDialog extends Dialog {
             // Access the WindowManager from the dialog's context
             WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
 
-            window.setLayout(0, 0); // Full-screen dialog
+            window.setLayout(1, 1); // Full-screen dialog
+//            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT); // Full-screen dialog
             window.setGravity(Gravity.CENTER); // Center the dialog on the screen
             window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL); // Non-modal behavior
         }
@@ -107,19 +109,26 @@ public class WebViewLoginDialog extends Dialog {
                     // Save the cookies or apply them to the next request
                     cookieManager.setCookie(url, cookies);
 
-                    // If login is successful, dismiss the dialog
-                    if (webView.getVisibility() == View.VISIBLE)
-                        dismiss();
 
-                    if (!url.equals(finalURL))
+                    if (!url.equals(finalURL)) { // if load registration page info
                         webView.loadUrl(finalURL);
-                    else
+
+                        // If login is successful, dismiss the dialog
+                        if (webView.getVisibility() == View.VISIBLE)
+                            dismiss();
+                    }
+                    else { // if load moodle page, only minimized the screen and retrieved data in background
+                            Window window = getWindow();
+                            if (window != null) {
+                                View decorView = window.getDecorView();
+                                if (decorView.getVisibility() == View.VISIBLE)
+                                    window.setLayout(1, 1); // Full-screen dialog
+                            }
                         extractHTMLFromWebView();
+                    }
                 } else if (url.equals(finalURL)) {
                     extractJsonDataFromWebView();
-                } else {
-                    // Customize the dialog to appear as a floating window
-//                    Window window = getWindow();
+                } else { // if load login page, display the floating dialog window
                     if (window != null) {
                         // Access the WindowManager from the dialog's context
                         WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
@@ -188,34 +197,35 @@ public class WebViewLoginDialog extends Dialog {
     private void extractHTMLFromWebView() {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             webView.evaluateJavascript(
-                    "(function() {\n" +
-                            "    var html = document.documentElement.outerHTML;\n" +
-                            "    return html;\n" +
-                            "})();\n",
-                    html -> {
-                        html = html
-                                .replace("\\u003C", "<")
-                                .replace("\\n", "")
-                                .replace("\\\"", "\"")
-                                .replace("\"<", "<")
-                                .replace(">\"", ">");
-                        if (html != null && !html.equals("null") && html.contains("event-list-wrapper")) {
-                            // Successfully retrieved HTML
-                            Log.d("WebView", "HTML Content: " + html); // Logging the HTML for debugging
-                            Helper.saveHTMLToPreferences(context, html);
-                            loginCallback.onLoginResult(true); // Proceed after data is loaded
+                "(function() {\n" +
+                        "    var html = document.documentElement.outerHTML;\n" +
+                        "    return html;\n" +
+                        "})();\n",
+                html -> {
+                    html = html
+                            .replace("\\u003C", "<")
+                            .replace("\\n", "")
+                            .replace("\\\"", "\"")
+                            .replace("\"<", "<")
+                            .replace(">\"", ">");
+                    if (html != null && !html.equals("null") && html.contains("event-list-wrapper")) {
+                        // Successfully retrieved HTML
+                        Log.d("WebView", "HTML Content: " + html); // Logging the HTML for debugging
+                        Helper.saveHTMLToPreferences(context, html);
+                        loginCallback.onLoginResult(true); // Proceed after data is loaded
+                        dismiss();
+                    } else {
+                        // Retry if not found
+                        if (attemptCount > 0) {
+                            attemptCount--;
+                            new Handler(Looper.getMainLooper()).postDelayed(this::extractHTMLFromWebView, 3000); // Retry after 1 second
                         } else {
-                            // Retry if not found
-                            if (attemptCount > 0) {
-                                attemptCount--;
-                                new Handler(Looper.getMainLooper()).postDelayed(this::extractHTMLFromWebView, 1000); // Retry after 1 second
-                            } else {
-                                Helper.saveHTMLToPreferences(context, html);
-                                loginCallback.onLoginResult(false); // Indicate failure after max attempts
-                            }
+                            Helper.saveHTMLToPreferences(context, html);
+                            loginCallback.onLoginResult(true); // Indicate failure after max attempts
+                            dismiss();
                         }
-
                     }
+                }
             );
         }, 5000);
     }

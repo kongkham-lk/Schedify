@@ -1,7 +1,6 @@
 package com.example.schedify;
 
 import android.content.Context;
-import android.icu.util.LocaleData;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,10 +9,13 @@ import org.jsoup.select.Elements;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class MoodleApiResponse {
 
@@ -39,7 +41,7 @@ public class MoodleApiResponse {
 //        APIFetcher moodleFetcher = new APIFetcher();
 //        moodleFetcher.setRequestMethod(requestMethod);
 //        String moodleHTML = moodleFetcher.getResponse(apiUrl, cookie); // fetch course schedule from API
-        extractCourseDataFromMoodle(); // Bind data and save to courseList
+        JSONObject jsonObject = extractCourseDataFromMoodle();
         return courseList;
     }
     // Fetch HTML content from a given URL
@@ -77,10 +79,9 @@ public class MoodleApiResponse {
         // Parse HTML using Jsoup
         Document doc = Jsoup.parse(html);
 
-        // Initialize JSON objects
         JSONObject result = new JSONObject();
         JSONArray courses = new JSONArray();
-        JSONArray assignments = new JSONArray();
+        JSONArray assignmentsByDate = new JSONArray();
 
         try {
             // Extract enrolled courses
@@ -100,65 +101,128 @@ public class MoodleApiResponse {
             }
 
             // Extract assignments
-            Elements eventWrappers = doc.select("div.pb-2[data-region='event-list-wrapper']");
-//            LocalDateTime now = LocalDateTime.now();
-//            int currDate = now.getDayOfMonth();
-            for (Element eventAssignment : eventWrappers) {
+            Elements dateSections = doc.select("div[data-region='event-list-content-date']");
 
-                Elements eventDays = eventAssignment.select("td.clickable.hasevent");
-                for (Element eventDay : eventDays) {
-                    int date = Integer.parseInt(eventDay.attr("data-day"));
-//                    if (date < currDate)
-//                        continue;
+            // Assignment content with full detail - dynamic loaded data is included
+            if (dateSections != null) {
+                for (Element dateSection : dateSections) {
+                    // Get the date
+                    String dateText = dateSection.selectFirst("h5").text();
+                    String dateTimestamp = dateSection.attr("data-timestamp");
 
-//                    Elements eventAssignment = eventDay.select("ul li[data-event-component='mod_assign'] a[data-action='view-event']");
-                    String eventTitle = eventAssignment.attr("title");
-                    String assignmentLink = eventAssignment.attr("href");
-                    String submissionLink = assignmentLink + "&action=editsubmission";
+                    // Select corresponding assignments under this date
+                    Element parentDiv = dateSection.nextElementSibling(); // Sibling contains assignment list
+                    JSONArray assignments = new JSONArray();
 
+                    if (parentDiv != null && parentDiv.hasClass("list-group")) {
+                        Elements assignmentElements = parentDiv.select("div[data-region='event-list-item']");
+
+                        for (Element assignmentElement : assignmentElements) {
+                            JSONObject assignmentJson = new JSONObject();
+
+                            // Extract details for each assignment
+                            String title = assignmentElement.selectFirst("a[title]").text();
+                            String assignmentLink = assignmentElement.selectFirst("a[title]").attr("href");
+                            String courseDetails = assignmentElement.selectFirst("small").text();
+                            String dueTime = assignmentElement.selectFirst("small.text-right").text();
+                            String iconLink = assignmentElement.selectFirst("img").attr("src");
+
+                            // Populate assignment JSON object
+                            assignmentJson.put("title", title);
+                            assignmentJson.put("assignmentLink", assignmentLink);
+                            assignmentJson.put("courseDetails", courseDetails);
+                            assignmentJson.put("dueTime", dueTime);
+                            assignmentJson.put("iconLink", iconLink);
+
+                            assignments.put(assignmentJson);
+                        }
+                    }
+
+                    // Combine assignments with their date
+                    JSONObject dateJson = new JSONObject();
+                    dateJson.put("date", dateText);
+                    dateJson.put("timestamp", dateTimestamp);
+                    dateJson.put("assignments", assignments);
+
+                    assignmentsByDate.put(dateJson);
                 }
-            }
-            Elements events = doc.select("td.clickable.hasevent ul li[data-region='event-item']");
-            for (Element event : events) {
-                String eventTitle = event.select("a[data-action='view-event'] span.eventname").text();
-                String assignmentLink = event.select("a[data-action='view-event']").attr("href");
-                String courseId = event.attr("data-courseid");
-                String courseName = event.attr("data-eventtype-course");
-                String dueDate = event.closest("td").attr("data-day-timestamp");
+            } else {
+                // Assignment content with less detail - dynamic loaded data is not included
+                LocalDateTime now = LocalDateTime.now();
+                int currDate = now.getDayOfMonth();
 
-                // Extract the submission time
-                String dueTime = null;
-                Element timeTag = event.selectFirst("small.text-right.text-nowrap.align-self-center");
-                if (timeTag != null) {
-                    dueTime = timeTag.text().trim();
+                // Select the calendar month table body
+                Elements eventMonth = doc.select("table.calendarmonth tbody");
+
+                for (Element eventWeek : eventMonth) {
+                    // Select all days with events
+                    Elements eventDays = eventWeek.select("td.clickable.hasevent");
+
+                    for (Element eventDay : eventDays) {
+                        Element eventDateInfo = eventDay.selectFirst("a[data-action='view-day-link']");
+                        int dateDay = Integer.parseInt(eventDateInfo.attr("data-day"));
+                        if (dateDay < currDate) // Skip past dates
+                            continue;
+
+                        // Extract assignments for the day
+                        Elements eventAssignments = eventDay.select("div[data-region='day-content'] ul li[data-event-component='mod_assign'] a");
+                        if (eventAssignments == null || eventAssignments.size() == 0)
+                            continue;
+
+                        // Prepare date details
+                        int dateMonth = Integer.parseInt(eventDateInfo.attr("data-month"));
+                        int dateYear = Integer.parseInt(eventDateInfo.attr("data-year"));
+                        String dueDate = dateDay + "/" + dateMonth + "/" + dateYear;
+
+                        // JSON Array to hold assignments for this date
+                        JSONArray assignments = new JSONArray();
+
+                        for (Element eventAssignment : eventAssignments) {
+                            // Extract assignment details
+                            String title = eventAssignment.attr("title");
+                            if (!title.isEmpty() && title.contains("is due"))
+                                title = title.substring(0, title.indexOf("is due")).trim();
+                            String assignmentLink = eventAssignment.attr("href");
+                            String submissionLink = assignmentLink + "&action=editsubmission";
+
+                            // Add assignment to JSON object
+                            JSONObject assignmentJson = new JSONObject();
+                            assignmentJson.put("title", title.isEmpty() ? "Not Available" : title);
+                            assignmentJson.put("assignmentLink", assignmentLink.isEmpty() ? "Not Available" : assignmentLink);
+                            assignmentJson.put("submissionLink", submissionLink.isEmpty() ? "Not Available" : submissionLink);
+                            assignmentJson.put("dueDate", dueDate); // Add the due date to each assignment
+
+                            assignments.put(assignmentJson);
+                        }
+
+                        // Add the date and its assignments to the result
+                        JSONObject dateJson = new JSONObject();
+                        dateJson.put("date", dueDate);
+                        dateJson.put("timestamp", eventDateInfo.attr("data-day-timestamp"));
+                        dateJson.put("assignments", assignments);
+
+                        assignmentsByDate.put(dateJson);
+
+                    }
                 }
-
-                // Extract submission link if available
-                String submissionLink = null;
-                Element submissionTag = event.selectFirst("a[title*='submission']");
-                if (submissionTag != null) {
-                    submissionLink = submissionTag.attr("href");
-                }
-
-                JSONObject assignment = new JSONObject();
-                assignment.put("title", eventTitle.isEmpty() ? "Not Available" : eventTitle);
-                assignment.put("courseId", courseId.isEmpty() ? "Not Available" : courseId);
-                assignment.put("courseName", courseName.isEmpty() ? "Not Available" : courseName);
-                assignment.put("dueDate", dueDate.isEmpty() ? "Not Available" : dueDate);
-                assignment.put("dueTime", dueTime != null ? dueTime : "Not Available");
-                assignment.put("assignmentLink", assignmentLink.isEmpty() ? "Not Available" : assignmentLink);
-                assignment.put("submissionLink", submissionLink != null ? submissionLink : "Not Available");
-
-                assignments.put(assignment);
             }
 
             // Combine results
+            result.put("type", "Moodle API");
             result.put("courses", courses);
-            result.put("assignments", assignments);
+            result.put("assignmentsByDate", assignmentsByDate);
 
         } catch (org.json.JSONException e) {
             e.printStackTrace();
         }
         return result;
+    }
+
+    private String transformTimeStamp (String strTimestamp) {
+        long timestamp = Long.parseLong(strTimestamp);
+        Date date = new Date(timestamp);
+        DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+        return format.format(date);
     }
 }
