@@ -125,14 +125,12 @@ public class MoodleApiResponse {
                             String assignmentLink = assignmentElement.selectFirst("a[title]").attr("href");
                             String courseDetails = assignmentElement.selectFirst("small").text();
                             String dueTime = assignmentElement.selectFirst("small.text-right").text();
-                            String iconLink = assignmentElement.selectFirst("img").attr("src");
 
                             // Populate assignment JSON object
                             assignmentJson.put("title", title);
                             assignmentJson.put("assignmentLink", assignmentLink);
                             assignmentJson.put("courseDetails", courseDetails);
                             assignmentJson.put("dueTime", dueTime);
-                            assignmentJson.put("iconLink", iconLink);
 
                             assignments.put(assignmentJson);
                         }
@@ -183,13 +181,11 @@ public class MoodleApiResponse {
                             if (!title.isEmpty() && title.contains("is due"))
                                 title = title.substring(0, title.indexOf("is due")).trim();
                             String assignmentLink = eventAssignment.attr("href");
-                            String submissionLink = assignmentLink + "&action=editsubmission";
 
                             // Add assignment to JSON object
                             JSONObject assignmentJson = new JSONObject();
                             assignmentJson.put("title", title.isEmpty() ? "Not Available" : title);
                             assignmentJson.put("assignmentLink", assignmentLink.isEmpty() ? "Not Available" : assignmentLink);
-                            assignmentJson.put("submissionLink", submissionLink.isEmpty() ? "Not Available" : submissionLink);
                             assignmentJson.put("dueDate", dueDate); // Add the due date to each assignment
 
                             assignments.put(assignmentJson);
