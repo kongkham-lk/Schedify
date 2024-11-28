@@ -65,8 +65,8 @@ public class taskAdapter extends RecyclerView.Adapter<taskAdapter.taskViewHolder
         public taskViewHolder(@NonNull View itemView) {
             super(itemView);
             titleText = itemView.findViewById(R.id.taskTitle);
-            timeText = itemView.findViewById(R.id.taskDueTime);
-            dateText = itemView.findViewById(R.id.taskDueDate);
+            timeText = itemView.findViewById(R.id.taskStartTime);
+            dateText = itemView.findViewById(R.id.taskDueTime);
             locationText = itemView.findViewById(R.id.location_text);
         }
     }

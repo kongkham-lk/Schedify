@@ -5,13 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/background_gradient"
     tools:context=".HomeFragment">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:paddingBottom="16dp">
 
                 <TextView
                     android:id="@+id/textView2"
@@ -19,8 +20,7 @@
                     android:layout_height="wrap_content"
                     android:padding="10dp"
                     android:text="@string/dashboard"
-                    android:textColor="#8B43FA"
-                    android:textSize="30sp"
+                    android:textSize="32sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -29,37 +29,27 @@
 
                 <Button
                     android:id="@+id/sync_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="70dp"
+                    android:layout_height="42dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/btn_roundcorner_light"
+                    android:padding="0dp"
                     android:text="@string/sync"
-                    android:textColor="#575757"
-                    android:textSize="20sp"
-                    android:layout_marginStart="100dp"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="@+id/textView2"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/textView2"
                     app:layout_constraintTop_toTopOf="@+id/textView2" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"/>
-
-
 
 
         <ListView
             android:id="@+id/list_view_home"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:divider="@color/design_default_color_secondary_variant"/>
-
-
-
-
-
-
-
+            android:paddingStart="3dp"
+            android:paddingEnd="3dp"
+            android:divider="@color/black"
+            android:dividerHeight="0dp"
+            />
 
 </LinearLayout>

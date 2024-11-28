@@ -47,7 +47,7 @@ public class AssignmentAdapter extends android.widget.BaseAdapter {
         // Bind data to views
         TextView title = convertView.findViewById(R.id.taskTitle);
         TextView courseDetails = convertView.findViewById(R.id.location_text);
-        TextView dueTime = convertView.findViewById(R.id.taskDueTime);
+        TextView dueTime = convertView.findViewById(R.id.taskStartTime);
 
         title.setText(assignment.getTitle());
         courseDetails.setText(assignment.getCourseDetails());

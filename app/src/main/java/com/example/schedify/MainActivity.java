@@ -129,8 +129,8 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
         String initialCourseRegURL = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/registrationHistory";
         String finalCourseRegURL = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/reset?term=202510";
         String moodleURL = "https://moodle.tru.ca/my/";
-//        fetchcourseRegistrationAPI(initialCourseRegURL, finalCourseRegURL);
-        fetchcourseRegistrationAPI(moodleURL);
+        fetchcourseRegistrationAPI(initialCourseRegURL, finalCourseRegURL);
+//        fetchcourseRegistrationAPI(moodleURL);
     }
 
     private void fetchcourseRegistrationAPI(String targetURL) {
