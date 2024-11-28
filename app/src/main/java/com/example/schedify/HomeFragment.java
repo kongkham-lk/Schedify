@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 
 import androidx.annotation.Nullable;
@@ -41,6 +42,9 @@ public class HomeFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     TextView textView;
+
+    private Handler handler = new Handler();
+    private int lastCheckedMinute = -1;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -93,6 +97,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startMinuteChangeCheck();
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -116,10 +121,16 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        createList();
+
+        return view;
+    }
+
+    private void createList() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("TaskData", Context.MODE_PRIVATE);
         String taskData = sharedPreferences.getString("taskList", "");
         String courseData = sharedPreferences.getString("taskList2", "");
-
+        courses.clear();
         if (!taskData.isEmpty()) {
             String[] tasks = taskData.split(";");
             for (String task : tasks) {
@@ -174,20 +185,17 @@ public class HomeFragment extends Fragment {
                     }
                     Log.d("Class days", Arrays.toString(classDayList));
 
-                    // Get today's day of the week (0=Monday, 1=Tuesday, ..., 6=Sunday)
                     LocalDate today = LocalDate.now();
                     int todayDayOfWeek = today.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
-                    todayDayOfWeek--; // Adjust to 0-based index (0=Monday, 6=Sunday)
+                    todayDayOfWeek--;
 
                     boolean isToday = compareDate(dates[0], dates[1]);
                     boolean exactDay = false;
 
-                    // Check if today is a class day and it's set to true in the classDayList
                     if (isToday && classDayList[todayDayOfWeek]) {
-                        exactDay = true;  // Set exactDay to true if today is a class day
+                        exactDay = true;
                     }
 
-                    // If today is a class day and it matches the date range, add the course
                     if (isToday && exactDay) {
                         courses.add(new CourseModel(R.drawable.gradient_color_2, title, location, times[0], times[1], description, true, dates[0], dates[1], "2560", classDayList, R.drawable.gradient_color_2));
                     }
@@ -195,6 +203,7 @@ public class HomeFragment extends Fragment {
 
             }
         }
+
 
         if (!courseData.isEmpty()) {
             String[] tasks = courseData.split(";");
@@ -213,7 +222,6 @@ public class HomeFragment extends Fragment {
                     dates[1] = dates[1].trim();
                     Log.d("Class days", taskDetails[6]);
 
-                    // Parse the class days
                     String[] stringArray = taskDetails[6].replace("[", "").replace("]", "").trim().split(" ");
                     boolean[] classDayList = new boolean[stringArray.length];
                     for (int i = 0; i < stringArray.length; i++) {
@@ -221,7 +229,6 @@ public class HomeFragment extends Fragment {
                     }
                     Log.d("Class days", Arrays.toString(classDayList));
 
-                    // Get today's day of the week (0=Monday, 1=Tuesday, ..., 6=Sunday)
                     LocalDate today = LocalDate.now();
                     int todayDayOfWeek = today.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
                     todayDayOfWeek--; // Adjust to 0-based index (0=Monday, 6=Sunday)
@@ -229,12 +236,10 @@ public class HomeFragment extends Fragment {
                     boolean isToday = compareDate(dates[0], dates[1]);
                     boolean exactDay = false;
 
-                    // Check if today is a class day and it's set to true in the classDayList
                     if (isToday && classDayList[todayDayOfWeek]) {
                         exactDay = true;  // Set exactDay to true if today is a class day
                     }
 
-                    // If today is a class day and it matches the date range, add the course
                     if (isToday && exactDay) {
                         courses.add(new CourseModel(R.drawable.gradient_color_2, title, location, times[0], times[1], description, true, dates[0], dates[1], "2560", classDayList, R.drawable.gradient_color_2));
                     }
@@ -244,28 +249,24 @@ public class HomeFragment extends Fragment {
         }
 
 
+        sortCourses();
 
-        // Sort courses by the start time
         courses.sort((course1, course2) -> {
             SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
             try {
                 Calendar currentDate = Calendar.getInstance();
 
-                // Parse end times
                 Calendar endTime1 = Calendar.getInstance();
                 endTime1.setTime(timeFormat.parse(course1.getEndTime()));
                 Calendar endTime2 = Calendar.getInstance();
                 endTime2.setTime(timeFormat.parse(course2.getEndTime()));
 
-                // Mark expired courses
                 course1.setExpired(endTime1.getTime().before(currentDate.getTime()));
                 course2.setExpired(endTime2.getTime().before(currentDate.getTime()));
 
-                // Sorting logic
                 if (course1.isExpired() && !course2.isExpired()) return 1;
                 if (!course1.isExpired() && course2.isExpired()) return -1;
 
-                // Compare start times for non-expired courses
                 Calendar startTime1 = Calendar.getInstance();
                 startTime1.setTime(timeFormat.parse(course1.getStartTime()));
 
@@ -279,13 +280,8 @@ public class HomeFragment extends Fragment {
             return 0;
         });
 
-
-
-        // Set up the adapter
         HomePageAdaptor homePageAdaptor = new HomePageAdaptor(requireContext(), R.layout.home_items, courses);
         list_view_home.setAdapter(homePageAdaptor);
-
-        return view;
     }
 
     private String formatTimeToAMPM(String timeString) {
@@ -317,18 +313,16 @@ public class HomeFragment extends Fragment {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("TaskData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-// Retrieve the current task data
+        createList();
 
         if (newCourseList != null) {
             StringBuilder serializedCourses = new StringBuilder();
 
-            // Formatter for the desired output date format
             DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
             DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("MMM d"); // Desired format: "Nov 1"
 
 
             for (CourseModel newCourse : newCourseList) {
-                // Format course start and end times
                 String formattedStartTime = formatTimeToAMPM(newCourse.getStartTime());
                 String formattedEndTime = formatTimeToAMPM(newCourse.getEndTime());
                 newCourse.setStartTime(formattedStartTime);
@@ -338,7 +332,6 @@ public class HomeFragment extends Fragment {
                 String formattedEndDate = "";
 
                 try {
-                    // Parse input dates and reformat
                     LocalDate startDate = LocalDate.parse(newCourse.getStartDate(), inputFormatter);
                     LocalDate endDate = LocalDate.parse(newCourse.getEndDate(), inputFormatter);
 
@@ -348,14 +341,12 @@ public class HomeFragment extends Fragment {
                     Log.e("HomeFragment", "Error parsing date: " + e.getMessage());
                 }
 
-                // Remove or replace commas in course details
                 String courseCode = newCourse.getCourseCode().replace(",", "");
                 String title = newCourse.getCourseCode().replace(",", "");
                 String description = newCourse.getCourseTitle().replace(",", "");
                 String startTime = formattedStartTime.replace(",", "");
                 String endTime = formattedEndTime.replace(",", "");
 
-                // Serialize the course details into a single string
                 serializedCourses.append(courseCode).append(",")
                         .append(title).append(",")
                         .append(description).append(",")
@@ -367,14 +358,11 @@ public class HomeFragment extends Fragment {
                         .append(Arrays.toString(newCourse.getClassDayList()).replace(",", "")).append(";");// Remove commas from days list
             }
 
-            // Save all serialized courses to SharedPreferences
             editor.putString("taskList2", serializedCourses.toString());
             editor.apply();
 
-            // Sort courses after adding new ones
             sortCourses();
 
-            // Notify the adapter about the data changes
             if (list_view_home.getAdapter() instanceof HomePageAdaptor) {
                 HomePageAdaptor adaptor = (HomePageAdaptor) list_view_home.getAdapter();
                 adaptor.notifyDataSetChanged();
@@ -384,7 +372,34 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    // Helper method to get the suffix for the day
+    private void startMinuteChangeCheck() {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Calendar calendar = Calendar.getInstance();
+                int currentMinute = calendar.get(Calendar.MINUTE);
+
+                if (currentMinute != lastCheckedMinute) {
+                    lastCheckedMinute = currentMinute;
+                    onMinuteChanged();  // Call your action here
+                }
+
+                handler.postDelayed(this, 1000);
+            }
+        }, 1000);
+    }
+
+    private void onMinuteChanged() {
+        Log.d("List Creation", "New list created");
+        createList();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
+    }
+
     private String getDaySuffix(int day) {
         if (day >= 11 && day <= 13) {
             return "th";
@@ -463,7 +478,6 @@ public class HomeFragment extends Fragment {
             currentCal.setTime(new Date());
             int currentDayOfYear = currentCal.get(Calendar.DAY_OF_YEAR);
 
-            // Get start and end dates
             Calendar startCal = Calendar.getInstance();
             startCal.setTime(formattedInputDate);
             int startDayOfYear = startCal.get(Calendar.DAY_OF_YEAR);
@@ -480,9 +494,4 @@ public class HomeFragment extends Fragment {
 
         return false;
     }
-
-
-
-
-
 }
