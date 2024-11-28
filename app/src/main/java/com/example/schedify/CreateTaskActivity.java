@@ -71,12 +71,12 @@ public class CreateTaskActivity extends AppCompatActivity {
                 descriptionInput.setText(loaded_description);
             }
             if (loaded_date != null) {
-                String[] parts = loaded_date.split("-");
+                String[] parts = loaded_date.split(" - ");
                 datePicker.setText(parts[0]);
                 datePickerEnd.setText(parts[1]);
             }
             if (loaded_time != null) {
-                String[] parts = loaded_time.split("-");
+                String[] parts = loaded_time.split(" - ");
                 timePicker.setText(parts[0]);
                 timePickerEnd.setText(parts[1]);
             }

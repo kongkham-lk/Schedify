@@ -137,9 +137,9 @@ public class HomeFragment extends Fragment {
                     String description = taskDetails[1];
                     String location = taskDetails[4];
                     String time = taskDetails[2];
-                    String[] times = time.split("-");
+                    String[] times = time.split(" - ");
                     String date = taskDetails[3];
-                    String[] dates = date.split("-");
+                    String[] dates = date.split(" - ");
                     dates[0] = dates[0].trim();
                     dates[1] = dates[1].trim();
                     boolean[] classDayList = {false, true};
@@ -151,9 +151,9 @@ public class HomeFragment extends Fragment {
                     String title = taskDetails[0];
                     String description = taskDetails[1];
                     String time = taskDetails[2];
-                    String[] times = time.split("-");
+                    String[] times = time.split(" - ");
                     String date = taskDetails[3];
-                    String[] dates = date.split("-");
+                    String[] dates = date.split(" - ");
                     boolean[] classDayList = {false, true};
                     dates[0] = dates[0].trim();
                     dates[1] = dates[1].trim();
@@ -166,9 +166,9 @@ public class HomeFragment extends Fragment {
                     String description = taskDetails[2];
                     String location = taskDetails[5];
                     String time = taskDetails[3];
-                    String[] times = time.split("-");
+                    String[] times = time.split(" - ");
                     String date = taskDetails[4];
-                    String[] dates = date.split("-");
+                    String[] dates = date.split(" - ");
                     dates[0] = dates[0].trim();
                     dates[1] = dates[1].trim();
                     Log.d("Class days", taskDetails[6]);
