@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
     private ViewPager2 viewPager2;
     private TabAdapter adapter;
     Button syncBtn;
+    String targetURL; // flag for determine if show toast msg when fail to syn or just click back after view course page
 
     public void onSyncButtonClicked() {
         // Functionality to handle sync button click
@@ -128,34 +129,36 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
 //        fetchcourseRegistrationAPI(moodleURL);
     }
 
-    private void fetchcourseRegistrationAPI(String targetURL) {
+    public void fetchcourseRegistrationAPI(String targetURL) {
         fetchcourseRegistrationAPI(targetURL, targetURL);
     }
 
     private void fetchcourseRegistrationAPI(String initialURL, String targetURL) {
         // Create and show the WebView login dialog
+        this.targetURL = targetURL;
         webViewLoginDialog = new WebViewLoginDialog(MainActivity.this, initialURL, targetURL, this);
         webViewLoginDialog.show();
     }
 
     @Override
     public void onLoginResult(boolean isSuccess) {
-        if (isSuccess) {
-            Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show();
-//            cookie = webViewLoginDialog.getCookie();
-            String targetURL = webViewLoginDialog.getInitialURL();
+        if (!targetURL.contains("course/view"))
+            if (isSuccess) {
+                Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show();
+    //            cookie = webViewLoginDialog.getCookie();
+                String targetURL = webViewLoginDialog.getInitialURL();
 
-            if (targetURL.contains("registration")) {
-                retrievedCourseRegistrationAPI(); // Proceed fetching course schedule
-                passCourseListToHomeFragment();
+                if (targetURL.contains("registration")) {
+                    retrievedCourseRegistrationAPI(); // Proceed fetching course schedule
+                    passCourseListToHomeFragment();
+                }
+                else if (targetURL.contains("moodle")) {
+                    retrievedMoodleCourseAPI();
+                }
+            } else {
+                // Handle login failure
+                    Toast.makeText(this, "Syncing is Cancel!", Toast.LENGTH_SHORT).show();
             }
-            else if (targetURL.contains("moodle")) {
-                retrievedMoodleCourseAPI();
-            }
-        } else {
-            // Handle login failure
-            Toast.makeText(this, "Syncing is Cancel!", Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void retrievedCourseRegistrationAPI() {

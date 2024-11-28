@@ -38,6 +38,10 @@ public class HomeFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     TextView textView;
+    private ListView list_view_home;
+    private HomePageAdaptor homePageAdaptor;
+    private ArrayList<CourseModel> courses;
+    Button syncBtn;
 
     private Handler handler = new Handler();
     private int lastCheckedMinute = -1;
@@ -76,10 +80,6 @@ public class HomeFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-    private ListView list_view_home;
-    private HomePageAdaptor homePageAdaptor;
-    private ArrayList<CourseModel> courses;
-    Button syncBtn;
 
     @Nullable
     @Override
@@ -95,22 +95,19 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        // Initialize the ListView
-        list_view_home = view.findViewById(R.id.list_view_home);
+
+        list_view_home = view.findViewById(R.id.list_view_home); // Initialize the ListView
+        syncBtn = view.findViewById(R.id.btn_sync);
 
         // Initialize course data (Replace with your data source)
         courses = new ArrayList<>();
-
-        syncBtn = view.findViewById(R.id.btn_sync);
 
         syncBtn.setOnClickListener(v -> {
             if (mListener != null) {
                 mListener.onSyncButtonClicked();
             }
         });
-
         createList();
-
         return view;
     }
 
@@ -124,7 +121,7 @@ public class HomeFragment extends Fragment {
             for (String task : tasks) {
                 String[] taskDetails = task.split(",");
                 Log.d(taskDetails.length + "", Arrays.toString(taskDetails));
-                if (taskDetails.length == 5) {
+                if (taskDetails.length == 5) { // Task data - full detail
                     String title = taskDetails[0];
                     String description = taskDetails[1];
                     String location = taskDetails[4];
@@ -139,7 +136,7 @@ public class HomeFragment extends Fragment {
                     if (isToday) {
                         courses.add(new CourseModel(title, location, times[0], times[1], dates[0], dates[1], classDayList, 0,true));
                     }
-                } else if (taskDetails.length == 4) {
+                } else if (taskDetails.length == 4) { // Task data - without location
                     String title = taskDetails[0];
                     String description = taskDetails[1];
                     String time = taskDetails[2];
@@ -153,42 +150,43 @@ public class HomeFragment extends Fragment {
                     if (isToday) {
                         courses.add(new CourseModel(title, "", times[0], times[1], dates[0], dates[1], classDayList, 0, true));
                     }
-                } else if (taskDetails.length == 7) {
-                    String title = taskDetails[1];
-                    String description = taskDetails[2];
-                    String location = taskDetails[5];
-                    String time = taskDetails[3];
-                    String[] times = time.split(" - ");
-                    String date = taskDetails[4];
-                    String[] dates = date.split(" - ");
-                    dates[0] = dates[0].trim();
-                    dates[1] = dates[1].trim();
-                    Log.d("Class days", taskDetails[6]);
-
-                    // Parse the class days
-                    String[] stringArray = taskDetails[6].replace("[", "").replace("]", "").trim().split(" ");
-                    boolean[] classDayList = new boolean[stringArray.length];
-                    for (int i = 0; i < stringArray.length; i++) {
-                        classDayList[i] = Boolean.parseBoolean(stringArray[i]);
-                    }
-                    Log.d("Class days", Arrays.toString(classDayList));
-
-                    LocalDate today = LocalDate.now();
-                    int todayDayOfWeek = today.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
-                    todayDayOfWeek--;
-
-                    boolean isToday = compareDate(dates[0], dates[1]);
-                    boolean exactDay = false;
-
-                    if (isToday && classDayList[todayDayOfWeek]) {
-                        exactDay = true;
-                    }
-
-                    if (isToday && exactDay) {
-                        courses.add(new CourseModel(title, location, times[0], times[1], dates[0], dates[1], classDayList, 0, true));
-                    }
                 }
-
+//                else if (taskDetails.length == 7) {
+//                    String title = taskDetails[1];
+//                    String description = taskDetails[2];
+//                    String location = taskDetails[5];
+//                    String time = taskDetails[3];
+//                    String[] times = time.split(" - ");
+//                    String date = taskDetails[4];
+//                    String[] dates = date.split(" - ");
+//                    dates[0] = dates[0].trim();
+//                    dates[1] = dates[1].trim();
+//                    int urlID = Integer.parseInt(taskDetails[8]);
+//                    Log.d("Class days", taskDetails[6]);
+//
+//                    // Parse the class days
+//                    String[] stringArray = taskDetails[6].replace("[", "").replace("]", "").trim().split(" ");
+//                    boolean[] classDayList = new boolean[stringArray.length];
+//                    for (int i = 0; i < stringArray.length; i++) {
+//                        classDayList[i] = Boolean.parseBoolean(stringArray[i]);
+//                    }
+//                    Log.d("Class days", Arrays.toString(classDayList));
+//
+//                    LocalDate today = LocalDate.now();
+//                    int todayDayOfWeek = today.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
+//                    todayDayOfWeek--;
+//
+//                    boolean isToday = compareDate(dates[0], dates[1]);
+//                    boolean exactDay = false;
+//
+//                    if (isToday && classDayList[todayDayOfWeek]) {
+//                        exactDay = true;
+//                    }
+//
+//                    if (isToday && exactDay) {
+//                        courses.add(new CourseModel(title, location, times[0], times[1], dates[0], dates[1], classDayList, urlID, true));
+//                    }
+//                }
             }
         }
 
@@ -198,7 +196,7 @@ public class HomeFragment extends Fragment {
             for (String task : tasks) {
                 String[] taskDetails = task.split(",");
                 Log.d(taskDetails.length + "", Arrays.toString(taskDetails));
-                if (taskDetails.length == 6) {
+                if (taskDetails.length >= 6) {
                     String title = taskDetails[0];
                     String description = taskDetails[1];
                     String time = taskDetails[2];
@@ -208,6 +206,7 @@ public class HomeFragment extends Fragment {
                     String location = taskDetails[4];
                     dates[0] = dates[0].trim();
                     dates[1] = dates[1].trim();
+                    int urlID = Integer.parseInt(taskDetails[6]);
                     Log.d("Class days", taskDetails[5]);
 
                     String[] stringArray = taskDetails[5].replace("[", "").replace("]", "").trim().split(" ");
@@ -229,14 +228,12 @@ public class HomeFragment extends Fragment {
                     }
 
                     if (isToday && exactDay) {
-                        courses.add(new CourseModel(title, location, times[0], times[1], dates[0], dates[1], classDayList, 0, true));
+                        courses.add(new CourseModel(title, location, times[0], times[1], dates[0], dates[1], classDayList, urlID, true));
                     }
                 }
 
             }
         }
-
-
         sortCourses();
 
         courses.sort((course1, course2) -> {

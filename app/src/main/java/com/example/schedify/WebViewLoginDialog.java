@@ -43,6 +43,7 @@ public class WebViewLoginDialog extends Dialog {
     private JSONObject jsonObject;
     private int attemptCount = 3;
 
+
     public WebViewLoginDialog(Context context, String initialURL, String finalURL, LoginCallback loginCallback) {
         super(context);
         this.context = context;
@@ -77,15 +78,13 @@ public class WebViewLoginDialog extends Dialog {
         webView = findViewById(R.id.webViewScreen);
         webView.getSettings().setJavaScriptEnabled(true); // Enable JavaScript
 
-
-
         // Customize the dialog to appear as a floating window
         Window window = getWindow();
         if (window != null) {
             // Access the WindowManager from the dialog's context
             WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
 
-            window.setLayout(1, 1); // Full-screen dialog
+            window.setLayout(1, 1); // Minimized dialog
 //            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT); // Full-screen dialog
             window.setGravity(Gravity.CENTER); // Center the dialog on the screen
             window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL); // Non-modal behavior
@@ -104,27 +103,39 @@ public class WebViewLoginDialog extends Dialog {
                     // Save the cookies or apply them to the next request
                     cookieManager.setCookie(url, cookies);
 
-
                     if (!url.equals(finalURL)) { // if load registration page info
                         webView.loadUrl(finalURL);
 
                         // If login is successful, dismiss the dialog
                         if (webView.getVisibility() == View.VISIBLE)
                             dismiss();
-                    }
+                    } else if (initialURL.contains("course/view"))
+                        setDialogFullScreen(window, true);
                     else { // if load moodle page, only minimized the screen and retrieved data in background
-                            Window window = getWindow();
-                            if (window != null) {
-                                View decorView = window.getDecorView();
-                                if (decorView.getVisibility() == View.VISIBLE)
-                                    window.setLayout(1, 1); // Full-screen dialog
-                            }
+                        Window window = getWindow();
+                        if (window != null) {
+                            View decorView = window.getDecorView();
+
+                            if (decorView.getVisibility() == View.VISIBLE)
+                                window.setLayout(1, 1); // Full-screen dialog
+                        }
                         extractHTMLFromWebView();
                     }
                 } else if (url.equals(finalURL)) {
-                    extractJsonDataFromWebView();
+                    if (!url.contains("course/view"))
+                        extractJsonDataFromWebView();
+                    else
+                        loginCallback.onLoginResult(false);
                 } else { // if load login page, display the floating dialog window
-                    if (window != null) {
+                    setDialogFullScreen(window, false);
+                }
+            }
+
+            private void setDialogFullScreen(Window window, boolean isLargestScreenSize) {
+                if (window != null) {
+                    if (isLargestScreenSize)
+                        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT); // Full-screen dialog
+                    else {
                         // Access the WindowManager from the dialog's context
                         WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
 
@@ -141,11 +152,6 @@ public class WebViewLoginDialog extends Dialog {
 
                         window.setLayout(desiredWidth, desiredHeight); // Full-screen dialog
                     }
-
-//                    LayoutInflater inflater = getLayoutInflater();
-//                    View cardLayout = inflater.inflate(R.layout.dialog_login, null);
-//                    CardView cardView = cardLayout.findViewById(R.id.cardView);
-//                    cardView.setVisibility(View.VISIBLE);
                 }
             }
 

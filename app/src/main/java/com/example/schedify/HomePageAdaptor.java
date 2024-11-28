@@ -1,12 +1,14 @@
 package com.example.schedify;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,9 +20,11 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
 
     private final ArrayList<CourseModel> courses;
     private final LayoutInflater layoutInflater;
+    private Context context;
 
     public HomePageAdaptor(@NonNull Context context, int resource, @NonNull ArrayList<CourseModel> objects) {
         super(context, resource, objects);
+        this.context = context;
         this.courses = objects;
         this.layoutInflater = LayoutInflater.from(context);
     }
@@ -70,12 +74,20 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
             viewHolder.tv_end_time.setText(course.getEndTime());
         }
 
+        // Add an OnClickListener for the list item
+        convertView.setOnClickListener(v -> {
+            if (course.getClassDayList().length > 2) {
+                int courseId = course.getUrlID();
+                String url = "https://moodle.tru.ca/course/view.php?id=" + courseId;
+                ((MainActivity) context).fetchcourseRegistrationAPI(url);
+            }
+        });
+
         return convertView;
     }
 
     // Static ViewHolder class to cache view references
     private static class ViewHolder {
-        ImageView img_resource;
         TextView tv_courseCode;
         TextView tv_location;
         TextView tv_start_time;
