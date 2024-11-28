@@ -214,11 +214,55 @@ public class MoodleApiResponse {
         return result;
     }
 
-    private String transformTimeStamp (String strTimestamp) {
-        long timestamp = Long.parseLong(strTimestamp);
-        Date date = new Date(timestamp);
-        DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
-        return format.format(date);
+//    private String transformTimeStamp (String strTimestamp) {
+//        long timestamp = Long.parseLong(strTimestamp);
+//        Date date = new Date(timestamp);
+//        DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+//        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+//        return format.format(date);
+//    }
+
+    public static List<AssignmentGroup> parseJsonToAssignmentGroups(String jsonString) {
+        List<AssignmentGroup> assignmentGroups = new ArrayList<>();
+
+        try {
+            // Parse JSON string to JsonObject
+            JSONObject rootObject = new JSONObject(jsonString);
+
+            // Extract "assignmentsByDate" array
+            JSONArray assignmentsByDateArray = rootObject.getJSONArray("assignmentsByDate");
+
+            for (int i = 0; i < assignmentsByDateArray.length(); i++) {
+                JSONObject assignmentGroupJson = assignmentsByDateArray.getJSONObject(i);
+
+                // Extract date and timestamp
+                String date = assignmentGroupJson.get("date").toString();
+                String timestamp = assignmentGroupJson.get("timestamp").toString();
+
+                // Extract assignments array
+                JSONArray assignmentsArray = assignmentGroupJson.getJSONArray("assignments");
+                List<AssignmentDetail> assignments = new ArrayList<>();
+
+                for (int j = 0; j < assignmentsArray.length(); j++) {
+                    JSONObject assignmentJson = assignmentsArray.getJSONObject(j);
+
+                    // Extract assignment details
+                    String title = assignmentJson.get("title").toString();
+                    String assignmentLink = assignmentJson.get("assignmentLink").toString();
+                    String courseDetails = assignmentJson.get("courseDetails").toString();
+                    String dueTime = assignmentJson.get("dueTime").toString();
+
+                    // Add to assignment list
+                    assignments.add(new AssignmentDetail(title, assignmentLink, courseDetails, dueTime));
+                }
+
+                // Create AssignmentGroup and add to list
+                assignmentGroups.add(new AssignmentGroup(date, assignments));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return assignmentGroups;
     }
 }
