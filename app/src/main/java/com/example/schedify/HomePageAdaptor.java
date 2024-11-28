@@ -1,7 +1,6 @@
 package com.example.schedify;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +37,7 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
 
         // Check if convertView is null
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.home_items, parent, false);
+            convertView = layoutInflater.inflate(R.layout.home_items_view_holder, parent, false);
             viewHolder = new ViewHolder();
 
             // Initialize the views

@@ -38,7 +38,7 @@ public class AssignmentAdapter extends android.widget.BaseAdapter {
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.assignment_list_view_holder, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.home_items_view_holder, parent, false);
         }
 
         // Get assignment details

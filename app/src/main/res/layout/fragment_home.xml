@@ -7,7 +7,6 @@
     android:orientation="vertical"
     tools:context=".HomeFragment">
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,8 +38,8 @@
                     app:layout_constraintBottom_toBottomOf="@+id/textView2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/textView2" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ListView
             android:id="@+id/list_view_home"
@@ -49,7 +48,6 @@
             android:paddingStart="3dp"
             android:paddingEnd="3dp"
             android:divider="@color/black"
-            android:dividerHeight="0dp"
-            />
+            android:dividerHeight="0dp" />
 
 </LinearLayout>

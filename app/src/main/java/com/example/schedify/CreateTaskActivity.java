@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -39,6 +40,7 @@ public class CreateTaskActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_create_task);
 
         titleInput = findViewById(R.id.title_input);
@@ -47,7 +49,7 @@ public class CreateTaskActivity extends AppCompatActivity {
         timePicker = findViewById(R.id.time_picker);
         datePickerEnd = findViewById(R.id.date_picker_end);
         timePickerEnd = findViewById(R.id.time_picker_end);
-        Button returnBtn = findViewById(R.id.return_btn);
+        ImageButton returnBtn = findViewById(R.id.return_btn);
         Button saveBtn = findViewById(R.id.save_btn);
         deleteBtn = findViewById(R.id.delete_btn);
         locationInput = findViewById(R.id.location_input);
