@@ -28,14 +28,14 @@ public class CreateFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create, container, false);
 
-        Button buttonToFragmentB = view.findViewById(R.id.buttonChangePage);
+        Button buttonToFragmentB = view.findViewById(R.id.btn_create);
         buttonToFragmentB.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), CreateTaskActivity.class);
             intent.putExtra("Fragment", "CreateTaskFragment");
             startActivity(intent);
         });
 
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_create);
 
         List<Task> taskList = loadTaskList();
 

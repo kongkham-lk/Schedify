@@ -7,66 +7,39 @@ import java.util.Locale;
 
 public class CourseModel {
 
-    private String courseCode; //subject + courseNumber
-    private String courseTitle;
+    private String title;
     private boolean isRegistered;
-    private String tv_location;
-    public int course_img;
+    private String location;
     private boolean isExpired;
-
-    // Existing fields and methods...
 
     // under meetingTime
     private String startDate;
     private String endDate;
     private String startTime; //beginTime
     private String endTime;
-    private String roomNumber;
     private boolean[] classDayList; // Class day in a week, start from monday
     private int urlID;
 
 
-    public CourseModel(int course_img, String courseCode, String tv_location, String startTime, String endTime, String courseTitle, boolean isRegistered, String startDate,
-                       String endDate,
-                       String roomNumber, boolean[] classDayList, int urlID) {
-        this.courseCode = courseCode;
-        this.courseTitle = courseTitle;
-        this.isRegistered = isRegistered;
-        this.startDate = startDate;
-        this.endDate = endDate;
+    public CourseModel(String title, String location, String startTime, String endTime,
+                       String startDate, String endDate, boolean[] classDayList, int urlID, boolean isRegistered) {
+        this.title = title;
+        this.location = location;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.roomNumber = roomNumber;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.classDayList = classDayList;
         this.urlID = urlID;
-        this.course_img = course_img;
-        this.tv_location = tv_location;
+        this.isRegistered = isRegistered;
     }
 
-    public int getCourse_img()
-    {
-        return course_img;
+    public String getTitle() {
+        return title;
     }
 
-    public String getTv_location() {
-        return tv_location;
-    }
-
-
-    public String getCourseCode() {
-        return courseCode;
-    }
-
-    public void setCourseCode(String courseCode) {
-        this.courseCode = courseCode;
-    }
-
-    public String getCourseTitle() {
-        return courseTitle;
-    }
-
-    public void setCourseTitle(String courseTitle) {
-        this.courseTitle = courseTitle;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public boolean isRegistered() {
@@ -117,12 +90,12 @@ public class CourseModel {
         this.endTime = endTime;
     }
 
-    public String getRoomNumber() {
-        return roomNumber;
+    public String getLocation() {
+        return location;
     }
 
-    public void setRoomNumber(String roomNumber) {
-        this.roomNumber = roomNumber;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public boolean[] getClassDayList() {

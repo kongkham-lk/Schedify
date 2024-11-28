@@ -40,7 +40,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            settingsPrompt = itemView.findViewById(R.id.settingsOption);
+            settingsPrompt = itemView.findViewById(R.id.tv_logout);
         }
     }
 }

@@ -26,13 +26,15 @@
             android:id="@+id/card_container">
 
             <TextView
-                android:id="@+id/courseCode"
+                android:id="@+id/tv_courseCode"
                 android:layout_width="260dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:gravity="left"
                 android:maxLines="1"
+                android:ellipsize="end"
+                android:singleLine="true"
                 android:text="@string/title"
                 android:textColor="@color/white"
                 android:textSize="22sp"
@@ -41,7 +43,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/startTime"
+                android:id="@+id/tv_startTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -50,13 +52,13 @@
                 android:text="@string/start_time"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/courseCode"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_courseCode"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/line"
-                app:layout_constraintTop_toTopOf="@+id/courseCode" />
+                app:layout_constraintTop_toTopOf="@+id/tv_courseCode" />
 
             <TextView
-                android:id="@+id/endTime"
+                android:id="@+id/tv_endTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
@@ -66,8 +68,8 @@
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_location"
-                app:layout_constraintEnd_toEndOf="@+id/startTime"
-                app:layout_constraintStart_toStartOf="@+id/startTime" />
+                app:layout_constraintEnd_toEndOf="@+id/tv_startTime"
+                app:layout_constraintStart_toStartOf="@+id/tv_startTime" />
 
             <TextView
                 android:id="@+id/tv_location"
@@ -80,8 +82,8 @@
                 android:text="@string/location_text"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="@+id/courseCode"
-                app:layout_constraintTop_toBottomOf="@+id/courseCode" />
+                app:layout_constraintStart_toStartOf="@+id/tv_courseCode"
+                app:layout_constraintTop_toBottomOf="@+id/tv_courseCode" />
 
             <ImageView
                 android:id="@+id/line"
@@ -92,7 +94,7 @@
                 android:src="@drawable/rounded_background_highlighted"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHeight_percent="0.8"
-                app:layout_constraintStart_toEndOf="@+id/courseCode"
+                app:layout_constraintStart_toEndOf="@+id/tv_courseCode"
                 app:layout_constraintTop_toTopOf="parent" /> <!-- Replace with your drawable resource -->
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -41,10 +41,10 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
             viewHolder = new ViewHolder();
 
             // Initialize the views
-            viewHolder.courseCode = convertView.findViewById(R.id.courseCode);
+            viewHolder.tv_courseCode = convertView.findViewById(R.id.tv_courseCode);
             viewHolder.tv_location = convertView.findViewById(R.id.tv_location);
-            viewHolder.start_time = convertView.findViewById(R.id.startTime);
-            viewHolder.end_time = convertView.findViewById(R.id.endTime);
+            viewHolder.tv_start_time = convertView.findViewById(R.id.tv_startTime);
+            viewHolder.tv_end_time = convertView.findViewById(R.id.tv_endTime);
 
             // Cache the ViewHolder
             convertView.setTag(viewHolder);
@@ -64,10 +64,10 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
 
         // Bind data to the views
         if (course != null) {
-            viewHolder.courseCode.setText(course.getCourseCode());
-            viewHolder.tv_location.setText(course.getTv_location());
-            viewHolder.start_time.setText(course.getStartTime());
-            viewHolder.end_time.setText(course.getEndTime());
+            viewHolder.tv_courseCode.setText(course.getTitle());
+            viewHolder.tv_location.setText(course.getLocation());
+            viewHolder.tv_start_time.setText(course.getStartTime());
+            viewHolder.tv_end_time.setText(course.getEndTime());
         }
 
         return convertView;
@@ -76,9 +76,9 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
     // Static ViewHolder class to cache view references
     private static class ViewHolder {
         ImageView img_resource;
-        TextView courseCode;
+        TextView tv_courseCode;
         TextView tv_location;
-        TextView start_time;
-        TextView end_time;
+        TextView tv_start_time;
+        TextView tv_end_time;
     }
 }

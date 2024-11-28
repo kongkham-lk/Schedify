@@ -25,7 +25,7 @@
             android:clipChildren="true">
 
             <TextView
-                android:id="@+id/taskTitle"
+                android:id="@+id/tv_taskTitle"
                 android:layout_width="210dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -33,6 +33,8 @@
                 android:gravity="left"
                 android:maxLines="1"
                 android:text="@string/title"
+                android:ellipsize="end"
+                android:singleLine="true"
                 android:textColor="@color/white"
                 android:textSize="22sp"
                 android:textStyle="bold"
@@ -40,7 +42,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/taskStartTime"
+                android:id="@+id/tv_taskStartTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -49,13 +51,13 @@
                 android:text="@string/start_due_time"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/taskTitle"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_taskTitle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/line"
-                app:layout_constraintTop_toTopOf="@+id/taskTitle" />
+                app:layout_constraintTop_toTopOf="@+id/tv_taskTitle" />
 
             <TextView
-                android:id="@+id/taskDueTime"
+                android:id="@+id/tv_taskDueTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
@@ -64,12 +66,12 @@
                 android:text="@string/start_due_date"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/location_text"
-                app:layout_constraintEnd_toEndOf="@+id/taskStartTime"
-                app:layout_constraintStart_toStartOf="@+id/taskStartTime" />
+                app:layout_constraintBottom_toBottomOf="@+id/tv_taskLocation"
+                app:layout_constraintEnd_toEndOf="@+id/tv_taskStartTime"
+                app:layout_constraintStart_toStartOf="@+id/tv_taskStartTime" />
 
             <TextView
-                android:id="@+id/location_text"
+                android:id="@+id/tv_taskLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -79,8 +81,8 @@
                 android:text="@string/location_text"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="@+id/taskTitle"
-                app:layout_constraintTop_toBottomOf="@+id/taskTitle" />
+                app:layout_constraintStart_toStartOf="@+id/tv_taskTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tv_taskTitle" />
 
             <ImageView
                 android:id="@+id/line"
@@ -91,7 +93,7 @@
                 android:src="@drawable/rounded_background_highlighted"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHeight_percent="0.8"
-                app:layout_constraintStart_toEndOf="@+id/taskTitle"
+                app:layout_constraintStart_toEndOf="@+id/tv_taskTitle"
                 app:layout_constraintTop_toTopOf="parent" /> <!-- Replace with your drawable resource -->
 
         </androidx.constraintlayout.widget.ConstraintLayout>

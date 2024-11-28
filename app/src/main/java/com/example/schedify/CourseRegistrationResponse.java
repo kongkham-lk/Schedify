@@ -48,6 +48,7 @@ public class CourseRegistrationResponse {
                     int courseNumber = courseItem.getInt("courseNumber");
                     String courseCode = subject + " " + courseNumber;
                     String courseTitle = courseItem.getString("courseTitle");
+                    String title = courseCode + ": " + courseTitle;
                     boolean isRegistered = courseItem.getString("statusDescription").toLowerCase().equals("registered") ? true : false;
                     JSONObject meetingDetail = courseItem.getJSONArray("meetingTimes").getJSONObject(0);
                     String startTime = meetingDetail.getString("beginTime");
@@ -56,7 +57,7 @@ public class CourseRegistrationResponse {
                     String endDate = meetingDetail.getString("endDate");
                     String building = meetingDetail.getString("building");
                     String room = meetingDetail.getString("room");
-                    String roomNumber = building + " " + room;
+                    String location = building + " " + room;
                     int numDays = DayInAWeek.length;
                     boolean[] classDayList = new boolean[numDays];
                     for (int day = 0; day < numDays; day++) {
@@ -82,9 +83,8 @@ public class CourseRegistrationResponse {
                             urlID = 56165;
                             break;
                     }
-                    CourseModel course = new CourseModel(R.drawable.gradient_color_3, courseCode, roomNumber, startTime, endTime,
-                            courseTitle, isRegistered, startDate,
-                            endDate,  room, classDayList, urlID);
+                    CourseModel course = new CourseModel(courseTitle, location, startTime, endTime,
+                            startDate, endDate, classDayList, urlID, isRegistered);
                     courseList.add(course);
                 } catch (Exception e) {
                     e.printStackTrace();

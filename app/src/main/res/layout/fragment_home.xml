@@ -14,7 +14,7 @@
             android:paddingBottom="16dp">
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/tv_page_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
@@ -27,7 +27,7 @@
 
 
                 <Button
-                    android:id="@+id/sync_btn"
+                    android:id="@+id/btn_sync"
                     android:layout_width="70dp"
                     android:layout_height="42dp"
                     android:layout_marginEnd="12dp"
@@ -35,9 +35,9 @@
                     android:padding="0dp"
                     android:text="@string/sync"
                     android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView2"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_page_title"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/textView2" />
+                    app:layout_constraintTop_toTopOf="@+id/tv_page_title" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

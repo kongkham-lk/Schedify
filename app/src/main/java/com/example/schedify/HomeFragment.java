@@ -67,15 +67,7 @@ public class HomeFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -109,7 +101,7 @@ public class HomeFragment extends Fragment {
         // Initialize course data (Replace with your data source)
         courses = new ArrayList<>();
 
-        syncBtn = view.findViewById(R.id.sync_btn);
+        syncBtn = view.findViewById(R.id.btn_sync);
 
         syncBtn.setOnClickListener(v -> {
             if (mListener != null) {
@@ -145,7 +137,7 @@ public class HomeFragment extends Fragment {
                     boolean[] classDayList = {false, true};
                     boolean isToday = compareDate(dates[0], dates[1]);
                     if (isToday) {
-                        courses.add(new CourseModel(R.drawable.gradient_color_2, title, location, times[0], times[1], description, true, dates[0], dates[1], "2560", classDayList, R.drawable.gradient_color_2));
+                        courses.add(new CourseModel(title, location, times[0], times[1], dates[0], dates[1], classDayList, 0,true));
                     }
                 } else if (taskDetails.length == 4) {
                     String title = taskDetails[0];
@@ -159,7 +151,7 @@ public class HomeFragment extends Fragment {
                     dates[1] = dates[1].trim();
                     boolean isToday = compareDate(dates[0], dates[1]);
                     if (isToday) {
-                        courses.add(new CourseModel(R.drawable.gradient_color_2, title, "", times[0], times[1], description, true, dates[0], dates[1], "2560", classDayList, R.drawable.gradient_color_2));
+                        courses.add(new CourseModel(title, "", times[0], times[1], dates[0], dates[1], classDayList, 0, true));
                     }
                 } else if (taskDetails.length == 7) {
                     String title = taskDetails[1];
@@ -193,7 +185,7 @@ public class HomeFragment extends Fragment {
                     }
 
                     if (isToday && exactDay) {
-                        courses.add(new CourseModel(R.drawable.gradient_color_2, title, location, times[0], times[1], description, true, dates[0], dates[1], "2560", classDayList, R.drawable.gradient_color_2));
+                        courses.add(new CourseModel(title, location, times[0], times[1], dates[0], dates[1], classDayList, 0, true));
                     }
                 }
 
@@ -206,19 +198,19 @@ public class HomeFragment extends Fragment {
             for (String task : tasks) {
                 String[] taskDetails = task.split(",");
                 Log.d(taskDetails.length + "", Arrays.toString(taskDetails));
-                if (taskDetails.length == 7) {
-                    String title = taskDetails[1];
-                    String description = taskDetails[2];
-                    String location = taskDetails[5];
-                    String time = taskDetails[3];
-                    String[] times = time.split("-");
-                    String date = taskDetails[4];
-                    String[] dates = date.split("-");
+                if (taskDetails.length == 6) {
+                    String title = taskDetails[0];
+                    String description = taskDetails[1];
+                    String time = taskDetails[2];
+                    String[] times = time.split(" - ");
+                    String date = taskDetails[3];
+                    String[] dates = date.split(" - ");
+                    String location = taskDetails[4];
                     dates[0] = dates[0].trim();
                     dates[1] = dates[1].trim();
-                    Log.d("Class days", taskDetails[6]);
+                    Log.d("Class days", taskDetails[5]);
 
-                    String[] stringArray = taskDetails[6].replace("[", "").replace("]", "").trim().split(" ");
+                    String[] stringArray = taskDetails[5].replace("[", "").replace("]", "").trim().split(" ");
                     boolean[] classDayList = new boolean[stringArray.length];
                     for (int i = 0; i < stringArray.length; i++) {
                         classDayList[i] = Boolean.parseBoolean(stringArray[i]);
@@ -237,7 +229,7 @@ public class HomeFragment extends Fragment {
                     }
 
                     if (isToday && exactDay) {
-                        courses.add(new CourseModel(R.drawable.gradient_color_2, title, location, times[0], times[1], description, true, dates[0], dates[1], "2560", classDayList, R.drawable.gradient_color_2));
+                        courses.add(new CourseModel(title, location, times[0], times[1], dates[0], dates[1], classDayList, 0, true));
                     }
                 }
 
@@ -303,7 +295,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    public void updateCourseList(List<CourseModel> newCourseList) {
+    public void filterOutCourseList(List<CourseModel> newCourseList) {
         Log.d("HomeFragment", "Updating course list");
 
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("TaskData", Context.MODE_PRIVATE);
@@ -337,20 +329,20 @@ public class HomeFragment extends Fragment {
                     Log.e("HomeFragment", "Error parsing date: " + e.getMessage());
                 }
 
-                String courseCode = newCourse.getCourseCode().replace(",", "");
-                String title = newCourse.getCourseCode().replace(",", "");
-                String description = newCourse.getCourseTitle().replace(",", "");
+//                String courseCode = newCourse.getTitle().replace(",", "");
+                String title = newCourse.getTitle().replace(",", "");
+                String description = newCourse.getTitle().replace(",", "");
                 String startTime = formattedStartTime.replace(",", "");
                 String endTime = formattedEndTime.replace(",", "");
 
-                serializedCourses.append(courseCode).append(",")
+                serializedCourses
                         .append(title).append(",")
                         .append(description).append(",")
                         .append(startTime).append(" - ")
                         .append(endTime).append(",")
                         .append(formattedStartDate).append(" - ")
                         .append(formattedEndDate).append(",")
-                        .append(newCourse.getRoomNumber()).append(",")
+                        .append(newCourse.getLocation()).append(",")
                         .append(Arrays.toString(newCourse.getClassDayList()).replace(",", "")).append(";");// Remove commas from days list
             }
 

@@ -6,24 +6,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.Objects;
 
 public class CreateTaskActivity extends AppCompatActivity {
 
@@ -43,16 +39,16 @@ public class CreateTaskActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_create_task);
 
-        titleInput = findViewById(R.id.title_input);
-        descriptionInput = findViewById(R.id.description_input);
-        datePicker = findViewById(R.id.date_picker);
-        timePicker = findViewById(R.id.time_picker);
-        datePickerEnd = findViewById(R.id.date_picker_end);
-        timePickerEnd = findViewById(R.id.time_picker_end);
-        ImageButton returnBtn = findViewById(R.id.return_btn);
-        Button saveBtn = findViewById(R.id.save_btn);
-        deleteBtn = findViewById(R.id.delete_btn);
-        locationInput = findViewById(R.id.location_input);
+        titleInput = findViewById(R.id.tv_title_input);
+        descriptionInput = findViewById(R.id.tv_description_input);
+        datePicker = findViewById(R.id.btn_date_picker_start);
+        timePicker = findViewById(R.id.btn_time_picker_start);
+        datePickerEnd = findViewById(R.id.btn_date_picker_end);
+        timePickerEnd = findViewById(R.id.btn_time_picker_end);
+        ImageButton returnBtn = findViewById(R.id.btn_back);
+        Button saveBtn = findViewById(R.id.btn_save);
+        deleteBtn = findViewById(R.id.btn_delete);
+        locationInput = findViewById(R.id.tv_location_input);
 
         Intent edit_intent = getIntent();
         if (edit_intent != null) {

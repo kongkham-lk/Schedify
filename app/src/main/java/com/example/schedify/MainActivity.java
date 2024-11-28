@@ -2,9 +2,7 @@ package com.example.schedify;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -16,9 +14,6 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
-
-import java.util.ArrayList;
-import androidx.appcompat.app.AppCompatDelegate;
 
 import java.util.List;
 
@@ -45,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         EdgeToEdge.enable(this);
-        tabLayout = findViewById(R.id.bottom_navigation_bar);
+        tabLayout = findViewById(R.id.tabLayout_bar);
         viewPager2 = findViewById(R.id.viewPager);
 
         adapter = new TabAdapter(getSupportFragmentManager(), getLifecycle());  // Your TabAdapter for managing fragments
@@ -143,24 +138,6 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
         webViewLoginDialog.show();
     }
 
-//    private void fetchMoodleAPI() {
-//
-//        try {
-//            String moodleURL = "https://moodle.tru.ca/my/";
-//
-//            // Fetch the HTML content
-//            String htmlContent = MoodleApiResponse.fetchHTML(moodleURL);
-//
-//            // Parse the HTML and extract data
-//            JSONObject result = MoodleApiResponse.extractCourseDataFromMoodle(htmlContent);
-//
-//            // Print the JSON result
-//            System.out.println(result.toString(4)); // Pretty-print JSON
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     @Override
     public void onLoginResult(boolean isSuccess) {
         if (isSuccess) {
@@ -175,11 +152,6 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
             else if (targetURL.contains("moodle")) {
                 retrievedMoodleCourseAPI();
             }
-
-
-            //---------------------- put the adapter here----------!!!!!!
-
-
         } else {
             // Handle login failure
             Toast.makeText(this, "Syncing is Cancel!", Toast.LENGTH_SHORT).show();
@@ -197,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
         MoodleApiResponse moodleApiResponse = new MoodleApiResponse(this);
 //        moodleApiResponse.setRequestMethod("GET");
         courseList = moodleApiResponse.retrievedCourseDataFromMoodle();
-        Log.d("Courses", courseList.get(1).getCourseCode());
+        Log.d("Courses", courseList.get(1).getTitle());
     }
 
     private void passCourseListToHomeFragment() {
@@ -206,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
             HomeFragment homeFragment = (HomeFragment) fragmentManager.findFragmentByTag("f" + 0); // ViewPager2 uses "f" + position for fragment tags
 
             if (homeFragment != null) {
-                homeFragment.updateCourseList(courseList);
+                homeFragment.filterOutCourseList(courseList);
                 Log.e("MainActivity", "COURSE LIST FOUND");
             } else {
                 Log.e("MainActivity", "HomeFragment is not found");
