@@ -16,4 +16,13 @@
     <string name="location_set_text">Enter Location</string>
     <string name="delete_content_desc">Deletes Tasks</string>
     <string name="dashboard">Dashboard</string>
+    <string name="sign_up">Sign up</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="login_here">Login_here</string>
+    <string name="login_Here">login Here</string>
+    <string name="Login_here">Login_Here</string>
+    <string name="welcome">Welcome</string>
+    <string name="Login_Here">Login Here</string>
 </resources>
