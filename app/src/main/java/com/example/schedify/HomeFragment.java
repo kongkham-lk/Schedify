@@ -130,7 +130,6 @@ public class HomeFragment extends Fragment {
                     String tempTime = tempStartTime + " - " + tempEndTime;
                     String tempDate = tempStartDate + " - " + tempEndDate;
                     if (courses.get(i).getTitle().equals(task.getTitle()) &&
-
                             courses.get(i).getLocation().equals(task.getLocation()) &&
                             courses.get(i).getDescription().equals(task.getDescription()) &&
                             tempTime.equals(task.getTime()) &&
@@ -161,7 +160,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void saveTaskList(List<Task> taskList) {
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("TaskData", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         StringBuilder sb = new StringBuilder();
@@ -174,7 +173,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void createList() {
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("TaskData", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
         String taskData = sharedPreferences.getString("taskList", "");
         String courseData = sharedPreferences.getString("taskList2", "");
         courses.clear();
@@ -215,42 +214,6 @@ public class HomeFragment extends Fragment {
                         courses.add(new CourseModel(title, "", times[0], times[1], dates[0], dates[1], classDayList, 0, true, description));
                     }
                 }
-//                else if (taskDetails.length == 7) {
-//                    String title = taskDetails[1];
-//                    String description = taskDetails[2];
-//                    String location = taskDetails[5];
-//                    String time = taskDetails[3];
-//                    String[] times = time.split(" - ");
-//                    String date = taskDetails[4];
-//                    String[] dates = date.split(" - ");
-//                    dates[0] = dates[0].trim();
-//                    dates[1] = dates[1].trim();
-//                    int urlID = Integer.parseInt(taskDetails[8]);
-//                    Log.d("Class days", taskDetails[6]);
-//
-//                    // Parse the class days
-//                    String[] stringArray = taskDetails[6].replace("[", "").replace("]", "").trim().split(" ");
-//                    boolean[] classDayList = new boolean[stringArray.length];
-//                    for (int i = 0; i < stringArray.length; i++) {
-//                        classDayList[i] = Boolean.parseBoolean(stringArray[i]);
-//                    }
-//                    Log.d("Class days", Arrays.toString(classDayList));
-//
-//                    LocalDate today = LocalDate.now();
-//                    int todayDayOfWeek = today.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
-//                    todayDayOfWeek--;
-//
-//                    boolean isToday = compareDate(dates[0], dates[1]);
-//                    boolean exactDay = false;
-//
-//                    if (isToday && classDayList[todayDayOfWeek]) {
-//                        exactDay = true;
-//                    }
-//
-//                    if (isToday && exactDay) {
-//                        courses.add(new CourseModel(title, location, times[0], times[1], dates[0], dates[1], classDayList, urlID, true));
-//                    }
-//                }
             }
         }
 
@@ -359,7 +322,7 @@ public class HomeFragment extends Fragment {
     public void filterOutCourseList(List<CourseModel> newCourseList) {
         Log.d("HomeFragment", "Updating course list");
 
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("TaskData", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         createList();

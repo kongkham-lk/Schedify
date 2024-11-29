@@ -73,7 +73,7 @@ public class CreateFragment extends Fragment {
 
 
     private void saveTaskList(List<Task> taskList) {
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("TaskData", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         StringBuilder sb = new StringBuilder();
@@ -86,7 +86,7 @@ public class CreateFragment extends Fragment {
     }
 
     private List<Task> loadTaskList() {
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("TaskData", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
         String taskData = sharedPreferences.getString("taskList", "");
 
         List<Task> taskList = new ArrayList<>();
