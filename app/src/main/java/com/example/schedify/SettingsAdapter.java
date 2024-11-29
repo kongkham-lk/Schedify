@@ -12,10 +12,10 @@ import java.util.ArrayList;
 
 public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyViewHolder> {
 
-    private final ArrayList<Settings> settingsOptions;
+    private final ArrayList<SettingsModel> settingsModelOptions;
 
-    public SettingsAdapter(ArrayList<Settings> settingsOptions) {
-        this.settingsOptions = settingsOptions;
+    public SettingsAdapter(ArrayList<SettingsModel> settingsModelOptions) {
+        this.settingsModelOptions = settingsModelOptions;
     }
 
     @NonNull
@@ -27,7 +27,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.tv_logout.setText(settingsOptions.get(position).getOptionName());
+        holder.tv_logout.setText(settingsModelOptions.get(position).getOptionName());
         holder.tv_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -39,7 +39,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
 
     @Override
     public int getItemCount() {
-        return settingsOptions.size();
+        return settingsModelOptions.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {

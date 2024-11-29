@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,7 +18,7 @@ public class SettingsFragment extends Fragment {
 
     private RecyclerView recycler_view_settings;
     private SettingsAdapter settingsAdapter;
-    private ArrayList<Settings> settings;
+    private ArrayList<SettingsModel> settings;
     SessionManager sessionManager;
 
     @Nullable
@@ -30,7 +29,7 @@ public class SettingsFragment extends Fragment {
         sessionManager = new SessionManager(requireContext());
         recycler_view_settings = view.findViewById(R.id.recycler_view_create);
         settings = new ArrayList<>();
-        settings.add(new Settings("Log out"));
+        settings.add(new SettingsModel("Log out"));
 
         settingsAdapter = new SettingsAdapter(settings);
         recycler_view_settings.setLayoutManager(new LinearLayoutManager(getContext()));
