@@ -61,7 +61,7 @@ public class Login extends AppCompatActivity {
             String savedPassword = savedPrefs[1];
 
             if (username.equals(savedUsername) && password.equals(savedPassword)) {
-                Intent intent = new Intent(getApplicationContext(), HomeFragment.class);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
             } else
                 Toast.makeText(this, "Username or Password Did Not Matched!", Toast.LENGTH_SHORT).show();
