@@ -28,7 +28,9 @@ public class SessionManager {
     }
 
     public boolean checkSession() {
-        if (sp.contains(KEY_IF_LOGGED_IN)) {
+        boolean isLogin = sp.getBoolean(KEY_IF_LOGGED_IN, false);
+
+        if (isLogin && sp.contains(KEY_IF_LOGGED_IN)) {
             return true;
         } else {
             return false;
@@ -58,6 +60,9 @@ public class SessionManager {
     }
 
     public void signOut() {
+        editor = sp.edit();
+        editor.putBoolean(KEY_IF_LOGGED_IN, false);
+        editor.commit();
         Intent intent = new Intent(context, com.example.schedify.Login.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // Ensure intent works with non-Activity context
         context.startActivity(intent);
