@@ -21,6 +21,7 @@ public class Login extends AppCompatActivity {
     EditText input_password;
     Button btn_login;
     Button btn_signup;
+    Button btn_back;
     boolean isSignupClicked = false;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,17 @@ public class Login extends AppCompatActivity {
         input_password = (EditText) findViewById(R.id.edt_password);
         btn_login = findViewById(R.id.btn_login);
         btn_signup = findViewById(R.id.btn_signup);
+        btn_back = findViewById(R.id.btn_back);
+
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isSignupClicked = false;
+                updatePageComponent("Login", isSignupClicked);
+            }
+        });
+
+        resetTabLayout();
     }
 
     public void login(View view) {
@@ -43,6 +55,7 @@ public class Login extends AppCompatActivity {
         String password = input_password.getText().toString();
 
         if (!username.isEmpty() || !password.isEmpty()) {
+            resetTabLayout();
             String[] savedPrefs = sessionManager.retrieveSaveCredential();
             String savedUsername = savedPrefs[0];
             String savedPassword = savedPrefs[1];
@@ -78,5 +91,14 @@ public class Login extends AppCompatActivity {
         input_username.setText("");
         input_password.setText("");
         btn_login.setVisibility(isSignupClicked ? View.GONE : View.VISIBLE);
+        btn_back.setVisibility(isSignupClicked ? View.VISIBLE : View.GONE);
+    }
+
+    private void resetTabLayout() {
+        // always navigate to home tab when sign out
+        MainActivity.tabLayout.post(() -> {
+            if (MainActivity.tabLayout.getTabCount() > 0)
+                MainActivity.tabLayout.getTabAt(0).select();
+        });
     }
 }

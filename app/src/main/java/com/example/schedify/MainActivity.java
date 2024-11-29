@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
     WebViewLoginDialog webViewLoginDialog;
     String cookie;
 
-    private TabLayout tabLayout;
+    public static TabLayout tabLayout;
     private ViewPager2 viewPager2;
     private TabAdapter adapter;
     Button syncBtn;
@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
         adapter.setContext(this);
         viewPager2.setAdapter(adapter);
 
-
         // Set up TabLayout with ViewPager2 using TabLayoutMediator
         new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
             switch (position) {
@@ -70,6 +69,13 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
                     break;
             }
         }).attach();
+
+        // always select home tab when login
+//        tabLayout.post(() -> {
+//            if (tabLayout.getTabCount() > 0) {
+//                tabLayout.getTabAt(0).select();
+//            }
+//        });
 
         String frag = getIntent().getStringExtra("Fragment");
         if ("CreateFragment".equals(frag)) {
