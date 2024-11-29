@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
     public void onLoginResult(boolean isSuccess) {
         if (!targetURL.contains("course/view"))
             if (isSuccess) {
-                Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Successfully Sync!", Toast.LENGTH_SHORT).show();
     //            cookie = webViewLoginDialog.getCookie();
                 String targetURL = webViewLoginDialog.getInitialURL();
 
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
                 }
             } else {
                 // Handle login failure
-                    Toast.makeText(this, "Syncing is Cancel!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Cancel Sync!", Toast.LENGTH_SHORT).show();
             }
     }
 
