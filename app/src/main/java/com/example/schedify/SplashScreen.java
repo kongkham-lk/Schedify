@@ -1,4 +1,4 @@
-package com.example.sharedpreferencedemo;
+package com.example.schedify;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,35 +6,39 @@ import android.os.Handler;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.schedify.HomeFragment;
 import com.example.schedify.R;
+import com.example.schedify.SessionManager;
 
 public class SplashScreen extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_splash_screen);
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                com.example.sharedpreferencedemo.SessionManager sessionManager = new com.example.sharedpreferencedemo.SessionManager(getApplicationContext());
-                boolean b = sessionManager.checkSession();
+                SessionManager sessionManager = new SessionManager(getApplicationContext());
+                boolean hasSavedSession = sessionManager.checkSession();
 
-                if (b==true) {
-                    Intent intent = new Intent(SplashScreen.this, HomeFragment.class);
+                if (hasSavedSession) {
+                    Intent intent = new Intent(SplashScreen.this, MainActivity.class);
                     startActivity(intent);
                 } else {
-                    Intent intent = new Intent(SplashScreen.this, Long.class);
+                    Intent intent = new Intent(SplashScreen.this, Login.class);
                     startActivity(intent);
                 }
             }
-        }, 2000);
+        }, 1000);
     }
 }

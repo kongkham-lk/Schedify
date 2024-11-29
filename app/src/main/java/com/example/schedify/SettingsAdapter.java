@@ -27,7 +27,14 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.settingsPrompt.setText(settingsOptions.get(position).getOptionName());
+        holder.tv_logout.setText(settingsOptions.get(position).getOptionName());
+        holder.tv_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SessionManager sessionManager = new SessionManager(view.getContext());
+                sessionManager.signOut();
+            }
+        });
     }
 
     @Override
@@ -36,11 +43,11 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView settingsPrompt;
+        TextView tv_logout;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            settingsPrompt = itemView.findViewById(R.id.tv_logout);
+            tv_logout = itemView.findViewById(R.id.tv_logout);
         }
     }
 }

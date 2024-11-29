@@ -1,4 +1,4 @@
-package com.example.sharedpreferencedemo;
+package com.example.schedify;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,19 +9,22 @@ public class SessionManager {
     Context context;
     SharedPreferences sp;
     SharedPreferences.Editor editor;
+    String savedUsername = "";
+    String savedPassword = "";
 
-    private final String PREF_FILE_NAME = "slaying";
+    private final String PREF_FILE_NAME = "AppData";
     private final int PRIVATE_MODE = 0;
 
     private final String KEY_IF_LOGGED_IN = "key_logged_in";
-    private final String KEY_NAME = "key_session_name";
-    private final String KEY_EMAIL = "key_session_email";
-    private final String KEY_PHNO = "key_session_phno";
+    private final String KEY_USERNAME = "key_session_name";
+    private final String KEY_PASSWORD = "key_session_phno";
 
     public SessionManager(Context context) {
         this.context = context;
-        sp = context.getSharedPreferences(PREF_FILE_NAME, 0);
-        editor = sp.edit();
+        sp = context.getSharedPreferences(PREF_FILE_NAME, PRIVATE_MODE);
+
+        savedUsername = sp.getString(KEY_USERNAME, "");
+        savedPassword = sp.getString(KEY_PASSWORD, "");
     }
 
     public boolean checkSession() {
@@ -33,10 +36,18 @@ public class SessionManager {
     }
 
     //----------We are storing data in Shared Preference File----------------
-    public void createSession(String name, String email, String phno) {
-        editor.putString(KEY_NAME, name);
-        editor.putString(KEY_EMAIL, email);
-        editor.putString(KEY_PHNO, phno);
+    public void createSession(String username, String password) {
+        savedUsername = username;
+        savedPassword = password;
+
+        sp = context.getSharedPreferences(PREF_FILE_NAME, 0);
+        editor = sp.edit();
+        editor.clear();
+        editor.commit();
+
+        editor = sp.edit();
+        editor.putString(KEY_USERNAME, username);
+        editor.putString(KEY_PASSWORD, password);
         editor.putBoolean(KEY_IF_LOGGED_IN, true);
         editor.commit();
     }
@@ -47,11 +58,15 @@ public class SessionManager {
     }
 
     public void signOut() {
-        editor.clear();
-        editor.commit();
-
-        Intent intent = new Intent(context, com.example.sharedpreferencedemo.Login.class);
+        Intent intent = new Intent(context, com.example.schedify.Login.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // Ensure intent works with non-Activity context
         context.startActivity(intent);
+    }
+
+    public String[] retrieveSaveCredential() {
+        sp = context.getSharedPreferences(PREF_FILE_NAME, 0);
+        savedUsername = sp.getString(KEY_USERNAME, "");
+        savedPassword = sp.getString(KEY_PASSWORD, "");
+        return new String[] {savedUsername, savedPassword};
     }
 }

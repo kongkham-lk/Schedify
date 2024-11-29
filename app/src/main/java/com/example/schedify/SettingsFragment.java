@@ -1,5 +1,6 @@
 package com.example.schedify;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,14 +20,14 @@ public class SettingsFragment extends Fragment {
     private RecyclerView recycler_view_settings;
     private SettingsAdapter settingsAdapter;
     private ArrayList<Settings> settings;
-    com.example.sharedpreferencedemo.SessionManager sessionManager;
+    SessionManager sessionManager;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        sessionManager = new com.example.sharedpreferencedemo.SessionManager(requireContext());
+        sessionManager = new SessionManager(requireContext());
         recycler_view_settings = view.findViewById(R.id.recycler_view_create);
         settings = new ArrayList<>();
         settings.add(new Settings("Log out"));
@@ -40,5 +41,7 @@ public class SettingsFragment extends Fragment {
 
     public void signOut(View view) {
         sessionManager.signOut();
+        Intent intent = new Intent(getContext().getApplicationContext(), Login.class);
+        startActivity(intent);
     }
 }
