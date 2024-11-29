@@ -16,45 +16,22 @@ import androidx.fragment.app.Fragment;
 public class SettingsFragment extends Fragment {
 
     com.example.sharedpreferencedemo.SessionManager sessionManager;
-    
-
-
-
-
-
-
-
-
-
 
     public SettingsFragment() {
         // Required empty public constructor
     }
 
-      @Override
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-          sessionManager = new com.example.sharedpreferencedemo.SessionManager(getApplicationContext());
-
-          profile_name = (TextView) findViewById(R.id.profile_name);
-
-          String name = sessionManager.getSessionDetails("key_session_name");
-
-          profile_name.setText(name);
-
+        sessionManager = new com.example.sharedpreferencedemo.SessionManager(requireContext());
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
-
-    public void signOut(View view)
-    {
+    public void signOut(View view) {
         sessionManager.signOut();
-
     }
-
-
 }
