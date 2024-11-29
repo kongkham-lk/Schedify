@@ -27,6 +27,7 @@ public class CreateTaskActivity extends AppCompatActivity {
     private Button datePicker, timePicker, datePickerEnd, timePickerEnd;
     int year, month, day, minute, hour;
     int index = -1;
+    private boolean fromHome = false;
     private boolean editing = false;
     private ImageButton deleteBtn;
     private long minDateForEndDate = 0;
@@ -57,6 +58,7 @@ public class CreateTaskActivity extends AppCompatActivity {
             String loaded_time = edit_intent.getStringExtra("time");
             String loaded_description = edit_intent.getStringExtra("description");
             String loaded_location = edit_intent.getStringExtra("location");
+            String locatedPage = edit_intent.getStringExtra("homePage");
             int position = edit_intent.getIntExtra("index", -1);
             if (loaded_title != null) {
                 editing = true;
@@ -81,6 +83,11 @@ public class CreateTaskActivity extends AppCompatActivity {
             }
             if (position != -1) {
                 index = position;
+            }
+            if (locatedPage != null) {
+                fromHome = true;
+                deleteBtn.setVisibility(View.INVISIBLE);
+                returnBtn.setVisibility(View.INVISIBLE);
             }
 
         }
@@ -218,7 +225,11 @@ public class CreateTaskActivity extends AppCompatActivity {
                 String description = descriptionInput.getText().toString();
 
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra("Fragment", "CreateFragment");
+                if (fromHome) {
+                    intent.putExtra("Fragment", "HomeFragment");
+                } else {
+                    intent.putExtra("Fragment", "CreateFragment");
+                }
                 intent.putExtra("title", title);
                 intent.putExtra("description", description);
                 intent.putExtra("date", (datePicker.getText().toString()) + " - " + datePickerEnd.getText().toString());

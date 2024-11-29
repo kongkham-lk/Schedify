@@ -95,6 +95,35 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
                 fragment.setArguments(args);
 
             }
+        } else if ("HomeFragment".equals(frag)) {
+            viewPager2.setCurrentItem(0, false);
+            String title = getIntent().getStringExtra("title");
+            if (title != null) {
+                String description = getIntent().getStringExtra("description");
+                String date = getIntent().getStringExtra("date");
+                String time = getIntent().getStringExtra("time");
+                String location = getIntent().getStringExtra("location");
+
+                Bundle args = new Bundle();
+                args.putString("title", title);
+                args.putString("description", description);
+                args.putString("date", date);
+                args.putString("time", time);
+                args.putString("location", location);
+
+                CreateFragment fragment = new CreateFragment();
+                fragment.setArguments(args);
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+                HomeFragment homeFragment = new HomeFragment();
+                homeFragment.setArguments(args);
+
+            }
         }
 
 

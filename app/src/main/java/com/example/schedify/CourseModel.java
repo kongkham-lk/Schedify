@@ -15,6 +15,7 @@ public class CourseModel {
     // under meetingTime
     private String startDate;
     private String endDate;
+    private String description;
     private String startTime; //beginTime
     private String endTime;
     private boolean[] classDayList; // Class day in a week, start from monday
@@ -22,7 +23,7 @@ public class CourseModel {
 
 
     public CourseModel(String title, String location, String startTime, String endTime,
-                       String startDate, String endDate, boolean[] classDayList, int urlID, boolean isRegistered) {
+                       String startDate, String endDate, boolean[] classDayList, int urlID, boolean isRegistered, String description) {
         this.title = title;
         this.location = location;
         this.startTime = startTime;
@@ -32,6 +33,7 @@ public class CourseModel {
         this.classDayList = classDayList;
         this.urlID = urlID;
         this.isRegistered = isRegistered;
+        this.description = description;
     }
 
     public String getTitle() {
@@ -85,6 +87,8 @@ public class CourseModel {
     public String getEndTime() {
         return endTime;
     }
+
+    public String getDescription() { return description; }
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;

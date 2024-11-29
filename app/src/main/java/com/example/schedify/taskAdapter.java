@@ -46,6 +46,7 @@ public class taskAdapter extends RecyclerView.Adapter<taskAdapter.taskViewHolder
                 Intent edit_task = new Intent(context, CreateTaskActivity.class);
                 edit_task.putExtra("title", task.getTitle());
                 edit_task.putExtra("date", task.getDate());
+                edit_task.putExtra("location", task.getLocation());
                 edit_task.putExtra("time", task.getTime());
                 edit_task.putExtra("index", position);
                 edit_task.putExtra("description", task.getDescription());

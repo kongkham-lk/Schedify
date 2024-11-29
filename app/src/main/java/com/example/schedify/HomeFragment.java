@@ -1,6 +1,7 @@
 package com.example.schedify;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,6 +42,7 @@ public class HomeFragment extends Fragment {
     private ListView list_view_home;
     private HomePageAdaptor homePageAdaptor;
     private ArrayList<CourseModel> courses;
+    private ArrayList<Task> numTasks;
     Button syncBtn;
 
     private Handler handler = new Handler();
@@ -101,6 +103,7 @@ public class HomeFragment extends Fragment {
 
         // Initialize course data (Replace with your data source)
         courses = new ArrayList<>();
+        numTasks = new ArrayList<>();
 
         syncBtn.setOnClickListener(v -> {
             if (mListener != null) {
@@ -108,7 +111,68 @@ public class HomeFragment extends Fragment {
             }
         });
         createList();
+
+        if (getActivity() != null && getActivity().getIntent() != null) {
+            Intent intent = getActivity().getIntent();
+            String title = intent.getStringExtra("title");
+            String description = intent.getStringExtra("description");
+            String date = intent.getStringExtra("date");
+            String time = intent.getStringExtra("time");
+            String location = intent.getStringExtra("location");
+            int index = intent.getIntExtra("index", -1);
+
+            if ((title != null && description != null && date != null) && index != -1) {
+                Task task = numTasks.get(index);
+                int pos = -1;
+                for (int i = 0; i < courses.size(); i++) {
+                    String tempStartTime = courses.get(i).getStartTime();
+                    String tempEndTime = courses.get(i).getEndTime();
+                    String tempStartDate = courses.get(i).getStartDate();
+                    String tempEndDate = courses.get(i).getEndDate();
+                    String tempTime = tempStartTime + " - " + tempEndTime;
+                    String tempDate = tempStartDate + " - " + tempEndDate;
+                    if (courses.get(i).getTitle().equals(task.getTitle()) &&
+
+                            courses.get(i).getLocation().equals(task.getLocation()) &&
+                            courses.get(i).getDescription().equals(task.getDescription()) &&
+                            tempTime.equals(task.getTime()) &&
+                            tempDate.equals(task.getDate())) {
+                        pos = i;
+                        break;
+                    }
+                }
+                if (pos != -1) {
+                    String[] newTime = time.split(" - ");
+                    newTime[0] = newTime[0].trim();
+                    newTime[1] = newTime[1].trim();
+                    numTasks.get(index).setTitle(title);
+                    numTasks.get(index).setDescription(description);
+                    numTasks.get(index).setDate(date);
+                    numTasks.get(index).setTime(time);
+                    numTasks.get(index).setLocation(location);
+                    courses.get(pos).setTitle(title);
+                    courses.get(pos).setLocation(location);
+                    courses.get(pos).setStartTime(newTime[0]);
+                    courses.get(pos).setEndTime(newTime[1]);
+                    saveTaskList(numTasks);
+                }
+            }
+        }
+
         return view;
+    }
+
+    private void saveTaskList(List<Task> taskList) {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("TaskData", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        StringBuilder sb = new StringBuilder();
+        for (Task task : numTasks) {
+            sb.append(task.getTitle()).append(",").append(task.getDescription()).append(",").append(task.getTime()).append(",").append(task.getDate()).append(",").append(task.getLocation()).append(",;");
+        }
+
+        editor.putString("taskList", sb.toString());
+        editor.apply();
     }
 
     private void createList() {
@@ -134,7 +198,8 @@ public class HomeFragment extends Fragment {
                     boolean[] classDayList = {false, true};
                     boolean isToday = compareDate(dates[0], dates[1]);
                     if (isToday) {
-                        courses.add(new CourseModel(title, location, times[0], times[1], dates[0], dates[1], classDayList, 0,true));
+                        numTasks.add(new Task(title, description, time, date, location));
+                        courses.add(new CourseModel(title, location, times[0], times[1], dates[0], dates[1], classDayList, 0,true, description));
                     }
                 } else if (taskDetails.length == 4) { // Task data - without location
                     String title = taskDetails[0];
@@ -148,7 +213,8 @@ public class HomeFragment extends Fragment {
                     dates[1] = dates[1].trim();
                     boolean isToday = compareDate(dates[0], dates[1]);
                     if (isToday) {
-                        courses.add(new CourseModel(title, "", times[0], times[1], dates[0], dates[1], classDayList, 0, true));
+                        numTasks.add(new Task(title, description, time, date, ""));
+                        courses.add(new CourseModel(title, "", times[0], times[1], dates[0], dates[1], classDayList, 0, true, description));
                     }
                 }
 //                else if (taskDetails.length == 7) {
@@ -265,7 +331,7 @@ public class HomeFragment extends Fragment {
             return 0;
         });
 
-        HomePageAdaptor homePageAdaptor = new HomePageAdaptor(requireContext(), R.layout.home_items_view_holder, courses);
+        HomePageAdaptor homePageAdaptor = new HomePageAdaptor(requireContext(), R.layout.home_items_view_holder, courses, numTasks);
         list_view_home.setAdapter(homePageAdaptor);
     }
 
