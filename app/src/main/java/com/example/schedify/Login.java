@@ -61,12 +61,12 @@ public class Login extends AppCompatActivity {
             isSignupClicked = true;
             updatePageComponent("Register", isSignupClicked);
         } else {
-            isSignupClicked = false;
-            updatePageComponent("Login", isSignupClicked);
-
             String username = input_username.getText().toString();
             String password = input_password.getText().toString();
             sessionManager.createSession(username, password);
+
+            isSignupClicked = false;
+            updatePageComponent("Login", isSignupClicked);
 
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
