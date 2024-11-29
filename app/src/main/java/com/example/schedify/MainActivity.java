@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
         MoodleApiResponse moodleApiResponse = new MoodleApiResponse(this);
 //        moodleApiResponse.setRequestMethod("GET");
         courseList = moodleApiResponse.retrievedCourseDataFromMoodle();
-        Log.d("Courses", courseList.get(1).getTitle());
+//        Log.d("Courses", courseList.get(1).getTitle());
     }
 
     private void passCourseListToHomeFragment() {

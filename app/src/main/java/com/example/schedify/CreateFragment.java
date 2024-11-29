@@ -94,10 +94,10 @@ public class CreateFragment extends Fragment {
             String[] tasks = taskData.split(";");
             for (String task : tasks) {
                 String[] taskDetails = task.split(",");
-                Log.println(taskDetails.length, "uu", taskDetails.length + "");
-                for (int i = 0; i < taskDetails.length; i++) {
-                    Log.println(taskDetails.length, "Counting number of tasks", taskDetails[i] + "");
-                }
+//                Log.println(taskDetails.length, "uu", taskDetails.length + "");
+//                for (int i = 0; i < taskDetails.length; i++) {
+//                    Log.println(taskDetails.length, "Counting number of tasks", taskDetails[i] + "");
+//                }
                 if (taskDetails.length == 5) {
                     String title = taskDetails[0];
                     String description = taskDetails[1];

@@ -234,14 +234,14 @@ public class HomeFragment extends Fragment {
                     dates[0] = dates[0].trim();
                     dates[1] = dates[1].trim();
                     int urlID = Integer.parseInt(taskDetails[6]);
-                    Log.d("Class days", taskDetails[5]);
+//                    Log.d("Class days", taskDetails[5]);
 
                     String[] stringArray = taskDetails[5].replace("[", "").replace("]", "").trim().split(" ");
                     boolean[] classDayList = new boolean[stringArray.length];
                     for (int i = 0; i < stringArray.length; i++) {
                         classDayList[i] = Boolean.parseBoolean(stringArray[i]);
                     }
-                    Log.d("Class days", Arrays.toString(classDayList));
+//                    Log.d("Class days", Arrays.toString(classDayList));
 
                     LocalDate today = LocalDate.now();
                     int todayDayOfWeek = today.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
