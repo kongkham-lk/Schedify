@@ -2,5 +2,8 @@
     <!-- Base application theme -->
     <style name="Theme.Schedify" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your theme here -->
+        <item name="android:windowSplashScreenBackground">@color/iconBlack</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/app_icon</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/iconBlack</item>
     </style>
 </resources>
