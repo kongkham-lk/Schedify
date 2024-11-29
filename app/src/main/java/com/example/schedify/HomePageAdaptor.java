@@ -62,14 +62,15 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
         viewHolder.tv_end_time.setText(course.getEndTime());
 
         convertView.findViewById(R.id.card_container).setOnClickListener(v -> {
-            if (course.getClassDayList().length <= 2) {
+            if (course.getClassDayList().length <= 2) { // for task row
                 int newPosition = 0;
                 for (int i = 0; i < tasks.size(); i++) {
-                    if (tasks.get(i).getTitle().toString().equals(course.getTitle()) &&
-                            tasks.get(i).getDescription().toString().equals(course.getDescription()) &&
-                            tasks.get(i).getLocation().toString().equals(course.getLocation()) &&
-                            tasks.get(i).getTime().toString().equals(course.getStartTime() + " - " + course.getEndTime()) &&
-                            tasks.get(i).getDate().toString().equals(course.getStartDate() + " - " + course.getEndDate())) {
+                    Task targetTask = tasks.get(i);
+                    if (targetTask.getTitle().toString().equals(course.getTitle()) &&
+                            targetTask.getDescription().toString().equals(course.getDescription()) &&
+                            targetTask.getLocation().toString().equals(course.getLocation()) &&
+                            targetTask.getTime().toString().equals(course.getStartTime() + " - " + course.getEndTime()) &&
+                            targetTask.getDate().toString().equals(course.getStartDate() + " - " + course.getEndDate())) {
                         newPosition = i;
                         break;
                     }
@@ -83,12 +84,7 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
                 edit_task.putExtra("homePage", "HOMEEDIT");
                 edit_task.putExtra("description", course.getDescription());
                 context.startActivity(edit_task);
-            }
-        });
-
-        // Add an OnClickListener for the list item
-        convertView.setOnClickListener(v -> {
-            if (course.getClassDayList().length > 2) {
+            } else { // for course reg row
                 int courseId = course.getUrlID();
                 String url = "https://moodle.tru.ca/course/view.php?id=" + courseId;
                 ((MainActivity) context).fetchcourseRegistrationAPI(url);
