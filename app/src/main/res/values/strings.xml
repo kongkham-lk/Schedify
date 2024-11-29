@@ -27,4 +27,13 @@
     <string name="location_text">Location</string>
     <string name="label_login">Login</string>
     <string name="btn_logout">Log out</string>
+    <string name="sign_up">Sign up</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="login_here">Login_here</string>
+    <string name="login_Here">login Here</string>
+    <string name="Login_here">Login_Here</string>
+    <string name="welcome">Welcome</string>
+    <string name="Login_Here">Login Here</string>
 </resources>

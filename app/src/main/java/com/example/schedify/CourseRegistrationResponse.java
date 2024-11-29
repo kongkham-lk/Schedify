@@ -83,8 +83,7 @@ public class CourseRegistrationResponse {
                             urlID = 56165;
                             break;
                     }
-                    CourseModel course = new CourseModel(courseTitle, location, startTime, endTime,
-                            startDate, endDate, classDayList, urlID, isRegistered, "");
+                    CourseModel course = new CourseModel(courseTitle, location, startTime, endTime, startDate, endDate, classDayList, urlID, isRegistered, "");
                     courseList.add(course);
                 } catch (Exception e) {
                     e.printStackTrace();
