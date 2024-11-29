@@ -10,24 +10,27 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:clipToPadding="true"
             android:clipChildren="true"
-            android:padding="10dp"
             android:id="@+id/card_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/tv_logout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:fontFamily="sans-serif-condensed"
-                android:maxLines="1"
-                android:text="@string/btn_logout"
-                android:textColor="@color/red"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/tv_logout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="0dp"
+                    android:maxLines="1"
+                    android:text="@string/btn_logout"
+                    android:textColor="@color/red"
+                    android:textSize="18sp"
+                    android:background="@drawable/textview_select_effect"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
