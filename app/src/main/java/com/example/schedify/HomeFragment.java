@@ -294,7 +294,7 @@ public class HomeFragment extends Fragment {
                     }
 
                     if (isToday && exactDay) {
-                        courses.add(new CourseModel(title, location, times[0], times[1], dates[0], dates[1], classDayList, urlID, true));
+                        courses.add(new CourseModel(title, location, times[0], times[1], dates[0], dates[1], classDayList, urlID, true, ""));
                     }
                 }
 
@@ -406,7 +406,8 @@ public class HomeFragment extends Fragment {
                         .append(formattedStartDate).append(" - ")
                         .append(formattedEndDate).append(",")
                         .append(newCourse.getLocation()).append(",")
-                        .append(Arrays.toString(newCourse.getClassDayList()).replace(",", "")).append(";");// Remove commas from days list
+                        .append(Arrays.toString(newCourse.getClassDayList()).replace(",", "")).append(",")
+                        .append(newCourse.getUrlID()).append(";");// Remove commas from days list
             }
 
             editor.putString("taskList2", serializedCourses.toString());
