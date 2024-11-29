@@ -2,7 +2,9 @@ package com.example.schedify;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -47,15 +49,15 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        resetTabLayout();
+        if (MainActivity.tabLayout != null)
+            resetTabLayout();
     }
 
     public void login(View view) {
         String username = input_username.getText().toString();
         String password = input_password.getText().toString();
 
-        if (!username.isEmpty() || !password.isEmpty()) {
-            resetTabLayout();
+        if (!username.isEmpty() && !password.isEmpty()) {
             String[] savedPrefs = sessionManager.retrieveSaveCredential();
             String savedUsername = savedPrefs[0];
             String savedPassword = savedPrefs[1];
@@ -77,6 +79,7 @@ public class Login extends AppCompatActivity {
             String username = input_username.getText().toString();
             String password = input_password.getText().toString();
             sessionManager.createSession(username, password);
+            clearAllWebViewCookie();
 
             isSignupClicked = false;
             updatePageComponent("Login", isSignupClicked);
@@ -100,5 +103,11 @@ public class Login extends AppCompatActivity {
             if (MainActivity.tabLayout.getTabCount() > 0)
                 MainActivity.tabLayout.getTabAt(0).select();
         });
+    }
+
+    private void clearAllWebViewCookie() {
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.removeAllCookies(null); // Removes all cookies
+        cookieManager.flush(); // Ensures the changes are committed
     }
 }
