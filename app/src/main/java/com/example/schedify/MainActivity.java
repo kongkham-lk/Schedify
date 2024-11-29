@@ -26,13 +26,11 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
     public static TabLayout tabLayout;
     private ViewPager2 viewPager2;
     private TabAdapter adapter;
-    Button syncBtn;
     String targetURL; // flag for determine if show toast msg when fail to syn or just click back after view course page
 
+    // Functionality to handle sync button click
     public void onSyncButtonClicked() {
-        // Functionality to handle sync button click
         loadCourse();
-        // Your function logic here
     }
 
     @Override
@@ -130,17 +128,14 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager2.setCurrentItem(tab.getPosition());
-
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
             }
         });
     }
@@ -195,11 +190,8 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
     }
 
     private void retrievedMoodleCourseAPI() {
-        String moodleURL = "https://moodle.tru.ca/my/";
-
         MoodleApiResponse moodleApiResponse = new MoodleApiResponse(this);
         courseList = moodleApiResponse.retrievedCourseDataFromMoodle();
-//        Log.d("Courses", courseList.get(1).getTitle());
     }
 
     private void passCourseListToHomeFragment() {

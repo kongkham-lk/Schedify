@@ -31,14 +31,14 @@ import java.util.Locale;
 public class HomeFragment extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     private String mParam1;
     private String mParam2;
-    TextView textView;
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+    private final String KEY_TASKLIST = "taskList";
+    private final String KEY_COURSELIST = "courseList";
+
     private ListView list_view_home;
-    private HomePageAdaptor homePageAdaptor;
     private ArrayList<CourseModel> courses;
     private ArrayList<Task> numTasks;
     Button syncBtn;
@@ -47,7 +47,6 @@ public class HomeFragment extends Fragment {
     private int lastCheckedMinute = -1;
 
     public HomeFragment() {
-        // Required empty public constructor
     }
 
     private OnSyncButtonClickListener mListener;
@@ -104,7 +103,6 @@ public class HomeFragment extends Fragment {
         numTasks = new ArrayList<>();
 
         syncBtn.setOnClickListener(v -> {
-            boolean isWebViewOpen = WebViewLoginDialog.isOpen;
             if (mListener != null) {
                 mListener.onSyncButtonClicked();
             }
@@ -156,7 +154,6 @@ public class HomeFragment extends Fragment {
                 }
             }
         }
-
         return view;
     }
 
@@ -165,18 +162,17 @@ public class HomeFragment extends Fragment {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         StringBuilder sb = new StringBuilder();
-        for (Task task : numTasks) {
+        for (Task task : numTasks)
             sb.append(task.getTitle()).append(",").append(task.getDescription()).append(",").append(task.getTime()).append(",").append(task.getDate()).append(",").append(task.getLocation()).append(",;");
-        }
 
-        editor.putString("taskList", sb.toString());
+        editor.putString(KEY_TASKLIST, sb.toString());
         editor.apply();
     }
 
     private void createList() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
-        String taskData = sharedPreferences.getString("taskList", "");
-        String courseData = sharedPreferences.getString("taskList2", "");
+        String taskData = sharedPreferences.getString(KEY_TASKLIST, "");
+        String courseData = sharedPreferences.getString(KEY_COURSELIST, "");
         courses.clear();
         if (!taskData.isEmpty()) {
             String[] tasks = taskData.split(";");
@@ -218,12 +214,11 @@ public class HomeFragment extends Fragment {
             }
         }
 
-
         if (!courseData.isEmpty()) {
             String[] tasks = courseData.split(";");
             for (String task : tasks) {
                 String[] taskDetails = task.split(",");
-                Log.d(taskDetails.length + "", Arrays.toString(taskDetails));
+//                Log.d(taskDetails.length + "", Arrays.toString(taskDetails));
                 if (taskDetails.length >= 6) {
                     String title = taskDetails[0];
                     String description = taskDetails[1];
@@ -259,7 +254,6 @@ public class HomeFragment extends Fragment {
                         courses.add(new CourseModel(title, location, times[0], times[1], dates[0], dates[1], classDayList, urlID, true, ""));
                     }
                 }
-
             }
         }
         sortCourses();
@@ -334,7 +328,6 @@ public class HomeFragment extends Fragment {
             DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
             DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("MMM d"); // Desired format: "Nov 1"
 
-
             for (CourseModel newCourse : newCourseList) {
                 String formattedStartTime = formatTimeToAMPM(newCourse.getStartTime());
                 String formattedEndTime = formatTimeToAMPM(newCourse.getEndTime());
@@ -372,7 +365,7 @@ public class HomeFragment extends Fragment {
                         .append(newCourse.getUrlID()).append(";");// Remove commas from days list
             }
 
-            editor.putString("taskList2", serializedCourses.toString());
+            editor.putString(KEY_COURSELIST, serializedCourses.toString());
             editor.apply();
 
             sortCourses();
@@ -397,7 +390,6 @@ public class HomeFragment extends Fragment {
                     lastCheckedMinute = currentMinute;
                     onMinuteChanged();  // Call your action here
                 }
-
                 handler.postDelayed(this, 1000);
             }
         }, 1000);
@@ -505,7 +497,6 @@ public class HomeFragment extends Fragment {
         } catch (ParseException e) {
             System.out.println("Error: Invalid date format.");
         }
-
         return false;
     }
 }
