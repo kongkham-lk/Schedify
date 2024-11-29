@@ -143,8 +143,6 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
 
             }
         });
-
-       //loadCourse();
     }
 
     public void loadCourse() {
@@ -160,10 +158,13 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
     }
 
     private void fetchcourseRegistrationAPI(String initialURL, String targetURL) {
-        // Create and show the WebView login dialog
-        this.targetURL = targetURL;
-        webViewLoginDialog = new WebViewLoginDialog(MainActivity.this, initialURL, targetURL, this);
-        webViewLoginDialog.show();
+        if (!WebViewLoginDialog.isOpen) {
+            // Create and show the WebView login dialog
+            this.targetURL = targetURL;
+            webViewLoginDialog = new WebViewLoginDialog(MainActivity.this, initialURL, targetURL, this);
+            webViewLoginDialog.show();
+            WebViewLoginDialog.isOpen = true;
+        }
     }
 
     @Override
@@ -184,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
                 Toast.makeText(this, "Cancel Sync!", Toast.LENGTH_SHORT).show();
             }
         }
+
         WebViewLoginDialog.isOpen = false;
     }
 

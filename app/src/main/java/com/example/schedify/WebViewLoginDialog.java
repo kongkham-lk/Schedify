@@ -116,8 +116,10 @@ public class WebViewLoginDialog extends Dialog {
                         if (window != null) {
                             View decorView = window.getDecorView();
 
-                            if (decorView.getVisibility() == View.VISIBLE)
+                            if (decorView.getVisibility() == View.VISIBLE) {
                                 window.setLayout(1, 1); // Full-screen dialog
+                                isOpen = false;
+                            }
                         }
                         extractHTMLFromWebView();
                     }
@@ -176,10 +178,7 @@ public class WebViewLoginDialog extends Dialog {
     }
 
     private void loadUrl(String url) {
-        if (!isOpen) {
-            webView.loadUrl(url);
-            isOpen = true;
-        }
+        webView.loadUrl(url);
     }
 
     private void extractJsonDataFromWebView() {
