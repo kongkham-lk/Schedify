@@ -42,7 +42,7 @@ public class WebViewLoginDialog extends Dialog {
     private String cookie;
     private JSONObject jsonObject;
     private int attemptCount = 3;
-
+    public static boolean isOpen = false;
 
     public WebViewLoginDialog(Context context, String initialURL, String finalURL, LoginCallback loginCallback) {
         super(context);
@@ -104,7 +104,7 @@ public class WebViewLoginDialog extends Dialog {
                     cookieManager.setCookie(url, cookies);
 
                     if (!url.equals(finalURL)) { // if load registration page info
-                        webView.loadUrl(finalURL);
+                        loadUrl(finalURL);
 
                         // If login is successful, dismiss the dialog
                         if (webView.getVisibility() == View.VISIBLE)
@@ -172,7 +172,14 @@ public class WebViewLoginDialog extends Dialog {
         }
 
         // Load the initial login URL
-        webView.loadUrl(initialURL);
+        loadUrl(initialURL);
+    }
+
+    private void loadUrl(String url) {
+        if (!isOpen) {
+            webView.loadUrl(url);
+            isOpen = true;
+        }
     }
 
     private void extractJsonDataFromWebView() {

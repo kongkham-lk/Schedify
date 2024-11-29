@@ -104,7 +104,8 @@ public class HomeFragment extends Fragment {
         numTasks = new ArrayList<>();
 
         syncBtn.setOnClickListener(v -> {
-            if (mListener != null) {
+            boolean isWebViewOpen = WebViewLoginDialog.isOpen;
+            if (mListener != null && !isWebViewOpen) {
                 mListener.onSyncButtonClicked();
             }
         });

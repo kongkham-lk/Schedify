@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 public class Login extends AppCompatActivity {
 
     SessionManager sessionManager;
-
     TextView pageTitle;
     EditText input_username;
     EditText input_password;

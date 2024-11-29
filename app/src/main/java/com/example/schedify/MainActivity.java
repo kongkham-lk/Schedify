@@ -148,8 +148,6 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
     }
 
     public void loadCourse() {
-        String courseRegURL = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/registrationHistory";
-
         String initialCourseRegURL = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/registrationHistory";
         String finalCourseRegURL = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/reset?term=202510";
         String moodleURL = "https://moodle.tru.ca/my/";
@@ -170,23 +168,23 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
 
     @Override
     public void onLoginResult(boolean isSuccess) {
-        if (!targetURL.contains("course/view"))
+        if (!targetURL.contains("course/view")) {
             if (isSuccess) {
                 Toast.makeText(this, "Successfully Sync!", Toast.LENGTH_SHORT).show();
-    //            cookie = webViewLoginDialog.getCookie();
                 String targetURL = webViewLoginDialog.getInitialURL();
 
                 if (targetURL.contains("registration")) {
                     retrievedCourseRegistrationAPI(); // Proceed fetching course schedule
                     passCourseListToHomeFragment();
-                }
-                else if (targetURL.contains("moodle")) {
+                } else if (targetURL.contains("moodle")) {
                     retrievedMoodleCourseAPI();
                 }
             } else {
                 // Handle login failure
-                    Toast.makeText(this, "Cancel Sync!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Cancel Sync!", Toast.LENGTH_SHORT).show();
             }
+        }
+        WebViewLoginDialog.isOpen = false;
     }
 
     private void retrievedCourseRegistrationAPI() {
@@ -198,7 +196,6 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
         String moodleURL = "https://moodle.tru.ca/my/";
 
         MoodleApiResponse moodleApiResponse = new MoodleApiResponse(this);
-//        moodleApiResponse.setRequestMethod("GET");
         courseList = moodleApiResponse.retrievedCourseDataFromMoodle();
 //        Log.d("Courses", courseList.get(1).getTitle());
     }

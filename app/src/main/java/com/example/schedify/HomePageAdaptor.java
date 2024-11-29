@@ -62,32 +62,35 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
         viewHolder.tv_end_time.setText(course.getEndTime());
 
         convertView.findViewById(R.id.card_container).setOnClickListener(v -> {
-            if (course.getClassDayList().length <= 2) { // for task row
-                int newPosition = 0;
-                for (int i = 0; i < tasks.size(); i++) {
-                    Task targetTask = tasks.get(i);
-                    if (targetTask.getTitle().toString().equals(course.getTitle()) &&
-                            targetTask.getDescription().toString().equals(course.getDescription()) &&
-                            targetTask.getLocation().toString().equals(course.getLocation()) &&
-                            targetTask.getTime().toString().equals(course.getStartTime() + " - " + course.getEndTime()) &&
-                            targetTask.getDate().toString().equals(course.getStartDate() + " - " + course.getEndDate())) {
-                        newPosition = i;
-                        break;
+            boolean isWebViewOpen = WebViewLoginDialog.isOpen;
+            if (!isWebViewOpen) {
+                if (course.getClassDayList().length <= 2) { // for task row
+                    int newPosition = 0;
+                    for (int i = 0; i < tasks.size(); i++) {
+                        Task targetTask = tasks.get(i);
+                        if (targetTask.getTitle().toString().equals(course.getTitle()) &&
+                                targetTask.getDescription().toString().equals(course.getDescription()) &&
+                                targetTask.getLocation().toString().equals(course.getLocation()) &&
+                                targetTask.getTime().toString().equals(course.getStartTime() + " - " + course.getEndTime()) &&
+                                targetTask.getDate().toString().equals(course.getStartDate() + " - " + course.getEndDate())) {
+                            newPosition = i;
+                            break;
+                        }
                     }
+                    Intent edit_task = new Intent(context, CreateTaskActivity.class);
+                    edit_task.putExtra("title", course.getTitle());
+                    edit_task.putExtra("date", course.getStartDate() + " - " + course.getEndDate());
+                    edit_task.putExtra("time", course.getStartTime() + " - " + course.getEndTime());
+                    edit_task.putExtra("index", newPosition);
+                    edit_task.putExtra("location", course.getLocation());
+                    edit_task.putExtra("homePage", "HOMEEDIT");
+                    edit_task.putExtra("description", course.getDescription());
+                    context.startActivity(edit_task);
+                } else { // for course reg row
+                    int courseId = course.getUrlID();
+                    String url = "https://moodle.tru.ca/course/view.php?id=" + courseId;
+                    ((MainActivity) context).fetchcourseRegistrationAPI(url);
                 }
-                Intent edit_task = new Intent(context, CreateTaskActivity.class);
-                edit_task.putExtra("title", course.getTitle());
-                edit_task.putExtra("date", course.getStartDate() + " - " + course.getEndDate());
-                edit_task.putExtra("time", course.getStartTime() + " - " + course.getEndTime());
-                edit_task.putExtra("index", newPosition);
-                edit_task.putExtra("location", course.getLocation());
-                edit_task.putExtra("homePage", "HOMEEDIT");
-                edit_task.putExtra("description", course.getDescription());
-                context.startActivity(edit_task);
-            } else { // for course reg row
-                int courseId = course.getUrlID();
-                String url = "https://moodle.tru.ca/course/view.php?id=" + courseId;
-                ((MainActivity) context).fetchcourseRegistrationAPI(url);
             }
         });
 
