@@ -70,13 +70,6 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
             }
         }).attach();
 
-        // always select home tab when login
-//        tabLayout.post(() -> {
-//            if (tabLayout.getTabCount() > 0) {
-//                tabLayout.getTabAt(0).select();
-//            }
-//        });
-
         String frag = getIntent().getStringExtra("Fragment");
         if ("CreateFragment".equals(frag)) {
             viewPager2.setCurrentItem(1, false);
