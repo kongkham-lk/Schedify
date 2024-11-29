@@ -10,31 +10,30 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="20dp"
+        android:layout_height="match_parent"
         app:cardCornerRadius="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.75"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHeight_percent="0.75">
+        app:layout_constraintTop_toTopOf="parent">
 
         <WebView
             android:id="@+id/webViewScreen"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="714dp" />
 
         <ImageButton
-            android:id="@+id/backBtn"
+            android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginTop="15dp"
-            android:background="@drawable/btn_roundcorner"
+            android:background="@drawable/btn_roundcorner_dark"
             android:padding="6dp"
             app:layout_constraintStart_toStartOf="@+id/cardView"
             app:layout_constraintTop_toTopOf="@+id/cardView"
-            app:srcCompat="@drawable/baseline_arrow_back_24" />
+            app:srcCompat="@drawable/back_arrow_white" />
 
     </androidx.cardview.widget.CardView>
 

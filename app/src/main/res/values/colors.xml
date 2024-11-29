@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="btn">#FF0000</color>
+    <color name="black">#161319</color>
+    <color name="grey">#7C7B7B</color>
+    <color name="white">#FFFFFF</color>
+    <color name="lightGrey">#DBDBDB</color>
+    <color name="colorPrimary">#0277BD</color>
+    <color name="colorPrimaryDark">#01579B</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="darkGray">#242424</color>
+    <color name="darkGrayCorner">#2F2F2F</color>
+    <color name="teal_200">#43FBF3</color>
+    <color name="teal_700">#00BCD4</color>
+
+    <style name="ListViewTextStyle">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    
+    <color name="red">#F82956</color>
+    <color name="purple">#C8B5F5</color>
 </resources>

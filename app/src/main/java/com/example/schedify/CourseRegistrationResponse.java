@@ -1,5 +1,7 @@
 package com.example.schedify;
 
+import android.content.Context;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,25 +12,33 @@ public class CourseRegistrationResponse {
 
     private List<CourseModel> courseList;
     private static final String[] DayInAWeek = new String[]{"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
-    private String requestMethod = "";
+//    private String requestMethod = "";
+    private Context context;
 
-    public CourseRegistrationResponse() {
+    public CourseRegistrationResponse(Context context) {
         courseList = new ArrayList<>();
+        this.context = context;
     }
 
+//    public String getRequestMethod() {
+//        return requestMethod;
+//    }
+//
+//    public void setRequestMethod(String requestMethod) {
+//        this.requestMethod = requestMethod;
+//    }
+
     // Callable task to fetch API data
-    public List<CourseModel> fetchCourseSchedule(String apiUrl, String cookie) {
-        APIFetcher moodleFetcher = new APIFetcher();
-        moodleFetcher.setRequestMethod(requestMethod);
-        String moodleResponse = moodleFetcher.getResponse(apiUrl, cookie); // fetch course schedule from API
-        extractJSONResponse(moodleResponse); // Bind data and save to courseList
+    public List<CourseModel> retrievedCourseSchedule() {
+        extractJSONResponse(); // Bind data and save to courseList
         return courseList;
     }
 
     // Parsing logic for the articles
-    private void extractJSONResponse(String jsonResponse) {
+    private void extractJSONResponse() {
         try {
-            JSONObject jsonObject = new JSONObject(jsonResponse);
+//            JSONObject jsonObject = new JSONObject(jsonResponse);
+            JSONObject jsonObject = Helper.loadJsonFromPreferences(context);
             JSONArray registeredCourseList = jsonObject.getJSONObject("data").getJSONArray("registrations");
 
             for (int i = 0; i < registeredCourseList.length(); i++) {
@@ -38,6 +48,7 @@ public class CourseRegistrationResponse {
                     int courseNumber = courseItem.getInt("courseNumber");
                     String courseCode = subject + " " + courseNumber;
                     String courseTitle = courseItem.getString("courseTitle");
+                    String title = courseCode + ": " + courseTitle;
                     boolean isRegistered = courseItem.getString("statusDescription").toLowerCase().equals("registered") ? true : false;
                     JSONObject meetingDetail = courseItem.getJSONArray("meetingTimes").getJSONObject(0);
                     String startTime = meetingDetail.getString("beginTime");
@@ -46,7 +57,7 @@ public class CourseRegistrationResponse {
                     String endDate = meetingDetail.getString("endDate");
                     String building = meetingDetail.getString("building");
                     String room = meetingDetail.getString("room");
-                    String roomNumber = building + " " + room;
+                    String location = building + " " + room;
                     int numDays = DayInAWeek.length;
                     boolean[] classDayList = new boolean[numDays];
                     for (int day = 0; day < numDays; day++) {
@@ -72,8 +83,7 @@ public class CourseRegistrationResponse {
                             urlID = 56165;
                             break;
                     }
-                    CourseModel course = new CourseModel(courseCode, courseTitle, isRegistered, startDate,
-                            endDate, startTime, endTime, roomNumber, classDayList, urlID);
+                    CourseModel course = new CourseModel(courseTitle, location, startTime, endTime, startDate, endDate, classDayList, urlID, isRegistered, "");
                     courseList.add(course);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -82,13 +92,5 @@ public class CourseRegistrationResponse {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public String getRequestMethod() {
-        return requestMethod;
-    }
-
-    public void setRequestMethod(String requestMethod) {
-        this.requestMethod = requestMethod;
     }
 }
