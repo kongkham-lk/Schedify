@@ -38,21 +38,21 @@ public class Login extends AppCompatActivity {
         btn_signup = findViewById(R.id.btn_signup);
     }
 
-    public void login(View view)
-    {
-        String[] savedPrefs = sessionManager.retrieveSaveCredential();
-        String savedUsername = savedPrefs[0];
-        String savedPassword = savedPrefs[1];
+    public void login(View view) {
         String username = input_username.getText().toString();
         String password = input_password.getText().toString();
 
-        if(username.equals(savedUsername)&& password.equals(savedPassword))
-        {
-            Intent intent = new Intent(getApplicationContext(), HomeFragment.class);
-            startActivity(intent);
+        if (!username.isEmpty() || !password.isEmpty()) {
+            String[] savedPrefs = sessionManager.retrieveSaveCredential();
+            String savedUsername = savedPrefs[0];
+            String savedPassword = savedPrefs[1];
+
+            if (username.equals(savedUsername) && password.equals(savedPassword)) {
+                Intent intent = new Intent(getApplicationContext(), HomeFragment.class);
+                startActivity(intent);
+            } else
+                Toast.makeText(this, "Username or Password Did Not Matched!", Toast.LENGTH_SHORT).show();
         }
-        else
-            Toast.makeText(this, "Username or Password Did Not Matched!", Toast.LENGTH_SHORT).show();
     }
 
     public void openSignup(View view)
