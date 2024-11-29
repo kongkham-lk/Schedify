@@ -86,8 +86,8 @@ public class CreateTaskActivity extends AppCompatActivity {
             }
             if (locatedPage != null) {
                 fromHome = true;
-                deleteBtn.setVisibility(View.INVISIBLE);
-                returnBtn.setVisibility(View.INVISIBLE);
+//                deleteBtn.setVisibility(View.INVISIBLE);
+//                returnBtn.setVisibility(View.INVISIBLE);
             }
 
         }
