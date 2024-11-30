@@ -62,6 +62,7 @@ public class Login extends AppCompatActivity {
             String savedPassword = savedPrefs[1];
 
             if (username.equals(savedUsername) && password.equals(savedPassword)) {
+                sessionManager.keepLogin();
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
             } else

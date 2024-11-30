@@ -68,6 +68,12 @@ public class SessionManager {
         context.startActivity(intent);
     }
 
+    public void keepLogin() {
+        editor = sp.edit();
+        editor.putBoolean(KEY_IF_LOGGED_IN, true);
+        editor.commit();
+    }
+
     public String[] retrieveSaveCredential() {
         sp = context.getSharedPreferences(PREF_FILE_NAME, 0);
         savedUsername = sp.getString(KEY_USERNAME, "");
