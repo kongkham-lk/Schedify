@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,7 +43,7 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.home_items_view_holder, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.tv_courseCode = convertView.findViewById(R.id.tv_courseCode);
+            viewHolder.tv_courseCode = convertView.findViewById(R.id.tv_title);
             viewHolder.tv_location = convertView.findViewById(R.id.tv_location);
             viewHolder.tv_start_time = convertView.findViewById(R.id.tv_startTime);
             viewHolder.tv_end_time = convertView.findViewById(R.id.tv_endTime);
@@ -99,9 +98,13 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
 
     private void setBackgroundColor(View convertView, boolean isExpired) {
         int color = isExpired ?
-                ContextCompat.getColor(getContext(), R.color.grey) :
-                ContextCompat.getColor(getContext(), R.color.darkGray);
-        convertView.findViewById(R.id.card_container).setBackgroundColor(color);
+                ContextCompat.getColor(getContext(), R.color.item_greyOut) :
+                ContextCompat.getColor(getContext(), R.color.item_highlight);
+        ((TextView)convertView.findViewById(R.id.tv_title)).setTextColor(color);
+        ((TextView)convertView.findViewById(R.id.tv_location)).setTextColor(color);
+        ((TextView)convertView.findViewById(R.id.tv_startTime)).setTextColor(color);
+        ((TextView)convertView.findViewById(R.id.tv_endTime)).setTextColor(color);
+        ((ImageView)convertView.findViewById(R.id.line)).setBackgroundColor(color);
     }
 
     private static class ViewHolder {

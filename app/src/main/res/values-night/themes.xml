@@ -3,9 +3,9 @@
     <style name="Base.Theme.Schedify" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
-        <item name="android:windowSplashScreenBackground">@color/iconBlack</item>
+        <item name="android:windowSplashScreenBackground">@color/splash_screen_background</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/app_icon</item>
-        <item name="android:windowSplashScreenIconBackgroundColor">@color/iconBlack</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/splash_screen_background</item>
 
     </style>
 </resources>

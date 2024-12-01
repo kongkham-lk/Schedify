@@ -20,7 +20,7 @@
         android:textStyle="bold"
         android:layout_marginStart="48dp"
         android:layout_marginBottom="20dp"
-        android:textSize="32sp"/>
+        android:textSize="38sp"/>
 
     <EditText
         android:id="@+id/edt_username"
@@ -34,7 +34,7 @@
         android:inputType="text"
         android:padding="12dp"
         android:textColor="@color/white"
-        android:textColorHint="@color/grey" />
+        android:textColorHint="@color/input_box_hintText" />
 
     <EditText
         android:id="@+id/edt_password"
@@ -50,7 +50,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="24dp"
         android:textColor="@color/white"
-        android:textColorHint="@color/grey" />
+        android:textColorHint="@color/input_box_hintText" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -61,7 +61,7 @@
 
         <Button
             android:id="@+id/btn_login"
-            android:layout_width="110dp"
+            android:layout_width="115dp"
             android:layout_height="62dp"
             android:layout_marginEnd="32dp"
             android:onClick="login"
@@ -70,7 +70,7 @@
 
         <Button
             android:id="@+id/btn_signup"
-            android:layout_width="110dp"
+            android:layout_width="115dp"
             android:layout_height="62dp"
             android:onClick="openSignup"
             android:textSize="18sp"
@@ -78,7 +78,7 @@
 
         <Button
             android:id="@+id/btn_back"
-            android:layout_width="110dp"
+            android:layout_width="115dp"
             android:layout_height="62dp"
             android:layout_marginStart="32dp"
             android:textSize="18sp"

@@ -20,13 +20,13 @@
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:padding="3dp"
-            android:background="@color/darkGray"
+            android:background="@color/item_row_background"
             android:clipToPadding="true"
             android:clipChildren="true"
             android:id="@+id/card_container">
 
             <TextView
-                android:id="@+id/tv_courseCode"
+                android:id="@+id/tv_title"
                 android:layout_width="260dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -52,10 +52,10 @@
                 android:text="@string/label_start_time"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_courseCode"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/line"
-                app:layout_constraintTop_toTopOf="@+id/tv_courseCode" />
+                app:layout_constraintTop_toTopOf="@+id/tv_title" />
 
             <TextView
                 android:id="@+id/tv_endTime"
@@ -82,8 +82,8 @@
                 android:text="@string/location_text"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="@+id/tv_courseCode"
-                app:layout_constraintTop_toBottomOf="@+id/tv_courseCode" />
+                app:layout_constraintStart_toStartOf="@+id/tv_title"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
             <ImageView
                 android:id="@+id/line"
@@ -91,10 +91,10 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
                 android:contentDescription="@string/time_set_text"
-                android:src="@drawable/rounded_background_highlighted"
+                android:background="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHeight_percent="0.8"
-                app:layout_constraintStart_toEndOf="@+id/tv_courseCode"
+                app:layout_constraintStart_toEndOf="@+id/tv_title"
                 app:layout_constraintTop_toTopOf="parent" /> <!-- Replace with your drawable resource -->
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -40,8 +40,8 @@ public class CreateTaskActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_create_task);
 
-        titleInput = findViewById(R.id.tv_title_input);
-        descriptionInput = findViewById(R.id.tv_description_input);
+        titleInput = findViewById(R.id.edt_title);
+        descriptionInput = findViewById(R.id.edt_description);
         datePicker = findViewById(R.id.btn_date_picker_start);
         timePicker = findViewById(R.id.btn_time_picker_start);
         datePickerEnd = findViewById(R.id.btn_date_picker_end);
@@ -49,7 +49,7 @@ public class CreateTaskActivity extends AppCompatActivity {
         ImageButton returnBtn = findViewById(R.id.btn_back);
         Button saveBtn = findViewById(R.id.btn_save);
         deleteBtn = findViewById(R.id.btn_delete);
-        locationInput = findViewById(R.id.tv_location_input);
+        locationInput = findViewById(R.id.edt_location);
 
         Intent edit_intent = getIntent();
         if (edit_intent != null) {
