@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#161319</color>
+    <color name="red">#F82956</color>
+    <color name="splash_screen_background">#131415</color>
+    <color name="item_row_background">#1B191D</color>
+    <color name="item_highlight">#FFFFFF</color>
+    <color name="item_greyOut">#767676</color>
+    <color name="input_box_background">#242424</color>
+    <color name="input_box_hintText">#767676</color>
+    <color name="input_box_text">#DBDBDB</color>
+    <color name="darkGrayCorner">#2F2F2F</color>
+    <color name="primaryColor_Btn">#F89B29</color>
+    <color name="primaryColor_Text">#000000</color>
+
+    <style name="ListViewTextStyle">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+</resources>
