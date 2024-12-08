@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Adaptors;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+
+import com.example.schedify.Models.AssignmentDetail;
+import com.example.schedify.R;
 
 import java.util.List;
 

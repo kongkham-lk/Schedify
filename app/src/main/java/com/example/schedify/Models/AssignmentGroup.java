@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Models;
 
 import java.util.List;
 

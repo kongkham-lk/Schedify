@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Util;
 
 import static android.content.Context.MODE_PRIVATE;
 

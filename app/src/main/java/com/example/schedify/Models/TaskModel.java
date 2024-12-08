@@ -1,13 +1,13 @@
-package com.example.schedify;
+package com.example.schedify.Models;
 
-public class Task {
+public class TaskModel {
     private String title;
     private String time;
     private String description;
     private String date;
     private String location;
 
-    public Task(String title, String description, String time, String date, String location) {
+    public TaskModel(String title, String description, String time, String date, String location) {
         this.title = title;
         this.time = time;
         this.description = description;

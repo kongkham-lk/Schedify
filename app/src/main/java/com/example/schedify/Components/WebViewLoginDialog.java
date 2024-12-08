@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Components;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -24,6 +24,9 @@ import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import android.webkit.CookieManager;
+
+import com.example.schedify.R;
+import com.example.schedify.Util.Helper;
 
 import org.json.JSONObject;
 

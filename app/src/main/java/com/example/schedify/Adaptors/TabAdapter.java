@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Adaptors;
 
 import android.content.Context;
 import android.util.SparseArray;
@@ -8,6 +8,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
+
+import com.example.schedify.Fragments.CreateFragment;
+import com.example.schedify.Fragments.HomeFragment;
+import com.example.schedify.Fragments.SettingsFragment;
 
 public class TabAdapter extends FragmentStateAdapter {
     Context mainContext;

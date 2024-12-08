@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,11 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.example.schedify.Models.CourseModel;
+import com.example.schedify.Adaptors.HomePageAdaptor;
+import com.example.schedify.R;
+import com.example.schedify.Models.TaskModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,7 +44,7 @@ public class HomeFragment extends Fragment {
 
     private ListView list_view_home;
     private ArrayList<CourseModel> courses;
-    private ArrayList<Task> numTasks;
+    private ArrayList<TaskModel> numTaskModels;
     Button syncBtn;
 
     private Handler handler = new Handler();
@@ -100,7 +104,7 @@ public class HomeFragment extends Fragment {
 
         // Initialize course data (Replace with your data source)
         courses = new ArrayList<>();
-        numTasks = new ArrayList<>();
+        numTaskModels = new ArrayList<>();
 
         syncBtn.setOnClickListener(v -> {
             if (mListener != null) {
@@ -119,7 +123,7 @@ public class HomeFragment extends Fragment {
             int index = intent.getIntExtra("index", -1);
 
             if ((title != null && description != null && date != null) && index != -1) {
-                Task task = numTasks.get(index);
+                TaskModel taskModel = numTaskModels.get(index);
                 int pos = -1;
                 for (int i = 0; i < courses.size(); i++) {
                     String tempStartTime = courses.get(i).getStartTime();
@@ -128,11 +132,11 @@ public class HomeFragment extends Fragment {
                     String tempEndDate = courses.get(i).getEndDate();
                     String tempTime = tempStartTime + " - " + tempEndTime;
                     String tempDate = tempStartDate + " - " + tempEndDate;
-                    if (courses.get(i).getTitle().equals(task.getTitle()) &&
-                            courses.get(i).getLocation().equals(task.getLocation()) &&
-                            courses.get(i).getDescription().equals(task.getDescription()) &&
-                            tempTime.equals(task.getTime()) &&
-                            tempDate.equals(task.getDate())) {
+                    if (courses.get(i).getTitle().equals(taskModel.getTitle()) &&
+                            courses.get(i).getLocation().equals(taskModel.getLocation()) &&
+                            courses.get(i).getDescription().equals(taskModel.getDescription()) &&
+                            tempTime.equals(taskModel.getTime()) &&
+                            tempDate.equals(taskModel.getDate())) {
                         pos = i;
                         break;
                     }
@@ -141,29 +145,29 @@ public class HomeFragment extends Fragment {
                     String[] newTime = time.split(" - ");
                     newTime[0] = newTime[0].trim();
                     newTime[1] = newTime[1].trim();
-                    numTasks.get(index).setTitle(title);
-                    numTasks.get(index).setDescription(description);
-                    numTasks.get(index).setDate(date);
-                    numTasks.get(index).setTime(time);
-                    numTasks.get(index).setLocation(location);
+                    numTaskModels.get(index).setTitle(title);
+                    numTaskModels.get(index).setDescription(description);
+                    numTaskModels.get(index).setDate(date);
+                    numTaskModels.get(index).setTime(time);
+                    numTaskModels.get(index).setLocation(location);
                     courses.get(pos).setTitle(title);
                     courses.get(pos).setLocation(location);
                     courses.get(pos).setStartTime(newTime[0]);
                     courses.get(pos).setEndTime(newTime[1]);
-                    saveTaskList(numTasks);
+                    saveTaskList(numTaskModels);
                 }
             }
         }
         return view;
     }
 
-    private void saveTaskList(List<Task> taskList) {
+    private void saveTaskList(List<TaskModel> taskModelList) {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         StringBuilder sb = new StringBuilder();
-        for (Task task : numTasks)
-            sb.append(task.getTitle()).append(",").append(task.getDescription()).append(",").append(task.getTime()).append(",").append(task.getDate()).append(",").append(task.getLocation()).append(",;");
+        for (TaskModel taskModel : numTaskModels)
+            sb.append(taskModel.getTitle()).append(",").append(taskModel.getDescription()).append(",").append(taskModel.getTime()).append(",").append(taskModel.getDate()).append(",").append(taskModel.getLocation()).append(",;");
 
         editor.putString(KEY_TASKLIST, sb.toString());
         editor.apply();
@@ -192,7 +196,7 @@ public class HomeFragment extends Fragment {
                     boolean[] classDayList = {false, true};
                     boolean isToday = compareDate(dates[0], dates[1]);
                     if (isToday) {
-                        numTasks.add(new Task(title, description, time, date, location));
+                        numTaskModels.add(new TaskModel(title, description, time, date, location));
                         courses.add(new CourseModel(title, location, times[0], times[1], dates[0], dates[1], classDayList, 0,true, description));
                     }
                 } else if (taskDetails.length == 4) { // Task data - without location
@@ -207,7 +211,7 @@ public class HomeFragment extends Fragment {
                     dates[1] = dates[1].trim();
                     boolean isToday = compareDate(dates[0], dates[1]);
                     if (isToday) {
-                        numTasks.add(new Task(title, description, time, date, ""));
+                        numTaskModels.add(new TaskModel(title, description, time, date, ""));
                         courses.add(new CourseModel(title, "", times[0], times[1], dates[0], dates[1], classDayList, 0, true, description));
                     }
                 }
@@ -287,7 +291,7 @@ public class HomeFragment extends Fragment {
             return 0;
         });
 
-        HomePageAdaptor homePageAdaptor = new HomePageAdaptor(requireContext(), R.layout.home_items_view_holder, courses, numTasks);
+        HomePageAdaptor homePageAdaptor = new HomePageAdaptor(requireContext(), R.layout.home_items_view_holder, courses, numTaskModels);
         list_view_home.setAdapter(homePageAdaptor);
     }
 

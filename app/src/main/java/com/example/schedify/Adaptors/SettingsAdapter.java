@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Adaptors;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +7,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.schedify.Models.SettingsModel;
+import com.example.schedify.R;
+import com.example.schedify.Util.SessionManager;
 
 import java.util.ArrayList;
 
