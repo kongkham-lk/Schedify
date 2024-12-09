@@ -16,24 +16,24 @@ import androidx.core.content.ContextCompat;
 import com.example.schedify.Activities.CreateTaskActivity;
 import com.example.schedify.Activities.MainActivity;
 import com.example.schedify.Components.WebViewLoginDialog;
-import com.example.schedify.Models.CourseModel;
-import com.example.schedify.Models.TaskModel;
+import com.example.schedify.Models.Course;
+import com.example.schedify.Models.Task;
 import com.example.schedify.R;
 
 import java.util.ArrayList;
 
-public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
+public class HomePageAdaptor extends ArrayAdapter<Course> {
 
-    private final ArrayList<CourseModel> courses;
-    private final ArrayList<TaskModel> taskModels;
+    private final ArrayList<Course> courses;
+    private final ArrayList<Task> tasks;
     private final LayoutInflater layoutInflater;
     private Context context;
 
-    public HomePageAdaptor(@NonNull Context context, int resource, @NonNull ArrayList<CourseModel> objects, ArrayList<TaskModel> taskModels) {
+    public HomePageAdaptor(@NonNull Context context, int resource, @NonNull ArrayList<Course> objects, ArrayList<Task> tasks) {
         super(context, resource, objects);
         this.context = context;
         this.courses = objects;
-        this.taskModels = taskModels;
+        this.tasks = tasks;
         this.layoutInflater = LayoutInflater.from(context);
     }
 
@@ -48,7 +48,7 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
         ViewHolder viewHolder;
 
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.home_items_view_holder, parent, false);
+            convertView = layoutInflater.inflate(R.layout.item_reg_course_view_holder, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.tv_courseCode = convertView.findViewById(R.id.tv_title);
             viewHolder.tv_location = convertView.findViewById(R.id.tv_location);
@@ -59,7 +59,7 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        CourseModel course = courses.get(position);
+        Course course = courses.get(position);
         setBackgroundColor(convertView, course.isExpired());
 
         viewHolder.tv_courseCode.setText(course.getTitle());
@@ -72,13 +72,13 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
             if (!isWebViewOpen) {
                 if (course.getClassDayList().length <= 2) { // for task row
                     int newPosition = 0;
-                    for (int i = 0; i < taskModels.size(); i++) {
-                        TaskModel targetTaskModel = taskModels.get(i);
-                        if (targetTaskModel.getTitle().toString().equals(course.getTitle()) &&
-                                targetTaskModel.getDescription().toString().equals(course.getDescription()) &&
-                                targetTaskModel.getLocation().toString().equals(course.getLocation()) &&
-                                targetTaskModel.getTime().toString().equals(course.getStartTime() + " - " + course.getEndTime()) &&
-                                targetTaskModel.getDate().toString().equals(course.getStartDate() + " - " + course.getEndDate())) {
+                    for (int i = 0; i < tasks.size(); i++) {
+                        Task targetTask = tasks.get(i);
+                        if (targetTask.getTitle().toString().equals(course.getTitle()) &&
+                                targetTask.getDescription().toString().equals(course.getDescription()) &&
+                                targetTask.getLocation().toString().equals(course.getLocation()) &&
+                                targetTask.getTime().toString().equals(course.getStartTime() + " - " + course.getEndTime()) &&
+                                targetTask.getDate().toString().equals(course.getStartDate() + " - " + course.getEndDate())) {
                             newPosition = i;
                             break;
                         }
@@ -95,7 +95,7 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
                 } else { // for course reg row
                     int courseId = course.getUrlID();
                     String url = "https://moodle.tru.ca/course/view.php?id=" + courseId;
-                    ((MainActivity) context).fetchcourseRegistrationAPI(url);
+                    ((MainActivity) context).fetchAPIData(url);
                 }
             }
         });

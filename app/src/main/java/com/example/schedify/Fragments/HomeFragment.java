@@ -16,10 +16,10 @@ import android.widget.ListView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.schedify.Models.CourseModel;
+import com.example.schedify.Models.Course;
 import com.example.schedify.Adaptors.HomePageAdaptor;
 import com.example.schedify.R;
-import com.example.schedify.Models.TaskModel;
+import com.example.schedify.Models.Task;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,8 +43,8 @@ public class HomeFragment extends Fragment {
     private final String KEY_COURSELIST = "courseList";
 
     private ListView list_view_home;
-    private ArrayList<CourseModel> courses;
-    private ArrayList<TaskModel> numTaskModels;
+    private ArrayList<Course> displayItemList; // consist of course and task
+    private ArrayList<Task> displayTaskItemList;
     Button syncBtn;
 
     private Handler handler = new Handler();
@@ -103,15 +103,15 @@ public class HomeFragment extends Fragment {
         syncBtn = view.findViewById(R.id.btn_sync);
 
         // Initialize course data (Replace with your data source)
-        courses = new ArrayList<>();
-        numTaskModels = new ArrayList<>();
+        displayItemList = new ArrayList<>();
+        displayTaskItemList = new ArrayList<>();
 
         syncBtn.setOnClickListener(v -> {
             if (mListener != null) {
                 mListener.onSyncButtonClicked();
             }
         });
-        createList();
+        createDisplayListOnScreen();
 
         if (getActivity() != null && getActivity().getIntent() != null) {
             Intent intent = getActivity().getIntent();
@@ -123,20 +123,18 @@ public class HomeFragment extends Fragment {
             int index = intent.getIntExtra("index", -1);
 
             if ((title != null && description != null && date != null) && index != -1) {
-                TaskModel taskModel = numTaskModels.get(index);
+                Task task = displayTaskItemList.get(index);
                 int pos = -1;
-                for (int i = 0; i < courses.size(); i++) {
-                    String tempStartTime = courses.get(i).getStartTime();
-                    String tempEndTime = courses.get(i).getEndTime();
-                    String tempStartDate = courses.get(i).getStartDate();
-                    String tempEndDate = courses.get(i).getEndDate();
+                for (int i = 0; i < displayItemList.size(); i++) {
+                    Course targetItem = displayItemList.get(i);
+                    String tempStartTime = targetItem.getStartTime();
+                    String tempEndTime = targetItem.getEndTime();
+                    String tempStartDate = targetItem.getStartDate();
+                    String tempEndDate = targetItem.getEndDate();
                     String tempTime = tempStartTime + " - " + tempEndTime;
                     String tempDate = tempStartDate + " - " + tempEndDate;
-                    if (courses.get(i).getTitle().equals(taskModel.getTitle()) &&
-                            courses.get(i).getLocation().equals(taskModel.getLocation()) &&
-                            courses.get(i).getDescription().equals(taskModel.getDescription()) &&
-                            tempTime.equals(taskModel.getTime()) &&
-                            tempDate.equals(taskModel.getDate())) {
+                    if (targetItem.getTitle().equals(task.getTitle()) && targetItem.getLocation().equals(task.getLocation()) &&
+                            targetItem.getDescription().equals(task.getDescription()) && tempTime.equals(task.getTime()) && tempDate.equals(task.getDate())) {
                         pos = i;
                         break;
                     }
@@ -145,29 +143,29 @@ public class HomeFragment extends Fragment {
                     String[] newTime = time.split(" - ");
                     newTime[0] = newTime[0].trim();
                     newTime[1] = newTime[1].trim();
-                    numTaskModels.get(index).setTitle(title);
-                    numTaskModels.get(index).setDescription(description);
-                    numTaskModels.get(index).setDate(date);
-                    numTaskModels.get(index).setTime(time);
-                    numTaskModels.get(index).setLocation(location);
-                    courses.get(pos).setTitle(title);
-                    courses.get(pos).setLocation(location);
-                    courses.get(pos).setStartTime(newTime[0]);
-                    courses.get(pos).setEndTime(newTime[1]);
-                    saveTaskList(numTaskModels);
+                    displayTaskItemList.get(index).setTitle(title);
+                    displayTaskItemList.get(index).setDescription(description);
+                    displayTaskItemList.get(index).setDate(date);
+                    displayTaskItemList.get(index).setTime(time);
+                    displayTaskItemList.get(index).setLocation(location);
+                    displayItemList.get(pos).setTitle(title);
+                    displayItemList.get(pos).setLocation(location);
+                    displayItemList.get(pos).setStartTime(newTime[0]);
+                    displayItemList.get(pos).setEndTime(newTime[1]);
+                    saveTaskList(displayTaskItemList);
                 }
             }
         }
         return view;
     }
 
-    private void saveTaskList(List<TaskModel> taskModelList) {
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
+    private void saveTaskList(List<Task> taskList) {
+//        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         StringBuilder sb = new StringBuilder();
-        for (TaskModel taskModel : numTaskModels)
-            sb.append(taskModel.getTitle()).append(",").append(taskModel.getDescription()).append(",").append(taskModel.getTime()).append(",").append(taskModel.getDate()).append(",").append(taskModel.getLocation()).append(",;");
+        for (Task task : displayTaskItemList)
+            sb.append(task.getTitle()).append(",").append(task.getDescription()).append(",").append(task.getTime()).append(",").append(task.getDate()).append(",").append(task.getLocation()).append(",;");
 
         editor.putString(KEY_TASKLIST, sb.toString());
         editor.apply();
@@ -318,13 +316,13 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    public void filterOutCourseList(List<CourseModel> newCourseList) {
+    public void filterOutCourseList(List<Course> newCourseList) {
         Log.d("HomeFragment", "Updating course list");
 
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        createList();
+        createDisplayListOnScreen();
 
         if (newCourseList != null) {
             StringBuilder serializedCourses = new StringBuilder();
@@ -332,7 +330,7 @@ public class HomeFragment extends Fragment {
             DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
             DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("MMM d"); // Desired format: "Nov 1"
 
-            for (CourseModel newCourse : newCourseList) {
+            for (Course newCourse : newCourseList) {
                 String formattedStartTime = formatTimeToAMPM(newCourse.getStartTime());
                 String formattedEndTime = formatTimeToAMPM(newCourse.getEndTime());
                 newCourse.setStartTime(formattedStartTime);
@@ -401,7 +399,7 @@ public class HomeFragment extends Fragment {
 
     private void onMinuteChanged() {
         Log.d("List Creation", "New list created");
-        createList();
+        createDisplayListOnScreen();
     }
 
     @Override
@@ -429,7 +427,7 @@ public class HomeFragment extends Fragment {
 
 
     private void sortCourses() {
-        courses.sort((course1, course2) -> {
+        displayItemList.sort((course1, course2) -> {
             SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
             try {
                 Calendar currentDate = Calendar.getInstance();

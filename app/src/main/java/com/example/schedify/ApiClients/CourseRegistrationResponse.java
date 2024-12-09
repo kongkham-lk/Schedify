@@ -2,7 +2,7 @@ package com.example.schedify.ApiClients;
 
 import android.content.Context;
 
-import com.example.schedify.Models.CourseModel;
+import com.example.schedify.Models.Course;
 import com.example.schedify.Util.Helper;
 
 import org.json.JSONArray;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class CourseRegistrationResponse {
 
-    private List<CourseModel> courseList;
+    private List<Course> courseList;
     private static final String[] DayInAWeek = new String[]{"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
 //    private String requestMethod = "";
     private Context context;
@@ -32,7 +32,7 @@ public class CourseRegistrationResponse {
 //    }
 
     // Callable task to fetch API data
-    public List<CourseModel> retrievedCourseSchedule() {
+    public List<Course> retrievedCourseSchedule() {
         extractJSONResponse(); // Bind data and save to courseList
         return courseList;
     }
@@ -86,7 +86,7 @@ public class CourseRegistrationResponse {
                             urlID = 56165;
                             break;
                     }
-                    CourseModel course = new CourseModel(courseTitle, location, startTime, endTime, startDate, endDate, classDayList, urlID, isRegistered, "");
+                    Course course = new Course(courseTitle, location, startTime, endTime, startDate, endDate, classDayList, urlID, isRegistered, "");
                     courseList.add(course);
                 } catch (Exception e) {
                     e.printStackTrace();

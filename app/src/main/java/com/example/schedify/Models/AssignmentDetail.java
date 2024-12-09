@@ -3,14 +3,14 @@ package com.example.schedify.Models;
 public class AssignmentDetail {
     private String title;
     private String assignmentLink;
-    private String courseDetails;
+    private String description;
     private String dueTime;
 
     // Constructor
-    public AssignmentDetail(String title, String assignmentLink, String courseDetails, String dueTime) {
+    public AssignmentDetail(String title, String assignmentLink, String description, String dueTime) {
         this.title = title;
         this.assignmentLink = assignmentLink;
-        this.courseDetails = courseDetails;
+        this.description = description;
         this.dueTime = dueTime;
     }
 
@@ -31,12 +31,12 @@ public class AssignmentDetail {
         this.assignmentLink = assignmentLink;
     }
 
-    public String getCourseDetails() {
-        return courseDetails;
+    public String getDescription() {
+        return description;
     }
 
-    public void setCourseDetails(String courseDetails) {
-        this.courseDetails = courseDetails;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getDueTime() {

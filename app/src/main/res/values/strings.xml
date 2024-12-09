@@ -17,10 +17,12 @@
     <string name="label_title">Title</string>
     <string name="label_course_details">Course Details</string>
     <string name="label_start_time">Start Time</string>
-    <string name="label_due_time">End Time</string>
+    <string name="label_end_time">End Time</string>
+    <string name="label_due_time">Due Time</string>
     <string name="label_start_due_time">Start Time - End Time</string>
     <string name="label_start_due_date">Start Date - End Date</string>
     <string name="location_text">Location</string>
+    <string name="description_text">Description</string>
     <string name="input_password">Password</string>
     <string name="input_username">Username</string>
     <string name="btn_sync">Sync</string>

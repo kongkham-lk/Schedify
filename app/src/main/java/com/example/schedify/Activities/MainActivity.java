@@ -7,7 +7,8 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.schedify.Models.CourseModel;
+import com.example.schedify.Models.AssignmentsByDateGroup;
+import com.example.schedify.Models.Course;
 import com.example.schedify.ApiClients.CourseRegistrationResponse;
 import com.example.schedify.Fragments.CreateFragment;
 import com.example.schedify.Fragments.HomeFragment;
@@ -26,7 +27,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements WebViewLoginDialog.LoginCallback, HomeFragment.OnSyncButtonClickListener {
 
-    private List<CourseModel> courseList;
+    private List<Course> courseList;
+    private List<AssignmentsByDateGroup> assignmentsByDateGroupList;
     WebViewLoginDialog webViewLoginDialog;
     String cookie;
 
@@ -151,15 +153,15 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
         String initialCourseRegURL = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/registrationHistory";
         String finalCourseRegURL = "https://reg-prod.ec.tru.ca/StudentRegistrationSsb/ssb/registrationHistory/reset?term=202510";
         String moodleURL = "https://moodle.tru.ca/my/";
-        fetchcourseRegistrationAPI(initialCourseRegURL, finalCourseRegURL);
+        fetchAPIData(initialCourseRegURL, finalCourseRegURL);
 //        fetchcourseRegistrationAPI(moodleURL);
     }
 
-    public void fetchcourseRegistrationAPI(String targetURL) {
-        fetchcourseRegistrationAPI(targetURL, targetURL);
+    public void fetchAPIData(String targetURL) {
+        fetchAPIData(targetURL, targetURL);
     }
 
-    private void fetchcourseRegistrationAPI(String initialURL, String targetURL) {
+    private void fetchAPIData(String initialURL, String targetURL) {
         if (!WebViewLoginDialog.isOpen) {
             // Create and show the WebView login dialog
             this.targetURL = targetURL;
@@ -198,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements WebViewLoginDialo
 
     private void retrievedMoodleCourseAPI() {
         MoodleApiResponse moodleApiResponse = new MoodleApiResponse(this);
-        courseList = moodleApiResponse.retrievedCourseDataFromMoodle();
+        assignmentsByDateGroupList = moodleApiResponse.retrievedCourseDataFromMoodle();
     }
 
     private void passCourseListToHomeFragment() {

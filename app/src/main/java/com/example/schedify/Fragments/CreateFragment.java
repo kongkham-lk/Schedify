@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.schedify.Activities.CreateTaskActivity;
 import com.example.schedify.R;
-import com.example.schedify.Models.TaskModel;
+import com.example.schedify.Models.Task;
 import com.example.schedify.Adaptors.TaskAdapter;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class CreateFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private TaskAdapter taskAdapter;
-    private List<TaskModel> taskModelList;
+    private List<Task> taskList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,10 +42,10 @@ public class CreateFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_create);
 
-        List<TaskModel> taskModelList = loadTaskList();
+        List<Task> taskList = loadTaskList();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        TaskAdapter taskAdapter = new TaskAdapter(taskModelList, requireActivity());
+        TaskAdapter taskAdapter = new TaskAdapter(taskList, requireActivity());
         recyclerView.setAdapter(taskAdapter);
 
         if (getActivity() != null && getActivity().getIntent() != null) {
@@ -59,17 +59,17 @@ public class CreateFragment extends Fragment {
             int delete = intent.getIntExtra("delete", -1);
 
             if ((title != null && description != null && date != null) && index == -1) {
-                taskModelList.add(new TaskModel(title, description, time, date, location));
-                saveTaskList(taskModelList);
+                taskList.add(new Task(title, description, time, date, location));
+                saveTaskList(taskList);
             } else if (((title != null && description != null && date != null) && index > -1)) {
-                taskModelList.remove(index);
-                taskModelList.add(index, new TaskModel(title, description, time, date, location ));
-                saveTaskList(taskModelList);
+                taskList.remove(index);
+                taskList.add(index, new Task(title, description, time, date, location ));
+                saveTaskList(taskList);
             }
             if (delete > -1) {
                 Log.println(Log.ASSERT, "yes", "Testing: " + delete);
-                taskModelList.remove(delete);
-                saveTaskList(taskModelList);
+                taskList.remove(delete);
+                saveTaskList(taskList);
             }
         }
 
@@ -77,24 +77,24 @@ public class CreateFragment extends Fragment {
     }
 
 
-    private void saveTaskList(List<TaskModel> taskModelList) {
+    private void saveTaskList(List<Task> taskList) {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         StringBuilder sb = new StringBuilder();
-        for (TaskModel taskModel : taskModelList) {
-            sb.append(taskModel.getTitle()).append(",").append(taskModel.getDescription()).append(",").append(taskModel.getTime()).append(",").append(taskModel.getDate()).append(",").append(taskModel.getLocation()).append(",;");
+        for (Task task : taskList) {
+            sb.append(task.getTitle()).append(",").append(task.getDescription()).append(",").append(task.getTime()).append(",").append(task.getDate()).append(",").append(task.getLocation()).append(",;");
         }
 
         editor.putString("taskList", sb.toString());
         editor.apply();
     }
 
-    private List<TaskModel> loadTaskList() {
+    private List<Task> loadTaskList() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
         String taskData = sharedPreferences.getString("taskList", "");
 
-        List<TaskModel> taskModelList = new ArrayList<>();
+        List<Task> taskList = new ArrayList<>();
         if (!taskData.isEmpty()) {
             String[] tasks = taskData.split(";");
             for (String task : tasks) {
@@ -109,17 +109,17 @@ public class CreateFragment extends Fragment {
                     String time = taskDetails[2];
                     String date = taskDetails[3];
                     String location = taskDetails[4];
-                    taskModelList.add(new TaskModel(title, description, time, date, location));
+                    taskList.add(new Task(title, description, time, date, location));
                 } else if (taskDetails.length == 4) {
                     String title = taskDetails[0];
                     String description = taskDetails[1];
                     String time = taskDetails[2];
                     String date = taskDetails[3];
-                    taskModelList.add(new TaskModel(title, description, time, date, ""));
+                    taskList.add(new Task(title, description, time, date, ""));
                 }
             }
         }
-        return taskModelList;
+        return taskList;
     }
 
 }

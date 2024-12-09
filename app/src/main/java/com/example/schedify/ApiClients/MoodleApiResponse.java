@@ -3,8 +3,7 @@ package com.example.schedify.ApiClients;
 import android.content.Context;
 
 import com.example.schedify.Models.AssignmentDetail;
-import com.example.schedify.Models.AssignmentGroup;
-import com.example.schedify.Models.CourseModel;
+import com.example.schedify.Models.AssignmentsByDateGroup;
 import com.example.schedify.Util.Helper;
 
 import org.jsoup.Jsoup;
@@ -20,12 +19,12 @@ import java.util.List;
 
 public class MoodleApiResponse {
 
-    private List<CourseModel> courseList;
+    private List<AssignmentsByDateGroup> assignmentsByDateGroupList;
     private String requestMethod = "";
     private Context context;
 
     public MoodleApiResponse(Context context) {
-        courseList = new ArrayList<>();
+        assignmentsByDateGroupList = new ArrayList<>();
         this.context = context;
     }
 
@@ -38,12 +37,10 @@ public class MoodleApiResponse {
     }
 
     // Callable task to fetch API data
-    public List<CourseModel> retrievedCourseDataFromMoodle() {
-//        APIFetcher moodleFetcher = new APIFetcher();
-//        moodleFetcher.setRequestMethod(requestMethod);
-//        String moodleHTML = moodleFetcher.getResponse(apiUrl, cookie); // fetch course schedule from API
-        JSONObject jsonObject = extractCourseDataFromMoodle();
-        return courseList;
+    public List<AssignmentsByDateGroup> retrievedCourseDataFromMoodle() {
+        JSONObject jsonObject = extractJSONDataFromMoodle();
+        parseJsonToAssignmentGroups(jsonObject);
+        return assignmentsByDateGroupList;
     }
     // Fetch HTML content from a given URL
 //    public String fetchHTML(String targetUrl, String cookie) throws Exception {
@@ -75,7 +72,7 @@ public class MoodleApiResponse {
 //    }
 
     // Parse HTML and extract assignments and courses
-    public JSONObject extractCourseDataFromMoodle() {
+    public JSONObject extractJSONDataFromMoodle() {
         String html = Helper.loadHTMLFromPreferences(context);
         // Parse HTML using Jsoup
         Document doc = Jsoup.parse(html);
@@ -215,21 +212,8 @@ public class MoodleApiResponse {
         return result;
     }
 
-//    private String transformTimeStamp (String strTimestamp) {
-//        long timestamp = Long.parseLong(strTimestamp);
-//        Date date = new Date(timestamp);
-//        DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-//        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
-//        return format.format(date);
-//    }
-
-    public static List<AssignmentGroup> parseJsonToAssignmentGroups(String jsonString) {
-        List<AssignmentGroup> assignmentGroups = new ArrayList<>();
-
+    private void parseJsonToAssignmentGroups(JSONObject rootObject) {
         try {
-            // Parse JSON string to JsonObject
-            JSONObject rootObject = new JSONObject(jsonString);
-
             // Extract "assignmentsByDate" array
             JSONArray assignmentsByDateArray = rootObject.getJSONArray("assignmentsByDate");
 
@@ -258,12 +242,10 @@ public class MoodleApiResponse {
                 }
 
                 // Create AssignmentGroup and add to list
-                assignmentGroups.add(new AssignmentGroup(date, assignments));
+                assignmentsByDateGroupList.add(new AssignmentsByDateGroup(date, assignments));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return assignmentGroups;
     }
 }

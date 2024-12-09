@@ -13,18 +13,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.schedify.Activities.CreateTaskActivity;
-import com.example.schedify.Models.TaskModel;
+import com.example.schedify.Models.Task;
 import com.example.schedify.R;
 
 import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.taskViewHolder> {
     @NonNull
-    private final List<TaskModel> taskModelList;
+    private final List<Task> taskList;
     Context context;
 
-    public TaskAdapter(@NonNull List<TaskModel> taskModelList, Context context) {
-        this.taskModelList = taskModelList;
+    public TaskAdapter(@NonNull List<Task> taskList, Context context) {
+        this.taskList = taskList;
         this.context = context;
     }
 
@@ -38,22 +38,22 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.taskViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull TaskAdapter.taskViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        TaskModel taskModel = taskModelList.get(position);
-        holder.titleText.setText(taskModel.getTitle());
-        holder.timeText.setText(taskModel.getTime());
-        holder.dateText.setText(taskModel.getDate());
-        holder.locationText.setText(taskModel.getLocation());
+        Task task = taskList.get(position);
+        holder.titleText.setText(task.getTitle());
+        holder.timeText.setText(task.getTime());
+        holder.dateText.setText(task.getDate());
+        holder.locationText.setText(task.getLocation());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent edit_task = new Intent(context, CreateTaskActivity.class);
-                edit_task.putExtra("title", taskModel.getTitle());
-                edit_task.putExtra("date", taskModel.getDate());
-                edit_task.putExtra("location", taskModel.getLocation());
-                edit_task.putExtra("time", taskModel.getTime());
+                edit_task.putExtra("title", task.getTitle());
+                edit_task.putExtra("date", task.getDate());
+                edit_task.putExtra("location", task.getLocation());
+                edit_task.putExtra("time", task.getTime());
                 edit_task.putExtra("index", position);
-                edit_task.putExtra("description", taskModel.getDescription());
+                edit_task.putExtra("description", task.getDescription());
                 context.startActivity(edit_task);
             }
         });
@@ -61,7 +61,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.taskViewHolder
 
     @Override
     public int getItemCount() {
-        return taskModelList.size();
+        return taskList.size();
     }
 
     public static class taskViewHolder extends RecyclerView.ViewHolder {
