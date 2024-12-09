@@ -136,30 +136,6 @@ public class WebViewLoginDialog extends Dialog {
                 }
             }
 
-            private void setDialogFullScreen(Window window, boolean isLargestScreenSize) {
-                if (window != null) {
-                    if (isLargestScreenSize)
-                        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT); // Full-screen dialog
-                    else {
-                        // Access the WindowManager from the dialog's context
-                        WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-
-                        DisplayMetrics displayMetrics = new DisplayMetrics();
-                        if (windowManager != null) {
-                            windowManager.getDefaultDisplay().getMetrics(displayMetrics);
-                        }
-
-                        int screenWidth = displayMetrics.widthPixels;
-                        int screenHeight = displayMetrics.heightPixels;
-
-                        int desiredWidth = (int) (screenWidth * 0.9); // 80% of the screen width
-                        int desiredHeight = (int) (screenHeight * 0.7); // 60% of the screen height
-
-                        window.setLayout(desiredWidth, desiredHeight); // Full-screen dialog
-                    }
-                }
-            }
-
             @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
                 // Log the SSL error for debugging purposes
@@ -180,27 +156,50 @@ public class WebViewLoginDialog extends Dialog {
         loadUrl(initialURL);
     }
 
+    private void setDialogFullScreen(Window window, boolean isLargestScreenSize) {
+        if (window != null) {
+            if (isLargestScreenSize)
+                window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT); // Full-screen dialog
+            else {
+                // Access the WindowManager from the dialog's context
+                WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                if (windowManager != null)
+                    windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+
+                int screenWidth = displayMetrics.widthPixels;
+                int screenHeight = displayMetrics.heightPixels;
+
+                int desiredWidth = (int) (screenWidth * 0.9); // 80% of the screen width
+                int desiredHeight = (int) (screenHeight * 0.7); // 60% of the screen height
+
+                window.setLayout(desiredWidth, desiredHeight); // Full-screen dialog
+            }
+        }
+    }
+
     private void loadUrl(String url) {
         webView.loadUrl(url);
     }
 
     private void extractJsonDataFromWebView() {
         webView.evaluateJavascript(
-                "(function() { return document.body.innerText; })();",
-                jsonData -> {
-                    // Process the JSON data
-                    Log.d("WebView", "Extracted JSON: " + jsonData);
+            "(function() { return document.body.innerText; })();",
+            jsonData -> {
+                // Process the JSON data
+                Log.d("WebView", "Extracted JSON: " + jsonData);
 
-                    // Example: Parse the JSON (remove quotes from the response string)
-                    try {
-                        String cleanJson = jsonData.replaceAll("^\"|\"$", "").replace("\\n", "").replace("\\\"", "\"").replace("  ", "");
-                        JSONObject jsonObject = new JSONObject(cleanJson);
-                        Helper.saveJsonToPreferences(context, jsonObject);
-                        loginCallback.onLoginResult(true);
-                    } catch (Exception e) {
-                        Log.e("WebView", "Error parsing JSON: " + e.getMessage());
-                    }
+                // Example: Parse the JSON (remove quotes from the response string)
+                try {
+                    String cleanJson = jsonData.replaceAll("^\"|\"$", "").replace("\\n", "").replace("\\\"", "\"").replace("  ", "");
+                    JSONObject jsonObject = new JSONObject(cleanJson);
+                    Helper.saveJsonToPreferences(context, jsonObject);
+                    loginCallback.onLoginResult(true);
+                } catch (Exception e) {
+                    Log.e("WebView", "Error parsing JSON: " + e.getMessage());
                 }
+            }
         );
     }
 
@@ -314,4 +313,3 @@ public class WebViewLoginDialog extends Dialog {
         this.jsonObject = jsonObject;
     }
 }
-
