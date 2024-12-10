@@ -41,6 +41,7 @@ public class HomeFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private final String KEY_TASKLIST = "taskList";
     private final String KEY_COURSELIST = "courseList";
+    SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
 
     private ListView list_view_home;
     private ArrayList<Course> displayItemList; // consist of course and task
@@ -171,11 +172,48 @@ public class HomeFragment extends Fragment {
         editor.apply();
     }
 
-    private void createList() {
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
+    private void createDisplayListOnScreen() {
+        displayItemList.clear(); // reset display list
+
+//        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
+        fetchTaskItemListFromSharePreference();
+        fetchCourseItemListFromSharePreference();
+
+        //NOT SURE WHY NEED TO SORT TWICE -> MIGHT NEED TO UPDATE LOGIC TO GO BACK IN TIME (MAKE UI RENDER COURSE) IN ORDER TO TEST
+//        displayCourseItemList.sort((course1, course2) -> {
+//            SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+//            try {
+//                Calendar currentDate = Calendar.getInstance();
+//
+//                Calendar endTime1 = Calendar.getInstance();
+//                endTime1.setTime(timeFormat.parse(course1.getEndTime()));
+//                Calendar endTime2 = Calendar.getInstance();
+//                endTime2.setTime(timeFormat.parse(course2.getEndTime()));
+//
+//                course1.setExpired(endTime1.getTime().before(currentDate.getTime()));
+//                course2.setExpired(endTime2.getTime().before(currentDate.getTime()));
+//
+//                if (course1.isExpired() && !course2.isExpired()) return 1;
+//                if (!course1.isExpired() && course2.isExpired()) return -1;
+//
+//                Calendar startTime1 = Calendar.getInstance();
+//                startTime1.setTime(timeFormat.parse(course1.getStartTime()));
+//
+//                Calendar startTime2 = Calendar.getInstance();
+//                startTime2.setTime(timeFormat.parse(course2.getStartTime()));
+//
+//                return startTime1.getTime().compareTo(startTime2.getTime());
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//            return 0;
+//        });
+        HomePageAdaptor homePageAdaptor = new HomePageAdaptor(requireContext(), R.layout.item_reg_course_view_holder, displayItemList, displayTaskItemList);
+        list_view_home.setAdapter(homePageAdaptor);
+    }
+
+    private void fetchTaskItemListFromSharePreference() {
         String taskData = sharedPreferences.getString(KEY_TASKLIST, "");
-        String courseData = sharedPreferences.getString(KEY_COURSELIST, "");
-        courses.clear();
         if (!taskData.isEmpty()) {
             String[] tasks = taskData.split(";");
             for (String task : tasks) {
@@ -194,8 +232,8 @@ public class HomeFragment extends Fragment {
                     boolean[] classDayList = {false, true};
                     boolean isToday = compareDate(dates[0], dates[1]);
                     if (isToday) {
-                        numTaskModels.add(new TaskModel(title, description, time, date, location));
-                        courses.add(new CourseModel(title, location, times[0], times[1], dates[0], dates[1], classDayList, 0,true, description));
+                        displayTaskItemList.add(new Task(title, description, time, date, location));
+                        displayItemList.add(new Course(title, location, times[0], times[1], dates[0], dates[1], classDayList, 0,true, description));
                     }
                 } else if (taskDetails.length == 4) { // Task data - without location
                     String title = taskDetails[0];
@@ -209,13 +247,16 @@ public class HomeFragment extends Fragment {
                     dates[1] = dates[1].trim();
                     boolean isToday = compareDate(dates[0], dates[1]);
                     if (isToday) {
-                        numTaskModels.add(new TaskModel(title, description, time, date, ""));
-                        courses.add(new CourseModel(title, "", times[0], times[1], dates[0], dates[1], classDayList, 0, true, description));
+                        displayTaskItemList.add(new Task(title, description, time, date, ""));
+                        displayItemList.add(new Course(title, "", times[0], times[1], dates[0], dates[1], classDayList, 0, true, description));
                     }
                 }
             }
         }
+    }
 
+    private void fetchCourseItemListFromSharePreference() {
+        String courseData = sharedPreferences.getString(KEY_COURSELIST, "");
         if (!courseData.isEmpty()) {
             String[] tasks = courseData.split(";");
             for (String task : tasks) {
@@ -253,44 +294,12 @@ public class HomeFragment extends Fragment {
                     }
 
                     if (isToday && exactDay) {
-                        courses.add(new CourseModel(title, location, times[0], times[1], dates[0], dates[1], classDayList, urlID, true, ""));
+                        displayItemList.add(new Course(title, location, times[0], times[1], dates[0], dates[1], classDayList, urlID, true, ""));
                     }
                 }
             }
+            sortCourses();
         }
-        sortCourses();
-
-        courses.sort((course1, course2) -> {
-            SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
-            try {
-                Calendar currentDate = Calendar.getInstance();
-
-                Calendar endTime1 = Calendar.getInstance();
-                endTime1.setTime(timeFormat.parse(course1.getEndTime()));
-                Calendar endTime2 = Calendar.getInstance();
-                endTime2.setTime(timeFormat.parse(course2.getEndTime()));
-
-                course1.setExpired(endTime1.getTime().before(currentDate.getTime()));
-                course2.setExpired(endTime2.getTime().before(currentDate.getTime()));
-
-                if (course1.isExpired() && !course2.isExpired()) return 1;
-                if (!course1.isExpired() && course2.isExpired()) return -1;
-
-                Calendar startTime1 = Calendar.getInstance();
-                startTime1.setTime(timeFormat.parse(course1.getStartTime()));
-
-                Calendar startTime2 = Calendar.getInstance();
-                startTime2.setTime(timeFormat.parse(course2.getStartTime()));
-
-                return startTime1.getTime().compareTo(startTime2.getTime());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            return 0;
-        });
-
-        HomePageAdaptor homePageAdaptor = new HomePageAdaptor(requireContext(), R.layout.home_items_view_holder, courses, numTaskModels);
-        list_view_home.setAdapter(homePageAdaptor);
     }
 
     private String formatTimeToAMPM(String timeString) {
@@ -319,7 +328,7 @@ public class HomeFragment extends Fragment {
     public void filterOutCourseList(List<Course> newCourseList) {
         Log.d("HomeFragment", "Updating course list");
 
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
+//        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         createDisplayListOnScreen();
@@ -424,8 +433,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-
-
+    // sort course list to display on screen
     private void sortCourses() {
         displayItemList.sort((course1, course2) -> {
             SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
