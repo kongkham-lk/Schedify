@@ -163,7 +163,7 @@ public class HomeFragment extends Fragment {
 
         StringBuilder sb = new StringBuilder();
         for (Task task : numTasks)
-            sb.append(task.getTitle()).append(",").append(task.getDescription()).append(",").append(task.getTime()).append(",").append(task.getDate()).append(",").append(task.getLocation()).append(",;");
+            sb.append(task.getTitle()).append("|").append(task.getDescription()).append("|").append(task.getTime()).append("|").append(task.getDate()).append("|").append(task.getLocation()).append("|;");
 
         editor.putString(KEY_TASKLIST, sb.toString());
         editor.apply();
@@ -177,7 +177,7 @@ public class HomeFragment extends Fragment {
         if (!taskData.isEmpty()) {
             String[] tasks = taskData.split(";");
             for (String task : tasks) {
-                String[] taskDetails = task.split(",");
+                String[] taskDetails = task.split("\\|");
                 Log.d(taskDetails.length + "", Arrays.toString(taskDetails));
                 if (taskDetails.length == 5) { // Task data - full detail
                     String title = taskDetails[0];
@@ -217,7 +217,7 @@ public class HomeFragment extends Fragment {
         if (!courseData.isEmpty()) {
             String[] tasks = courseData.split(";");
             for (String task : tasks) {
-                String[] taskDetails = task.split(",");
+                String[] taskDetails = task.split("\\|");
 //                Log.d(taskDetails.length + "", Arrays.toString(taskDetails));
                 if (taskDetails.length >= 6) {
                     String title = taskDetails[0];
@@ -232,7 +232,7 @@ public class HomeFragment extends Fragment {
                     int urlID = Integer.parseInt(taskDetails[6]);
 //                    Log.d("Class days", taskDetails[5]);
 
-                    String[] stringArray = taskDetails[5].replace("[", "").replace("]", "").trim().split(" ");
+                    String[] stringArray = taskDetails[5].substring(1, taskDetails[5].length()-1).replace(",", "").trim().split(" ");
                     boolean[] classDayList = new boolean[stringArray.length];
                     for (int i = 0; i < stringArray.length; i++) {
                         classDayList[i] = Boolean.parseBoolean(stringArray[i]);
@@ -354,14 +354,14 @@ public class HomeFragment extends Fragment {
                 String endTime = formattedEndTime.replace(",", "");
 
                 serializedCourses
-                        .append(title).append(",")
-                        .append(description).append(",")
+                        .append(title).append("|")
+                        .append(description).append("|")
                         .append(startTime).append(" - ")
-                        .append(endTime).append(",")
+                        .append(endTime).append("|")
                         .append(formattedStartDate).append(" - ")
-                        .append(formattedEndDate).append(",")
-                        .append(newCourse.getLocation()).append(",")
-                        .append(Arrays.toString(newCourse.getClassDayList()).replace(",", "")).append(",")
+                        .append(formattedEndDate).append("|")
+                        .append(newCourse.getLocation()).append("|")
+                        .append(Arrays.toString(newCourse.getClassDayList()).replace("|", "")).append("|")
                         .append(newCourse.getUrlID()).append(";");// Remove commas from days list
             }
 
