@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.schedify.Models.Task;
 import com.example.schedify.Adaptors.HomePageAdaptor;
-import com.example.schedify.Models.CourseModel;
+import com.example.schedify.Models.Course;
 import com.example.schedify.R;
 
 import java.text.ParseException;
@@ -43,7 +43,7 @@ public class HomeFragment extends Fragment {
     private final String KEY_COURSELIST = "courseList";
 
     private ListView list_view_home;
-    private ArrayList<CourseModel> courses;
+    private ArrayList<Course> courses;
     private ArrayList<Task> numTasks;
     Button syncBtn;
 
@@ -197,7 +197,7 @@ public class HomeFragment extends Fragment {
                     boolean isToday = compareDate(dates[0], dates[1]);
                     if (isToday) {
                         numTasks.add(new Task(title, description, time, date, location));
-                        courses.add(new CourseModel(title, location, times[0], times[1], dates[0], dates[1], classDayList, 0,true, description));
+                        courses.add(new Course(title, location, times[0], times[1], dates[0], dates[1], classDayList, 0,true, description));
                     }
                 } else if (taskDetails.length == 4) { // Task data - without location
                     String title = taskDetails[0];
@@ -212,7 +212,7 @@ public class HomeFragment extends Fragment {
                     boolean isToday = compareDate(dates[0], dates[1]);
                     if (isToday) {
                         numTasks.add(new Task(title, description, time, date, ""));
-                        courses.add(new CourseModel(title, "", times[0], times[1], dates[0], dates[1], classDayList, 0, true, description));
+                        courses.add(new Course(title, "", times[0], times[1], dates[0], dates[1], classDayList, 0, true, description));
                     }
                 }
             }
@@ -255,7 +255,7 @@ public class HomeFragment extends Fragment {
                     }
 
                     if (isToday && exactDay) {
-                        courses.add(new CourseModel(title, location, times[0], times[1], dates[0], dates[1], classDayList, urlID, true, ""));
+                        courses.add(new Course(title, location, times[0], times[1], dates[0], dates[1], classDayList, urlID, true, ""));
                     }
                 }
             }
@@ -318,7 +318,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    public void filterOutCourseList(List<CourseModel> newCourseList) {
+    public void filterOutCourseList(List<Course> newCourseList) {
         Log.d("HomeFragment", "Updating course list");
 
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
@@ -332,7 +332,7 @@ public class HomeFragment extends Fragment {
             DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
             DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("MMM d"); // Desired format: "Nov 1"
 
-            for (CourseModel newCourse : newCourseList) {
+            for (Course newCourse : newCourseList) {
                 String formattedStartTime = formatTimeToAMPM(newCourse.getStartTime());
                 String formattedEndTime = formatTimeToAMPM(newCourse.getEndTime());
                 newCourse.setStartTime(formattedStartTime);

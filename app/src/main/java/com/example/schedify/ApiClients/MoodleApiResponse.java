@@ -3,9 +3,9 @@ package com.example.schedify.ApiClients;
 import android.content.Context;
 
 import com.example.schedify.Models.AssignmentDetail;
-import com.example.schedify.Models.AssignmentGroup;
-import com.example.schedify.Models.CourseModel;
-import com.example.schedify.Util.Helper;
+import com.example.schedify.Models.AssignmentsByDateGroup;
+import com.example.schedify.Models.Course;
+import com.example.schedify.Util.SharePreference;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,7 +20,7 @@ import java.util.List;
 
 public class MoodleApiResponse {
 
-    private List<CourseModel> courseList;
+    private List<Course> courseList;
     private String requestMethod = "";
     private Context context;
 
@@ -38,7 +38,7 @@ public class MoodleApiResponse {
     }
 
     // Callable task to fetch API data
-    public List<CourseModel> retrievedCourseDataFromMoodle() {
+    public List<Course> retrievedCourseDataFromMoodle() {
 //        APIFetcher moodleFetcher = new APIFetcher();
 //        moodleFetcher.setRequestMethod(requestMethod);
 //        String moodleHTML = moodleFetcher.getResponse(apiUrl, cookie); // fetch course schedule from API
@@ -76,7 +76,7 @@ public class MoodleApiResponse {
 
     // Parse HTML and extract assignments and courses
     public JSONObject extractCourseDataFromMoodle() {
-        String html = Helper.loadHTMLFromPreferences(context);
+        String html = SharePreference.loadHTML(context);
         // Parse HTML using Jsoup
         Document doc = Jsoup.parse(html);
 
@@ -223,8 +223,8 @@ public class MoodleApiResponse {
 //        return format.format(date);
 //    }
 
-    public static List<AssignmentGroup> parseJsonToAssignmentGroups(String jsonString) {
-        List<AssignmentGroup> assignmentGroups = new ArrayList<>();
+    public static List<AssignmentsByDateGroup> parseJsonToAssignmentGroups(String jsonString) {
+        List<AssignmentsByDateGroup> assignmentsByDateGroups = new ArrayList<>();
 
         try {
             // Parse JSON string to JsonObject
@@ -258,12 +258,12 @@ public class MoodleApiResponse {
                 }
 
                 // Create AssignmentGroup and add to list
-                assignmentGroups.add(new AssignmentGroup(date, assignments));
+                assignmentsByDateGroups.add(new AssignmentsByDateGroup(date, assignments));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return assignmentGroups;
+        return assignmentsByDateGroups;
     }
 }

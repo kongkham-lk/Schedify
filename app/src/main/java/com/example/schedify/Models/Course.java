@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class CourseModel {
+public class Course {
 
     private String title;
     private boolean isRegistered;
@@ -22,8 +22,8 @@ public class CourseModel {
     private int urlID;
 
 
-    public CourseModel(String title, String location, String startTime, String endTime,
-                       String startDate, String endDate, boolean[] classDayList, int urlID, boolean isRegistered, String description) {
+    public Course(String title, String location, String startTime, String endTime,
+                  String startDate, String endDate, boolean[] classDayList, int urlID, boolean isRegistered, String description) {
         this.title = title;
         this.location = location;
         this.startTime = startTime;

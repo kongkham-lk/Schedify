@@ -7,7 +7,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.schedify.Models.CourseModel;
+import com.example.schedify.Models.Course;
 import com.example.schedify.ApiClients.CourseRegistrationResponse;
 import com.example.schedify.Fragments.CreateFragment;
 import com.example.schedify.Fragments.HomeFragment;
@@ -26,7 +26,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements WebViewLoginDialog.LoginCallback, HomeFragment.OnSyncButtonClickListener {
 
-    private List<CourseModel> courseList;
+    private List<Course> courseList;
     WebViewLoginDialog webViewLoginDialog;
     String cookie;
 

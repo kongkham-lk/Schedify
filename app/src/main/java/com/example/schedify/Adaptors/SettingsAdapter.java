@@ -8,7 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.schedify.Models.SettingsModel;
+import com.example.schedify.Models.Settings;
 import com.example.schedify.R;
 import com.example.schedify.Util.SessionManager;
 
@@ -16,10 +16,10 @@ import java.util.ArrayList;
 
 public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyViewHolder> {
 
-    private final ArrayList<SettingsModel> settingsModelOptions;
+    private final ArrayList<Settings> settingsOptions;
 
-    public SettingsAdapter(ArrayList<SettingsModel> settingsModelOptions) {
-        this.settingsModelOptions = settingsModelOptions;
+    public SettingsAdapter(ArrayList<Settings> settingsOptions) {
+        this.settingsOptions = settingsOptions;
     }
 
     @NonNull
@@ -31,7 +31,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.tv_logout.setText(settingsModelOptions.get(position).getOptionName());
+        holder.tv_logout.setText(settingsOptions.get(position).getOptionName());
         holder.tv_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -43,7 +43,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
 
     @Override
     public int getItemCount() {
-        return settingsModelOptions.size();
+        return settingsOptions.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {

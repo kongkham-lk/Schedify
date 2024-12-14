@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="20dp"
-    tools:context=".Activities.Login">
+    tools:context=".Activities.LoginActivity">
 
     <TextView
         android:id="@+id/login_page_title"

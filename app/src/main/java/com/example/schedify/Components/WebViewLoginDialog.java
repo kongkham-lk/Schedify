@@ -25,7 +25,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import android.webkit.CookieManager;
 
-import com.example.schedify.Util.Helper;
+import com.example.schedify.Util.SharePreference;
 import com.example.schedify.R;
 
 import org.json.JSONObject;
@@ -195,7 +195,7 @@ public class WebViewLoginDialog extends Dialog {
                     try {
                         String cleanJson = jsonData.replaceAll("^\"|\"$", "").replace("\\n", "").replace("\\\"", "\"").replace("  ", "");
                         JSONObject jsonObject = new JSONObject(cleanJson);
-                        Helper.saveJsonToPreferences(context, jsonObject);
+                        SharePreference.saveJson(context, jsonObject);
                         loginCallback.onLoginResult(true);
                     } catch (Exception e) {
                         Log.e("WebView", "Error parsing JSON: " + e.getMessage());
@@ -221,7 +221,7 @@ public class WebViewLoginDialog extends Dialog {
                     if (html != null && !html.equals("null") && html.contains("event-list-wrapper")) {
                         // Successfully retrieved HTML
                         Log.d("WebView", "HTML Content: " + html); // Logging the HTML for debugging
-                        Helper.saveHTMLToPreferences(context, html);
+                        SharePreference.saveHTML(context, html);
                         loginCallback.onLoginResult(true); // Proceed after data is loaded
                         dismiss();
                     } else {
@@ -230,7 +230,7 @@ public class WebViewLoginDialog extends Dialog {
                             attemptCount--;
                             new Handler(Looper.getMainLooper()).postDelayed(this::extractHTMLFromWebView, 3000); // Retry after 1 second
                         } else {
-                            Helper.saveHTMLToPreferences(context, html);
+                            SharePreference.saveHTML(context, html);
                             loginCallback.onLoginResult(true); // Indicate failure after max attempts
                             dismiss();
                         }

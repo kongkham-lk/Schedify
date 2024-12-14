@@ -15,21 +15,21 @@ import androidx.core.content.ContextCompat;
 
 import com.example.schedify.Activities.MainActivity;
 import com.example.schedify.Models.Task;
-import com.example.schedify.Models.CourseModel;
+import com.example.schedify.Models.Course;
 import com.example.schedify.Activities.CreateTaskActivity;
 import com.example.schedify.R;
 import com.example.schedify.Components.WebViewLoginDialog;
 
 import java.util.ArrayList;
 
-public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
+public class HomePageAdaptor extends ArrayAdapter<Course> {
 
-    private final ArrayList<CourseModel> courses;
+    private final ArrayList<Course> courses;
     private final ArrayList<Task> tasks;
     private final LayoutInflater layoutInflater;
     private Context context;
 
-    public HomePageAdaptor(@NonNull Context context, int resource, @NonNull ArrayList<CourseModel> objects, ArrayList<Task> tasks) {
+    public HomePageAdaptor(@NonNull Context context, int resource, @NonNull ArrayList<Course> objects, ArrayList<Task> tasks) {
         super(context, resource, objects);
         this.context = context;
         this.courses = objects;
@@ -59,7 +59,7 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        CourseModel course = courses.get(position);
+        Course course = courses.get(position);
         setBackgroundColor(convertView, course.isExpired());
 
         viewHolder.tv_courseCode.setText(course.getTitle());

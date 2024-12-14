@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.schedify.Activities.CreateTaskActivity;
 import com.example.schedify.Models.Task;
-import com.example.schedify.Adaptors.taskAdapter;
+import com.example.schedify.Adaptors.TaskAdapter;
 import com.example.schedify.R;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import java.util.List;
 public class CreateFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private taskAdapter taskAdapter;
+    private TaskAdapter taskAdapter;
     private List<Task> taskList;
 
     @Override
@@ -45,7 +45,7 @@ public class CreateFragment extends Fragment {
         List<Task> taskList = loadTaskList();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        com.example.schedify.Adaptors.taskAdapter taskAdapter = new taskAdapter(taskList, requireActivity());
+        TaskAdapter taskAdapter = new TaskAdapter(taskList, requireActivity());
         recyclerView.setAdapter(taskAdapter);
 
         if (getActivity() != null && getActivity().getIntent() != null) {

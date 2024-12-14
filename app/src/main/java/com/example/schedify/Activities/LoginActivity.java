@@ -16,7 +16,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.example.schedify.R;
 import com.example.schedify.Util.SessionManager;
 
-public class Login extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     SessionManager sessionManager;
     TextView pageTitle;

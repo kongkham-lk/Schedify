@@ -18,26 +18,26 @@ import com.example.schedify.R;
 
 import java.util.List;
 
-public class taskAdapter extends RecyclerView.Adapter<taskAdapter.taskViewHolder> {
+public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.taskViewHolder> {
     @NonNull
     private final List<Task> taskList;
     Context context;
 
-    public taskAdapter(@NonNull List<Task> taskList, Context context) {
+    public TaskAdapter(@NonNull List<Task> taskList, Context context) {
         this.taskList = taskList;
         this.context = context;
     }
 
     @NonNull
     @Override
-    public taskAdapter.taskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public TaskAdapter.taskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.task_list_view_holder, parent, false);
         return new taskViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull taskAdapter.taskViewHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull TaskAdapter.taskViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Task task = taskList.get(position);
         holder.titleText.setText(task.getTitle());
         holder.timeText.setText(task.getTime());
