@@ -1,8 +1,7 @@
-package com.example.schedify;
+package com.example.schedify.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.widget.Button;
@@ -13,6 +12,9 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+
+import com.example.schedify.R;
+import com.example.schedify.Util.SessionManager;
 
 public class Login extends AppCompatActivity {
 

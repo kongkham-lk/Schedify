@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,11 @@ import android.widget.Button;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.schedify.Activities.CreateTaskActivity;
+import com.example.schedify.Models.Task;
+import com.example.schedify.Adaptors.taskAdapter;
+import com.example.schedify.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +45,7 @@ public class CreateFragment extends Fragment {
         List<Task> taskList = loadTaskList();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        com.example.schedify.taskAdapter taskAdapter = new taskAdapter(taskList, requireActivity());
+        com.example.schedify.Adaptors.taskAdapter taskAdapter = new taskAdapter(taskList, requireActivity());
         recyclerView.setAdapter(taskAdapter);
 
         if (getActivity() != null && getActivity().getIntent() != null) {

@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -16,6 +16,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.example.schedify.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

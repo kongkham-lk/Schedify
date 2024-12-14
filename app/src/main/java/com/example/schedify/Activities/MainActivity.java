@@ -1,13 +1,20 @@
-package com.example.schedify;
+package com.example.schedify.Activities;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.schedify.Models.CourseModel;
+import com.example.schedify.ApiClients.CourseRegistrationResponse;
+import com.example.schedify.Fragments.CreateFragment;
+import com.example.schedify.Fragments.HomeFragment;
+import com.example.schedify.ApiClients.MoodleApiResponse;
+import com.example.schedify.R;
+import com.example.schedify.Adaptors.TabAdapter;
+import com.example.schedify.Components.WebViewLoginDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 

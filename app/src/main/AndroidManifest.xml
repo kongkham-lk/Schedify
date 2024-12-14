@@ -15,10 +15,10 @@
         android:theme="@style/Theme.Schedify"
         tools:targetApi="31">
         <activity
-            android:name=".Login"
+            android:name=".Activities.Login"
             android:exported="false" />
         <activity
-            android:name=".SplashScreen"
+            android:name=".Activities.SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,10 +27,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CreateTaskActivity"
+            android:name=".Activities.CreateTaskActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:exported="false">
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->

@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Models;
 
 public class AssignmentDetail {
     private String title;

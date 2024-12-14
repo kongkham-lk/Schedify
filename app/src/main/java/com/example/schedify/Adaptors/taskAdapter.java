@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Adaptors;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,6 +11,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+import com.example.schedify.Models.Task;
+import com.example.schedify.Activities.CreateTaskActivity;
+import com.example.schedify.R;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Adaptors;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+
+import com.example.schedify.Activities.MainActivity;
+import com.example.schedify.Models.Task;
+import com.example.schedify.Models.CourseModel;
+import com.example.schedify.Activities.CreateTaskActivity;
+import com.example.schedify.R;
+import com.example.schedify.Components.WebViewLoginDialog;
 
 import java.util.ArrayList;
 

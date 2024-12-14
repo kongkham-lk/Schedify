@@ -1,6 +1,9 @@
-package com.example.schedify;
+package com.example.schedify.ApiClients;
 
 import android.content.Context;
+
+import com.example.schedify.Models.CourseModel;
+import com.example.schedify.Util.Helper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

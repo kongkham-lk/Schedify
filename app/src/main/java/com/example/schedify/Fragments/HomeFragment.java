@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,11 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.example.schedify.Models.Task;
+import com.example.schedify.Adaptors.HomePageAdaptor;
+import com.example.schedify.Models.CourseModel;
+import com.example.schedify.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

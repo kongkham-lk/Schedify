@@ -1,6 +1,11 @@
-package com.example.schedify;
+package com.example.schedify.ApiClients;
 
 import android.content.Context;
+
+import com.example.schedify.Models.AssignmentDetail;
+import com.example.schedify.Models.AssignmentGroup;
+import com.example.schedify.Models.CourseModel;
+import com.example.schedify.Util.Helper;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,13 +14,9 @@ import org.jsoup.select.Elements;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 public class MoodleApiResponse {
 

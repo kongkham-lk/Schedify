@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.schedify.Activities.Login;
+import com.example.schedify.Adaptors.SettingsAdapter;
+import com.example.schedify.Models.SettingsModel;
+import com.example.schedify.R;
+import com.example.schedify.Util.SessionManager;
 
 import java.util.ArrayList;
 

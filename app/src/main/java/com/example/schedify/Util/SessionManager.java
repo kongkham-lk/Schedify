@@ -1,8 +1,10 @@
-package com.example.schedify;
+package com.example.schedify.Util;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+
+import com.example.schedify.Activities.Login;
 
 public class SessionManager {
 
@@ -63,7 +65,7 @@ public class SessionManager {
         editor = sp.edit();
         editor.putBoolean(KEY_IF_LOGGED_IN, false);
         editor.commit();
-        Intent intent = new Intent(context, com.example.schedify.Login.class);
+        Intent intent = new Intent(context, Login.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // Ensure intent works with non-Activity context
         context.startActivity(intent);
     }
