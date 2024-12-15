@@ -86,7 +86,7 @@ public class CourseRegistrationResponse {
                             urlID = 56165;
                             break;
                     }
-                    Course course = new Course(courseTitle, location, startTime, endTime, startDate, endDate, classDayList, urlID, isRegistered, "");
+                    Course course = new Course(title, "", startTime + " - " + endTime, startDate + " - " + endDate, location, classDayList, urlID, isRegistered);
                     courseList.add(course);
                 } catch (Exception e) {
                     e.printStackTrace();

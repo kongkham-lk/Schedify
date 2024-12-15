@@ -60,12 +60,13 @@ public class HomePageAdaptor extends ArrayAdapter<Course> {
         }
 
         Course course = courses.get(position);
+        String[] times = course.getTime().split(" - ");
         setBackgroundColor(convertView, course.isExpired());
 
         viewHolder.tv_courseCode.setText(course.getTitle());
         viewHolder.tv_location.setText(course.getLocation());
-        viewHolder.tv_start_time.setText(course.getStartTime());
-        viewHolder.tv_end_time.setText(course.getEndTime());
+        viewHolder.tv_start_time.setText(times[0]);
+        viewHolder.tv_end_time.setText(times[1]);
 
         convertView.findViewById(R.id.card_container).setOnClickListener(v -> {
             boolean isWebViewOpen = WebViewLoginDialog.isOpen;
@@ -77,16 +78,16 @@ public class HomePageAdaptor extends ArrayAdapter<Course> {
                         if (targetTask.getTitle().toString().equals(course.getTitle()) &&
                                 targetTask.getDescription().toString().equals(course.getDescription()) &&
                                 targetTask.getLocation().toString().equals(course.getLocation()) &&
-                                targetTask.getTime().toString().equals(course.getStartTime() + " - " + course.getEndTime()) &&
-                                targetTask.getDate().toString().equals(course.getStartDate() + " - " + course.getEndDate())) {
+                                targetTask.getTime().toString().equals(course.getTime()) &&
+                                targetTask.getDate().toString().equals(course.getDate())) {
                             newPosition = i;
                             break;
                         }
                     }
                     Intent edit_task = new Intent(context, CreateTaskActivity.class);
                     edit_task.putExtra("title", course.getTitle());
-                    edit_task.putExtra("date", course.getStartDate() + " - " + course.getEndDate());
-                    edit_task.putExtra("time", course.getStartTime() + " - " + course.getEndTime());
+                    edit_task.putExtra("date", course.getDate());
+                    edit_task.putExtra("time", course.getTime());
                     edit_task.putExtra("index", newPosition);
                     edit_task.putExtra("location", course.getLocation());
                     edit_task.putExtra("homePage", "HOMEEDIT");

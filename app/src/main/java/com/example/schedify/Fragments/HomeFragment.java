@@ -20,11 +20,14 @@ import com.example.schedify.Models.Task;
 import com.example.schedify.Adaptors.HomePageAdaptor;
 import com.example.schedify.Models.Course;
 import com.example.schedify.R;
+import com.example.schedify.Util.Checker;
+import com.example.schedify.Util.Transformer;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -126,12 +129,12 @@ public class HomeFragment extends Fragment {
                 Task task = numTasks.get(index);
                 int pos = -1;
                 for (int i = 0; i < courses.size(); i++) {
-                    String tempStartTime = courses.get(i).getStartTime();
-                    String tempEndTime = courses.get(i).getEndTime();
-                    String tempStartDate = courses.get(i).getStartDate();
-                    String tempEndDate = courses.get(i).getEndDate();
-                    String tempTime = tempStartTime + " - " + tempEndTime;
-                    String tempDate = tempStartDate + " - " + tempEndDate;
+//                    String tempStartTime = courses.get(i).getStartTime();
+//                    String tempEndTime = courses.get(i).getEndTime();
+//                    String tempStartDate = courses.get(i).getStartDate();
+//                    String tempEndDate = courses.get(i).getEndDate();
+                    String tempTime = courses.get(i).getTime();
+                    String tempDate = courses.get(i).getDate();
                     if (courses.get(i).getTitle().equals(task.getTitle()) &&
                             courses.get(i).getLocation().equals(task.getLocation()) &&
                             courses.get(i).getDescription().equals(task.getDescription()) &&
@@ -142,18 +145,18 @@ public class HomeFragment extends Fragment {
                     }
                 }
                 if (pos != -1) {
-                    String[] newTime = time.split(" - ");
-                    newTime[0] = newTime[0].trim();
-                    newTime[1] = newTime[1].trim();
+//                    String[] newTime = time.split(" - ");
+//                    newTime[0] = newTime[0].trim();
+//                    newTime[1] = newTime[1].trim();
                     numTasks.get(index).setTitle(title);
                     numTasks.get(index).setDescription(description);
                     numTasks.get(index).setDate(date);
                     numTasks.get(index).setTime(time);
                     numTasks.get(index).setLocation(location);
                     courses.get(pos).setTitle(title);
+                    courses.get(pos).setDate(date);
+                    courses.get(pos).setTime(time);
                     courses.get(pos).setLocation(location);
-                    courses.get(pos).setStartTime(newTime[0]);
-                    courses.get(pos).setEndTime(newTime[1]);
                     saveTaskList(numTasks);
                 }
             }
@@ -167,7 +170,11 @@ public class HomeFragment extends Fragment {
 
         StringBuilder sb = new StringBuilder();
         for (Task task : numTasks)
-            sb.append(task.getTitle()).append("|").append(task.getDescription()).append("|").append(task.getTime()).append("|").append(task.getDate()).append("|").append(task.getLocation()).append("|;");
+            sb.append(task.getTitle()).append("|")
+                    .append(task.getDescription()).append("|")
+                    .append(task.getTime()).append("|")
+                    .append(task.getDate()).append("|")
+                    .append(task.getLocation()).append("|;");
 
         editor.putString(KEY_TASKLIST, sb.toString());
         editor.apply();
@@ -188,31 +195,31 @@ public class HomeFragment extends Fragment {
                     String description = taskDetails[1];
                     String location = taskDetails[4];
                     String time = taskDetails[2];
-                    String[] times = time.split(" - ");
+//                    String[] times = time.split(" - ");
                     String date = taskDetails[3];
-                    String[] dates = date.split(" - ");
-                    dates[0] = dates[0].trim();
-                    dates[1] = dates[1].trim();
+//                    String[] dates = date.split(" - ");
+//                    dates[0] = dates[0].trim();
+//                    dates[1] = dates[1].trim();
                     boolean[] classDayList = {false, true};
-                    boolean isToday = compareDate(dates[0], dates[1]);
+                    boolean isToday = compareDate(date);
                     if (isToday) {
                         numTasks.add(new Task(title, description, time, date, location));
-                        courses.add(new Course(title, location, times[0], times[1], dates[0], dates[1], classDayList, 0,true, description));
+                        courses.add(new Course(title, description, time, date, location, classDayList, 0, true));
                     }
                 } else if (taskDetails.length == 4) { // Task data - without location
                     String title = taskDetails[0];
                     String description = taskDetails[1];
                     String time = taskDetails[2];
-                    String[] times = time.split(" - ");
+//                    String[] times = time.split(" - ");
                     String date = taskDetails[3];
-                    String[] dates = date.split(" - ");
+//                    String[] dates = date.split(" - ");
                     boolean[] classDayList = {false, true};
-                    dates[0] = dates[0].trim();
-                    dates[1] = dates[1].trim();
-                    boolean isToday = compareDate(dates[0], dates[1]);
+//                    dates[0] = dates[0].trim();
+//                    dates[1] = dates[1].trim();
+                    boolean isToday =  compareDate(date);
                     if (isToday) {
                         numTasks.add(new Task(title, description, time, date, ""));
-                        courses.add(new Course(title, "", times[0], times[1], dates[0], dates[1], classDayList, 0, true, description));
+                        courses.add(new Course(title, description, time, date, "", classDayList, 0, true));
                     }
                 }
             }
@@ -227,19 +234,23 @@ public class HomeFragment extends Fragment {
                     String title = taskDetails[0];
                     String description = taskDetails[1];
                     String time = taskDetails[2];
-                    String[] times = time.split(" - ");
+//                    String[] times = time.split(" - ");
                     String date = taskDetails[3];
-                    String[] dates = date.split(" - ");
+//                    String[] dates = date.split(" - ");
                     String location = taskDetails[4];
-                    dates[0] = dates[0].trim();
-                    dates[1] = dates[1].trim();
+//                    dates[0] = dates[0].trim();
+//                    dates[1] = dates[1].trim();
                     int urlID = Integer.parseInt(taskDetails[6]);
+                    boolean isRegistered = taskDetails.length > 7 ? Boolean.parseBoolean(taskDetails[7]) : false;
 //                    Log.d("Class days", taskDetails[5]);
 
                     String[] stringArray = taskDetails[5].substring(1, taskDetails[5].length()-1).replace(",", "").trim().split(" ");
                     boolean[] classDayList = new boolean[stringArray.length];
                     for (int i = 0; i < stringArray.length; i++) {
-                        classDayList[i] = Boolean.parseBoolean(stringArray[i]);
+                        if(title.toLowerCase().contains("data"))
+                            classDayList[i] = true;
+                        else
+                            classDayList[i] = Boolean.parseBoolean(stringArray[i]);
                     }
 //                    Log.d("Class days", Arrays.toString(classDayList));
 
@@ -247,16 +258,15 @@ public class HomeFragment extends Fragment {
                     int todayDayOfWeek = today.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
                     todayDayOfWeek--; // Adjust to 0-based index (0=Monday, 6=Sunday)
 
-                    boolean isToday = compareDate(dates[0], dates[1]);
+                    boolean isToday = compareDate(date);
                     boolean exactDay = false;
 
                     if (isToday && classDayList[todayDayOfWeek]) {
                         exactDay = true;  // Set exactDay to true if today is a class day
                     }
 
-                    if (isToday && exactDay) {
-                        courses.add(new Course(title, location, times[0], times[1], dates[0], dates[1], classDayList, urlID, true, ""));
-                    }
+                    if (isToday && exactDay)
+                        courses.add(new Course(title, description, time, date, location, classDayList, urlID, isRegistered));
                 }
             }
         }
@@ -265,12 +275,15 @@ public class HomeFragment extends Fragment {
         courses.sort((course1, course2) -> {
             SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
             try {
+                String[] schduleTimeCourse1 = course1.getTime().split(" - ");
+                String[] schduleTimeCourse2 = course2.getTime().split(" - ");
+
                 Calendar currentDate = Calendar.getInstance();
 
                 Calendar endTime1 = Calendar.getInstance();
-                endTime1.setTime(timeFormat.parse(course1.getEndTime()));
+                endTime1.setTime(timeFormat.parse(schduleTimeCourse1[1]));
                 Calendar endTime2 = Calendar.getInstance();
-                endTime2.setTime(timeFormat.parse(course2.getEndTime()));
+                endTime2.setTime(timeFormat.parse(schduleTimeCourse2[1]));
 
                 course1.setExpired(endTime1.getTime().before(currentDate.getTime()));
                 course2.setExpired(endTime2.getTime().before(currentDate.getTime()));
@@ -279,10 +292,10 @@ public class HomeFragment extends Fragment {
                 if (!course1.isExpired() && course2.isExpired()) return -1;
 
                 Calendar startTime1 = Calendar.getInstance();
-                startTime1.setTime(timeFormat.parse(course1.getStartTime()));
+                startTime1.setTime(timeFormat.parse(schduleTimeCourse1[0]));
 
                 Calendar startTime2 = Calendar.getInstance();
-                startTime2.setTime(timeFormat.parse(course2.getStartTime()));
+                startTime2.setTime(timeFormat.parse(schduleTimeCourse2[0]));
 
                 return startTime1.getTime().compareTo(startTime2.getTime());
             } catch (ParseException e) {
@@ -330,43 +343,45 @@ public class HomeFragment extends Fragment {
             StringBuilder serializedCourses = new StringBuilder();
 
             DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("MMM d"); // Desired format: "Nov 1"
+            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy"); // Desired format: "Nov 1"
 
             for (Course newCourse : newCourseList) {
-                String formattedStartTime = formatTimeToAMPM(newCourse.getStartTime());
-                String formattedEndTime = formatTimeToAMPM(newCourse.getEndTime());
-                newCourse.setStartTime(formattedStartTime);
-                newCourse.setEndTime(formattedEndTime);
+                String[] times = newCourse.getTime().split(" - ");
+                String formattedStartTime = formatTimeToAMPM(times[0]);
+                String formattedEndTime = formatTimeToAMPM(times[1]);
+                String formattedTime = formattedStartTime + " - " + formattedEndTime;
+                newCourse.setTime(formattedTime);
+//                newCourse.setEndTime(formattedEndTime);
 
-                String formattedStartDate = "";
-                String formattedEndDate = "";
+                String formattedDate = "";
 
                 try {
-                    LocalDate startDate = LocalDate.parse(newCourse.getStartDate(), inputFormatter);
-                    LocalDate endDate = LocalDate.parse(newCourse.getEndDate(), inputFormatter);
+                    String[] dates = newCourse.getDate().split(" - ");
+                    LocalDate startDate = LocalDate.parse(dates[0], inputFormatter);
+                    LocalDate endDate = LocalDate.parse(dates[1], inputFormatter);
 
-                    formattedStartDate = startDate.format(outputFormatter) + getDaySuffix(startDate.getDayOfMonth());
-                    formattedEndDate = endDate.format(outputFormatter) + getDaySuffix(endDate.getDayOfMonth());
+                    String formattedStartDate = startDate.format(outputFormatter);// + getDaySuffix(startDate.getDayOfMonth());
+                    String formattedEndDate = endDate.format(outputFormatter);// + getDaySuffix(endDate.getDayOfMonth());
+                    formattedDate = formattedStartDate + " - " + formattedEndDate;
                 } catch (Exception e) {
                     Log.e("HomeFragment", "Error parsing date: " + e.getMessage());
                 }
 
 //                String courseCode = newCourse.getTitle().replace(",", "");
-                String title = newCourse.getTitle().replace(",", "");
-                String description = newCourse.getTitle().replace(",", "");
-                String startTime = formattedStartTime.replace(",", "");
-                String endTime = formattedEndTime.replace(",", "");
+//                String title = newCourse.getTitle().replace(",", "");
+//                String description = newCourse.getTitle().replace(",", "");
+//                String startTime = formattedTime.replace(",", "");
+//                String endTime = formattedEndTime.replace(",", "");
 
                 serializedCourses
-                        .append(title).append("|")
-                        .append(description).append("|")
-                        .append(startTime).append(" - ")
-                        .append(endTime).append("|")
-                        .append(formattedStartDate).append(" - ")
-                        .append(formattedEndDate).append("|")
+                        .append(newCourse.getTitle()).append("|")
+                        .append(newCourse.getDescription()).append("|")
+                        .append(formattedTime).append("|")
+                        .append(formattedDate).append("|")
                         .append(newCourse.getLocation()).append("|")
-                        .append(Arrays.toString(newCourse.getClassDayList()).replace("|", "")).append("|")
-                        .append(newCourse.getUrlID()).append(";");// Remove commas from days list
+                        .append(Arrays.toString(newCourse.getClassDayList())).append("|")
+                        .append(newCourse.getUrlID()).append("|")
+                        .append(newCourse.isRegistered()).append(";");// Remove commas from days list
             }
 
             editor.putString(KEY_COURSELIST, serializedCourses.toString());
@@ -410,41 +425,55 @@ public class HomeFragment extends Fragment {
         handler.removeCallbacksAndMessages(null);
     }
 
-    private String getDaySuffix(int day) {
-        if (day >= 11 && day <= 13) {
-            return "th";
-        }
-        switch (day % 10) {
-            case 1:
-                return "st";
-            case 2:
-                return "nd";
-            case 3:
-                return "rd";
-            default:
-                return "th";
-        }
-    }
-
-
+//    private String getDaySuffix(int day) {
+//        if (day >= 11 && day <= 13) {
+//            return "th";
+//        }
+//        switch (day % 10) {
+//            case 1:
+//                return "st";
+//            case 2:
+//                return "nd";
+//            case 3:
+//                return "rd";
+//            default:
+//                return "th";
+//        }
+//    }
 
     private void sortCourses() {
         courses.sort((course1, course2) -> {
             SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
             try {
+                String[] schduleTimeCourse1 = course1.getTime().split(" - ");
+                String[] schduleTimeCourse2 = course2.getTime().split(" - ");
+                String[] schduleDateCourse1 = course1.getDate().split(" - ");
+                String[] schduleDateCourse2 = course2.getDate().split(" - ");
+                LocalDate[] localDatesCourse1 = new LocalDate[2];
+                LocalDate[] localDatesCourse2 = new LocalDate[2];
+                try {
+                    localDatesCourse1[0] = Transformer.convertDisplayStringDateToLocalDate(schduleDateCourse1[0]);
+                    localDatesCourse1[1] = Transformer.convertDisplayStringDateToLocalDate(schduleDateCourse1[1]);
+
+                    localDatesCourse2[0] = Transformer.convertDisplayStringDateToLocalDate(schduleDateCourse2[0]);
+                    localDatesCourse2[1] = Transformer.convertDisplayStringDateToLocalDate(schduleDateCourse2[1]);
+                } catch (DateTimeParseException e) {
+                    System.err.println("Invalid date format: " + e.getMessage());
+                }
+
                 Calendar currentDate = Calendar.getInstance();
 
                 Calendar endTime1 = Calendar.getInstance();
-                endTime1.setTime(timeFormat.parse(course1.getEndTime()));
-                endTime1.set(Calendar.YEAR, currentDate.get(Calendar.YEAR));
-                endTime1.set(Calendar.MONTH, currentDate.get(Calendar.MONTH));
-                endTime1.set(Calendar.DAY_OF_MONTH, currentDate.get(Calendar.DAY_OF_MONTH));
+                endTime1.setTime(timeFormat.parse(schduleTimeCourse1[1]));
+                endTime1.set(Calendar.YEAR, localDatesCourse1[1].getYear());
+                endTime1.set(Calendar.MONTH, localDatesCourse1[1].getMonthValue());
+                endTime1.set(Calendar.DAY_OF_MONTH, localDatesCourse1[1].getDayOfMonth());
 
                 Calendar endTime2 = Calendar.getInstance();
-                endTime2.setTime(timeFormat.parse(course2.getEndTime()));
-                endTime2.set(Calendar.YEAR, currentDate.get(Calendar.YEAR));
-                endTime2.set(Calendar.MONTH, currentDate.get(Calendar.MONTH));
-                endTime2.set(Calendar.DAY_OF_MONTH, currentDate.get(Calendar.DAY_OF_MONTH));
+                endTime2.setTime(timeFormat.parse(schduleTimeCourse2[1]));
+                endTime2.set(Calendar.YEAR, localDatesCourse2[1].getYear());
+                endTime2.set(Calendar.MONTH, localDatesCourse2[1].getMonthValue());
+                endTime2.set(Calendar.DAY_OF_MONTH, localDatesCourse2[1].getDayOfMonth());
 
                 boolean isExpired1 = endTime1.getTime().before(currentDate.getTime());
                 boolean isExpired2 = endTime2.getTime().before(currentDate.getTime());
@@ -453,16 +482,16 @@ public class HomeFragment extends Fragment {
                 if (!isExpired1 && isExpired2) return -1;
 
                 Calendar startTime1 = Calendar.getInstance();
-                startTime1.setTime(timeFormat.parse(course1.getStartTime()));
-                startTime1.set(Calendar.YEAR, currentDate.get(Calendar.YEAR));
-                startTime1.set(Calendar.MONTH, currentDate.get(Calendar.MONTH));
-                startTime1.set(Calendar.DAY_OF_MONTH, currentDate.get(Calendar.DAY_OF_MONTH));
+                startTime1.setTime(timeFormat.parse(schduleTimeCourse1[0]));
+                startTime1.set(Calendar.YEAR, localDatesCourse1[0].getYear());
+                startTime1.set(Calendar.MONTH, localDatesCourse1[0].getMonthValue());
+                startTime1.set(Calendar.DAY_OF_MONTH, localDatesCourse1[0].getDayOfMonth());
 
                 Calendar startTime2 = Calendar.getInstance();
-                startTime2.setTime(timeFormat.parse(course2.getStartTime()));
-                startTime2.set(Calendar.YEAR, currentDate.get(Calendar.YEAR));
-                startTime2.set(Calendar.MONTH, currentDate.get(Calendar.MONTH));
-                startTime2.set(Calendar.DAY_OF_MONTH, currentDate.get(Calendar.DAY_OF_MONTH));
+                startTime2.setTime(timeFormat.parse(schduleTimeCourse2[0]));
+                startTime2.set(Calendar.YEAR, localDatesCourse2[0].getYear());
+                startTime2.set(Calendar.MONTH, localDatesCourse2[0].getMonthValue());
+                startTime2.set(Calendar.DAY_OF_MONTH, localDatesCourse2[0].getDayOfMonth());
 
                 return startTime1.getTime().compareTo(startTime2.getTime());
             } catch (ParseException e) {
@@ -472,35 +501,29 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    public boolean compareDate(String date) {
+//        String cleanedInputDate = inputDate.replaceAll("(\\d+)(st|nd|rd|th)", "$1");
+//        String cleanedEndDate = endDate.replaceAll("(\\d+)(st|nd|rd|th)", "$1");
+        if (date.toLowerCase().contains("null"))
+            return false;
 
-    public boolean compareDate(String inputDate, String endDate) {
-        String cleanedInputDate = inputDate.replaceAll("(\\d+)(st|nd|rd|th)", "$1");
-        String cleanedEndDate = endDate.replaceAll("(\\d+)(st|nd|rd|th)", "$1");
+        String[] dates = date.split(" - ");
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);
+//        dateFormat.setLenient(false);
+//
+//        try {
+            // Parse the input date string into a LocalDate object
+        LocalDate parseStartDate = Transformer.convertDisplayStringDateToLocalDate(dates[0]);
+        LocalDate parseEndDate = Transformer.convertDisplayStringDateToLocalDate(dates[1]);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d", Locale.ENGLISH);
-        dateFormat.setLenient(false);
+        // Get today's date
+        LocalDate parseTodayDate = LocalDate.now();
+        return parseTodayDate.equals(parseStartDate) || parseTodayDate.equals(parseEndDate)
+                || (parseTodayDate.isAfter(parseStartDate));// && parseTodayDate.isBefore(parseEndDate)); // TEMP NOT CHECK FOR END DATE
 
-        try {
-            Date formattedInputDate = dateFormat.parse(cleanedInputDate);
-            Date formattedEndDate = dateFormat.parse(cleanedEndDate);
-
-            Calendar currentCal = Calendar.getInstance();
-            currentCal.setTime(new Date());
-            int currentDayOfYear = currentCal.get(Calendar.DAY_OF_YEAR);
-
-            Calendar startCal = Calendar.getInstance();
-            startCal.setTime(formattedInputDate);
-            int startDayOfYear = startCal.get(Calendar.DAY_OF_YEAR);
-
-            Calendar endCal = Calendar.getInstance();
-            endCal.setTime(formattedEndDate);
-            int endDayOfYear = endCal.get(Calendar.DAY_OF_YEAR);
-
-            return (currentDayOfYear - 1)  >= startDayOfYear && (currentDayOfYear - 1) <= endDayOfYear;
-
-        } catch (ParseException e) {
-            System.out.println("Error: Invalid date format.");
-        }
-        return false;
+//        } catch (DateTimeParseException e) {
+//            System.err.println("Invalid date format: " + e.getMessage());
+//        }
+//        return false;
     }
 }
