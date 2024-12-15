@@ -1,129 +1,138 @@
 package com.example.schedify.Util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 public class Transformer {
 
-    private static final DateTimeFormatter dateDisplayToStringFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
-    private static final DateTimeFormatter dateRawToStringFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-    private static final SimpleDateFormat dateDisplayToObjectFormatter = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);
-    private static final SimpleDateFormat dateRawToObjectFormatter = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
-    private static final SimpleDateFormat timeDisplayToStringFormatter = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+    private static final SimpleDateFormat dateDisplayFormatter = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);
+    private static final SimpleDateFormat dateRawFormatter = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+    private static final SimpleDateFormat timeDisplayFormatter = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+    private static final SimpleDateFormat timeRawFormatter = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
 
-    public static String transformStartEndDate(String startEndDate) {
-        String[] dates = startEndDate.split(" - ");
-        String startDateString = transformDate(dates[0]);
-        String endDateString = transformDate(dates[1]);
-        return startDateString + " - " + endDateString;
-    }
-
-    public static String transformDate(String date) {
-        if (date == null || date.equals(""))
-            return "";
-
-        LocalDate localDate = convertRawStringDateToLocalDate(date);
-        String stringDate = convertLocalDateToStringDate(localDate);
-        return stringDate;
-    }
-
-    public static LocalDate convertRawStringDateToLocalDate(String date) {
-        try {
-            return LocalDate.parse(date, dateRawToStringFormatter);
-        } catch (DateTimeParseException e) {
-            System.err.println("Invalid date format: " + e.getMessage());
+    public static String convertDateRawToStringDateDisplay(String dateRaw) {
+        String resultDate;
+        if (Checker.isNull(dateRaw))
+            resultDate = convertObjectToStringDateDisplay(Calendar.getInstance().getTime());
+        else {
+            Calendar tempDate = convertDateRawToObject(dateRaw);
+            resultDate = convertObjectToStringDateDisplay(tempDate.getTime());
         }
-        return LocalDate.now();
+        return resultDate;
     }
 
-    public static LocalDate convertDisplayStringDateToLocalDate(String date) {
-        try {
-            return LocalDate.parse(date, dateDisplayToStringFormatter);
-        } catch (DateTimeParseException e) {
-            System.err.println("Invalid date format: " + e.getMessage());
+    public static Calendar convertDateRawToObject(String dateRaw) {
+        Calendar resultDate = Calendar.getInstance();
+        if (!Checker.isNull(dateRaw)) {
+            try {
+                Date tempDate = dateRawFormatter.parse(dateRaw);
+                resultDate.setTime(tempDate);
+            } catch (ParseException e) {
+                System.err.println("Invalid date format: " + e.getMessage());
+            }
         }
-        return LocalDate.now();
+        return resultDate;
     }
 
-    public static String convertLocalDateToStringDate(LocalDate date) {
-        if (date == null || date.equals(""))
-            return "";
-        return date.format(dateDisplayToStringFormatter);
+    public static Calendar convertDateDisplayToObject(String dateDisplay) {
+        Calendar resultDate = Calendar.getInstance();
+        if (!Checker.isNull(dateDisplay)) {
+            try {
+                Date tempDate = dateDisplayFormatter.parse(dateDisplay);
+                resultDate.setTime(tempDate);
+            } catch (ParseException e) {
+                System.err.println("Invalid date format: " + e.getMessage());
+            }
+        }
+        return resultDate;
     }
 
-    public static String convertDateObjectToStringDateDisplay(Date date) {
+    public static String convertObjectToStringDateDisplay(Date date) {
+        String resultDate;
         if (date == null)
-            return "";
-        return dateDisplayToObjectFormatter.format(date);
+            resultDate = dateDisplayFormatter.format(Calendar.getInstance().getTime());
+        else
+            resultDate = dateDisplayFormatter.format(date);
+        return resultDate;
     }
 
-    public static String convertDateObjectToStringDateRaw(Date date) {
+    public static String convertObjectToStringDateRaw(Date date) {
+        String resultDate;
         if (date == null)
-            return "";
-        return dateRawToObjectFormatter.format(date);
+            resultDate = dateRawFormatter.format(Calendar.getInstance().getTime());
+        else
+            resultDate = dateRawFormatter.format(date);
+        return resultDate;
     }
 
-    public static String convertDateObjectToStringTimeDisplay(Date time) {
+    public static String convertObjectToStringTimeDisplay(Date time) {
+        String resultTime;
         if (time == null)
-            return "";
-        return timeDisplayToStringFormatter.format(time);
+            resultTime = timeDisplayFormatter.format(Calendar.getInstance().getTime());
+        else
+            resultTime = timeDisplayFormatter.format(time);
+        return resultTime;
     }
 
-    public static String transformStartEndTime(String startEndTime) {
-        String[] times = startEndTime.split(" - ");
-        String startDateString = transformTime(times[0]);
-        String endDateString = transformTime(times[1]);
-        return startDateString + " - " + endDateString;
+    public static String convertObjectTimeToStringTimeRaw(Date time) {
+        String resultTime;
+        if (time != null)
+            resultTime = timeRawFormatter.format(time);
+        else
+            resultTime = timeRawFormatter.format(Calendar.getInstance().getTime());
+        return resultTime;
     }
 
-    public static String transformTime(String time) {
-        if (time == null || time.equals(""))
-            return "";
-        return timeDisplayToStringFormatter.format(time);
-    }
-
-    public static LocalDateTime convertStringTimeToLocalDateTimeRaw(String time) {
-        if (!Checker.isNull(time)) {
-            String[] times = time.split("[\\s:]+");
-            int additionalHour = times[2].equalsIgnoreCase("pm") ? 12 : 0;
-            int hour = Integer.parseInt(times[0]) + additionalHour;
-            int minute = Integer.parseInt(times[1]);
-
-            LocalDateTime now = LocalDateTime.now();
-            now.withHour(hour);
-            now.withMinute(minute);
-            return now;
+    public static String convertTimeDisplayToStringTimeRaw(String timeDisplay) {
+        String resultTime;
+        if (!Checker.isNull(timeDisplay)) {
+            try {
+                Date tempTime = timeDisplayFormatter.parse(timeDisplay);
+                resultTime = timeDisplayFormatter.format(tempTime);
+            } catch (ParseException e) {
+                System.err.println("Invalid date format: " + e.getMessage());
+                resultTime = timeRawFormatter.format(Calendar.getInstance().getTime());
+            }
+        } else {
+            resultTime = timeRawFormatter.format(Calendar.getInstance().getTime());
         }
-        return LocalDateTime.now();
+        return resultTime;
     }
 
-    public static String convertStringTimeToStringTimeRaw(String time) {
-        if (!Checker.isNull(time)) {
-            String[] times = time.split("[\\s:]+");
-            int additionalHour = times[2].equalsIgnoreCase("pm") ? 12 : 0;
-            int hour = Integer.parseInt(times[0]) + additionalHour;
-            int minute = Integer.parseInt(times[1]);
-            return String.join(":", times);
-        }
-        LocalDateTime now = LocalDateTime.now();
-        return String.valueOf(now.getHour()) + ":" + String.valueOf(now.getMinute());
+    public static LocalTime convertTimeDisplayToObjectTimeRaw(String timeDisplay) {
+        LocalTime resultTime;
+        if (!Checker.isNull(timeDisplay)) {
+            String[] times = timeDisplay.split(":");
+            resultTime = LocalTime.now();
+            resultTime.withHour(Integer.parseInt(times[0]));
+            resultTime.withMinute(Integer.parseInt(times[1]));
+        } else
+            resultTime = LocalTime.now();
+        return resultTime;
+    }
+
+    public static int[] splitTimeToArray24hr(String timeDisplay) {
+        String[] times = timeDisplay.split("[\\s:]+");
+        int additionalHour = times[2].equalsIgnoreCase("pm") ? 12 : 0;
+        int hour = Integer.parseInt(times[0]) + additionalHour;
+        int minute = Integer.parseInt(times[1]);
+        return new int[] {hour, minute};
     }
 
     // Helper method to determine the suffix for a day
-    public static String getDaySuffix(int day) {
-        if (day >= 11 && day <= 13) {
-            return "th"; // Special case for 11th, 12th, 13th
-        }
-        switch (day % 10) {
-            case 1: return "st";
-            case 2: return "nd";
-            case 3: return "rd";
-            default: return "th";
-        }
-    }
+//    public static String getDaySuffix(int day) {
+//        if (day >= 11 && day <= 13) {
+//            return "th"; // Special case for 11th, 12th, 13th
+//        }
+//        switch (day % 10) {
+//            case 1: return "st";
+//            case 2: return "nd";
+//            case 3: return "rd";
+//            default: return "th";
+//        }
+//    }
 }

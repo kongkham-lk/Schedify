@@ -20,7 +20,6 @@ import com.example.schedify.Models.Task;
 import com.example.schedify.Adaptors.HomePageAdaptor;
 import com.example.schedify.Models.Course;
 import com.example.schedify.R;
-import com.example.schedify.Util.Checker;
 import com.example.schedify.Util.Transformer;
 
 import java.text.ParseException;
@@ -449,31 +448,28 @@ public class HomeFragment extends Fragment {
                 String[] schduleTimeCourse2 = course2.getTime().split(" - ");
                 String[] schduleDateCourse1 = course1.getDate().split(" - ");
                 String[] schduleDateCourse2 = course2.getDate().split(" - ");
-                LocalDate[] localDatesCourse1 = new LocalDate[2];
-                LocalDate[] localDatesCourse2 = new LocalDate[2];
-                try {
-                    localDatesCourse1[0] = Transformer.convertDisplayStringDateToLocalDate(schduleDateCourse1[0]);
-                    localDatesCourse1[1] = Transformer.convertDisplayStringDateToLocalDate(schduleDateCourse1[1]);
-
-                    localDatesCourse2[0] = Transformer.convertDisplayStringDateToLocalDate(schduleDateCourse2[0]);
-                    localDatesCourse2[1] = Transformer.convertDisplayStringDateToLocalDate(schduleDateCourse2[1]);
-                } catch (DateTimeParseException e) {
-                    System.err.println("Invalid date format: " + e.getMessage());
-                }
+                Calendar[] localDatesCourse1 = {
+                        Transformer.convertDateDisplayToObject(schduleDateCourse1[0]),
+                        Transformer.convertDateDisplayToObject(schduleDateCourse1[1]),
+                };
+                Calendar[] localDatesCourse2 = {
+                        Transformer.convertDateDisplayToObject(schduleDateCourse2[0]),
+                        Transformer.convertDateDisplayToObject(schduleDateCourse2[1]),
+                };
 
                 Calendar currentDate = Calendar.getInstance();
 
                 Calendar endTime1 = Calendar.getInstance();
                 endTime1.setTime(timeFormat.parse(schduleTimeCourse1[1]));
-                endTime1.set(Calendar.YEAR, localDatesCourse1[1].getYear());
-                endTime1.set(Calendar.MONTH, localDatesCourse1[1].getMonthValue());
-                endTime1.set(Calendar.DAY_OF_MONTH, localDatesCourse1[1].getDayOfMonth());
+                endTime1.set(Calendar.YEAR, localDatesCourse1[1].get(Calendar.YEAR));
+                endTime1.set(Calendar.MONTH, localDatesCourse1[1].get(Calendar.MONTH));
+                endTime1.set(Calendar.DAY_OF_MONTH, localDatesCourse1[1].get(Calendar.DAY_OF_MONTH));
 
                 Calendar endTime2 = Calendar.getInstance();
                 endTime2.setTime(timeFormat.parse(schduleTimeCourse2[1]));
-                endTime2.set(Calendar.YEAR, localDatesCourse2[1].getYear());
-                endTime2.set(Calendar.MONTH, localDatesCourse2[1].getMonthValue());
-                endTime2.set(Calendar.DAY_OF_MONTH, localDatesCourse2[1].getDayOfMonth());
+                endTime2.set(Calendar.YEAR, localDatesCourse2[1].get(Calendar.YEAR));
+                endTime2.set(Calendar.MONTH, localDatesCourse2[1].get(Calendar.MONTH));
+                endTime2.set(Calendar.DAY_OF_MONTH, localDatesCourse2[1].get(Calendar.DAY_OF_MONTH));
 
                 boolean isExpired1 = endTime1.getTime().before(currentDate.getTime());
                 boolean isExpired2 = endTime2.getTime().before(currentDate.getTime());
@@ -483,15 +479,15 @@ public class HomeFragment extends Fragment {
 
                 Calendar startTime1 = Calendar.getInstance();
                 startTime1.setTime(timeFormat.parse(schduleTimeCourse1[0]));
-                startTime1.set(Calendar.YEAR, localDatesCourse1[0].getYear());
-                startTime1.set(Calendar.MONTH, localDatesCourse1[0].getMonthValue());
-                startTime1.set(Calendar.DAY_OF_MONTH, localDatesCourse1[0].getDayOfMonth());
+                startTime1.set(Calendar.YEAR, localDatesCourse1[0].get(Calendar.YEAR));
+                startTime1.set(Calendar.MONTH, localDatesCourse1[0].get(Calendar.MONTH));
+                startTime1.set(Calendar.DAY_OF_MONTH, localDatesCourse1[0].get(Calendar.DAY_OF_MONTH));
 
                 Calendar startTime2 = Calendar.getInstance();
                 startTime2.setTime(timeFormat.parse(schduleTimeCourse2[0]));
-                startTime2.set(Calendar.YEAR, localDatesCourse2[0].getYear());
-                startTime2.set(Calendar.MONTH, localDatesCourse2[0].getMonthValue());
-                startTime2.set(Calendar.DAY_OF_MONTH, localDatesCourse2[0].getDayOfMonth());
+                startTime2.set(Calendar.YEAR, localDatesCourse2[0].get(Calendar.YEAR));
+                startTime2.set(Calendar.MONTH, localDatesCourse2[0].get(Calendar.MONTH));
+                startTime2.set(Calendar.DAY_OF_MONTH, localDatesCourse2[0].get(Calendar.DAY_OF_MONTH));
 
                 return startTime1.getTime().compareTo(startTime2.getTime());
             } catch (ParseException e) {
@@ -513,13 +509,13 @@ public class HomeFragment extends Fragment {
 //
 //        try {
             // Parse the input date string into a LocalDate object
-        LocalDate parseStartDate = Transformer.convertDisplayStringDateToLocalDate(dates[0]);
-        LocalDate parseEndDate = Transformer.convertDisplayStringDateToLocalDate(dates[1]);
+        Calendar startDate = Transformer.convertDateDisplayToObject(dates[0]);
+        Calendar endDate = Transformer.convertDateDisplayToObject(dates[1]);
 
         // Get today's date
-        LocalDate parseTodayDate = LocalDate.now();
-        return parseTodayDate.equals(parseStartDate) || parseTodayDate.equals(parseEndDate)
-                || (parseTodayDate.isAfter(parseStartDate));// && parseTodayDate.isBefore(parseEndDate)); // TEMP NOT CHECK FOR END DATE
+        Calendar todayDate = Calendar.getInstance();
+        return todayDate.equals(startDate) || todayDate.equals(endDate)
+                || (todayDate.after(startDate));// && todayDate.before(endDate)); // TEMP NOT CHECK FOR END DATE
 
 //        } catch (DateTimeParseException e) {
 //            System.err.println("Invalid date format: " + e.getMessage());
