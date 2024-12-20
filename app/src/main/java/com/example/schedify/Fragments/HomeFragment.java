@@ -169,11 +169,11 @@ public class HomeFragment extends Fragment {
 
         StringBuilder sb = new StringBuilder();
         for (Task task : numTasks)
-            sb.append(task.getTitle()).append("|")
-                    .append(task.getDescription()).append("|")
-                    .append(task.getTime()).append("|")
-                    .append(task.getDate()).append("|")
-                    .append(task.getLocation()).append("|;");
+            sb.append(task.getTitle()).append(",")
+                    .append(task.getDescription()).append(",")
+                    .append(task.getTime()).append(",")
+                    .append(task.getDate()).append(",")
+                    .append(task.getLocation()).append(",;");
 
         editor.putString(KEY_TASKLIST, sb.toString());
         editor.apply();
@@ -187,7 +187,7 @@ public class HomeFragment extends Fragment {
         if (!taskData.isEmpty()) {
             String[] tasks = taskData.split(";");
             for (String task : tasks) {
-                String[] taskDetails = task.split("\\|");
+                String[] taskDetails = task.split(",");
                 Log.d(taskDetails.length + "", Arrays.toString(taskDetails));
                 if (taskDetails.length == 5) { // Task data - full detail
                     String title = taskDetails[0];
@@ -227,7 +227,7 @@ public class HomeFragment extends Fragment {
         if (!courseData.isEmpty()) {
             String[] tasks = courseData.split(";");
             for (String task : tasks) {
-                String[] taskDetails = task.split("\\|");
+                String[] taskDetails = task.split(",");
 //                Log.d(taskDetails.length + "", Arrays.toString(taskDetails));
                 if (taskDetails.length >= 6) {
                     String title = taskDetails[0];
@@ -243,7 +243,7 @@ public class HomeFragment extends Fragment {
                     boolean isRegistered = taskDetails.length > 7 ? Boolean.parseBoolean(taskDetails[7]) : false;
 //                    Log.d("Class days", taskDetails[5]);
 
-                    String[] stringArray = taskDetails[5].substring(1, taskDetails[5].length()-1).replace(",", "").trim().split(" ");
+                    String[] stringArray = taskDetails[5].replace("[", "").replace("]", "").trim().split(" ");
                     boolean[] classDayList = new boolean[stringArray.length];
                     for (int i = 0; i < stringArray.length; i++) {
                         if(title.toLowerCase().contains("data"))
@@ -345,41 +345,42 @@ public class HomeFragment extends Fragment {
             DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy"); // Desired format: "Nov 1"
 
             for (Course newCourse : newCourseList) {
-                String[] times = newCourse.getTime().split(" - ");
-                String formattedStartTime = formatTimeToAMPM(times[0]);
-                String formattedEndTime = formatTimeToAMPM(times[1]);
-                String formattedTime = formattedStartTime + " - " + formattedEndTime;
-                newCourse.setTime(formattedTime);
-//                newCourse.setEndTime(formattedEndTime);
-
-                String formattedDate = "";
-
-                try {
-                    String[] dates = newCourse.getDate().split(" - ");
-                    LocalDate startDate = LocalDate.parse(dates[0], inputFormatter);
-                    LocalDate endDate = LocalDate.parse(dates[1], inputFormatter);
-
-                    String formattedStartDate = startDate.format(outputFormatter);// + getDaySuffix(startDate.getDayOfMonth());
-                    String formattedEndDate = endDate.format(outputFormatter);// + getDaySuffix(endDate.getDayOfMonth());
-                    formattedDate = formattedStartDate + " - " + formattedEndDate;
-                } catch (Exception e) {
-                    Log.e("HomeFragment", "Error parsing date: " + e.getMessage());
-                }
-
-//                String courseCode = newCourse.getTitle().replace(",", "");
-//                String title = newCourse.getTitle().replace(",", "");
-//                String description = newCourse.getTitle().replace(",", "");
-//                String startTime = formattedTime.replace(",", "");
-//                String endTime = formattedEndTime.replace(",", "");
+//                String[] times = newCourse.getTime().split(" - ");
+//                String formattedStartTime = formatTimeToAMPM(times[0]);
+//                String formattedEndTime = formatTimeToAMPM(times[1]);
+//                String formattedTime = formattedStartTime + " - " + formattedEndTime;
+//                newCourse.setTime(formattedTime);
+////                newCourse.setEndTime(formattedEndTime);
+//
+//                String formattedDate = "";
+//
+//                try {
+//                    String[] dates = newCourse.getDate().split(" - ");
+//                    LocalDate startDate = LocalDate.parse(dates[0], inputFormatter);
+//                    LocalDate endDate = LocalDate.parse(dates[1], inputFormatter);
+//
+//                    String formattedStartDate = startDate.format(outputFormatter);// + getDaySuffix(startDate.getDayOfMonth());
+//                    String formattedEndDate = endDate.format(outputFormatter);// + getDaySuffix(endDate.getDayOfMonth());
+//                    formattedDate = formattedStartDate + " - " + formattedEndDate;
+//                } catch (Exception e) {
+//                    Log.e("HomeFragment", "Error parsing date: " + e.getMessage());
+//                }
+//
+//            //    String courseCode = newCourse.getTitle().replace(",", "");
+               String title = newCourse.getTitle().replace(",", "_");
+               String description = newCourse.getDescription().replace(",", "_");
+               String location = newCourse.getLocation().replace(",", "_");
+            //    String startTime = formattedTime.replace(",", "");
+            //    String endTime = formattedEndTime.replace(",", "");
 
                 serializedCourses
-                        .append(newCourse.getTitle()).append("|")
-                        .append(newCourse.getDescription()).append("|")
-                        .append(formattedTime).append("|")
-                        .append(formattedDate).append("|")
-                        .append(newCourse.getLocation()).append("|")
-                        .append(Arrays.toString(newCourse.getClassDayList())).append("|")
-                        .append(newCourse.getUrlID()).append("|")
+                        .append(title).append(",")
+                        .append(description).append(",")
+                        .append(newCourse.getTime()).append(",")
+                        .append(newCourse.getDate()).append(",")
+                        .append(location).append(",")
+                        .append((Arrays.toString(newCourse.getClassDayList())).replaceAll(",", "")).append(",")
+                        .append(newCourse.getUrlID()).append(",")
                         .append(newCourse.isRegistered()).append(";");// Remove commas from days list
             }
 
