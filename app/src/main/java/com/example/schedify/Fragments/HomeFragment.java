@@ -100,45 +100,59 @@ public class HomeFragment extends Fragment {
         });
         createList();
 
-        if (getActivity() != null && getActivity().getIntent() != null) {
-            Intent intent = getActivity().getIntent();
-            String title = intent.getStringExtra("title");
-            String description = intent.getStringExtra("description");
-            String date = intent.getStringExtra("date");
-            String time = intent.getStringExtra("time");
-            String location = intent.getStringExtra("location");
-            int index = intent.getIntExtra("index", -1);
+        // get the latest task property from create task screen
+        if (getActivity() != null && getActivity().getIntent() != null)
+            updateTaskPropertyFromCreateTaskScreen();
 
-            if ((title != null && description != null && date != null) && index != -1) {
-                Task task = numTasks.get(index);
-                int pos = -1;
-                for (int i = 0; i < courses.size(); i++) {
-                    String tempTime = courses.get(i).getTime();
-                    String tempDate = courses.get(i).getDate();
-                    if (courses.get(i).getTitle().equals(task.getTitle()) &&
-                            courses.get(i).getLocation().equals(task.getLocation()) &&
-                            courses.get(i).getDescription().equals(task.getDescription()) &&
-                            tempTime.equals(task.getTime()) &&
-                            tempDate.equals(task.getDate())) {
-                        pos = i;
-                        break;
-                    }
-                }
-                if (pos != -1) {
-                    numTasks.get(index).setTitle(title);
-                    numTasks.get(index).setDescription(description);
-                    numTasks.get(index).setDate(date);
-                    numTasks.get(index).setTime(time);
-                    numTasks.get(index).setLocation(location);
-                    courses.get(pos).setTitle(title);
-                    courses.get(pos).setDate(date);
-                    courses.get(pos).setTime(time);
-                    courses.get(pos).setLocation(location);
-                    saveTaskList(numTasks);
-                }
+        return view;
+    }
+
+    private void updateTaskPropertyFromCreateTaskScreen() {
+        Intent intent = getActivity().getIntent();
+        String title = intent.getStringExtra("title");
+        String description = intent.getStringExtra("description");
+        String date = intent.getStringExtra("date");
+        String time = intent.getStringExtra("time");
+        String location = intent.getStringExtra("location");
+        int index = intent.getIntExtra("index", -1);
+
+        if ((title != null && description != null && date != null) && index != -1) {
+            Task targetTask = numTasks.get(index);
+            int pos = indexOf(targetTask);
+            if (pos != -1) {
+                Course targetCourse = courses.get(pos);
+                updateTaskProperty(targetCourse, title, description, date, time, location);
+                updateTaskProperty(targetTask, title, description, date, time, location);
+                saveTaskList(numTasks);
             }
         }
-        return view;
+    }
+
+    private int indexOf(Task targetTask) {
+        for (int i = 0; i < courses.size(); i++) {
+            Course targetCourse = courses.get(i);
+            if (isEqual(targetCourse, targetTask)) {
+                return i;
+            }
+        }
+        return  -1;
+    }
+
+    private boolean isEqual(Course targetCourse, Task targetTask) {
+        return targetCourse.getTitle().equals(targetTask.getTitle())
+                && targetCourse.getLocation().equals(targetTask.getLocation())
+                && targetCourse.getDescription().equals(targetTask.getDescription())
+                && targetCourse.getTime().equals(targetTask.getTime())
+                && targetCourse.getDate().equals(targetTask.getDate());
+    }
+
+    private void updateTaskProperty(Task targetTask, String title, String description, String date,
+                                    String time, String location) {
+        targetTask.setTitle(title);
+        targetTask.setDescription(description);
+        targetTask.setDate(date);
+        targetTask.setTime(time);
+        targetTask.setLocation(location);
     }
 
     private void saveTaskList(List<Task> taskList) {
