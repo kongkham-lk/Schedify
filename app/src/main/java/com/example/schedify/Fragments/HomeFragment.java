@@ -261,31 +261,56 @@ public class HomeFragment extends Fragment {
                 String time = taskDetails[2];
                 String date = taskDetails[3];
                 String location = taskDetails.length > 4 ? Transformer.replaceUnderscoreWithComma(taskDetails[4]) : "";
+                boolean[] classDayList;
+                int todayDayOfWeek = 1;
+                String[] stringArray = taskDetails.length > 5
+                        ? taskDetails[5].replace("[", "").replace("]", "").trim().split(" ")
+                        : null;
 
-                if (targetSharedPrefKey.equals(KEY_TASKLIST)) {
-                    boolean[] classDayList = {false, true};
-                    boolean isToday = compareDate(date);
-                    if (isToday) {
-                        numTasks.add(new Task(title, description, time, date, location));
-                        courses.add(new Course(title, description, time, date, location, classDayList, 0, true));
-                    }
-                } else if (taskDetails.length >= 6) {
-                    String[] stringArray = taskDetails[5].replace("[", "").replace("]", "").trim().split(" ");
-                    int urlID = Integer.parseInt(taskDetails[6]);
-                    boolean isRegistered = taskDetails.length > 7 ? Boolean.parseBoolean(taskDetails[7]) : false;
-
-                    boolean[] classDayList = new boolean[stringArray.length];
+                if (stringArray == null)
+                    classDayList = new boolean[] {false, true};
+                else {
+                    classDayList = new boolean[stringArray.length];
                     for (int i = 0; i < stringArray.length; i++)
                         classDayList[i] = Boolean.parseBoolean(stringArray[i]) || title.contains("Data"); // for dev purpose
 
                     LocalDate today = LocalDate.now();
-                    int todayDayOfWeek = today.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
+                    todayDayOfWeek = today.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
                     todayDayOfWeek--; // Adjust to 0-based index (0=Monday, 6=Sunday)
-
-                    boolean isToday = compareDate(date);
-                    if (isToday && classDayList[todayDayOfWeek])
-                        courses.add(new Course(title, description, time, date, location, classDayList, urlID, isRegistered));
                 }
+                int urlID = taskDetails.length > 6 ? Integer.parseInt(taskDetails[6]) : 0;
+                boolean isRegistered = taskDetails.length > 7 && Boolean.parseBoolean(taskDetails[7]);
+
+                boolean isToday = Checker.isClassToday(date);
+                if (isToday && classDayList[todayDayOfWeek]) {
+                    if (targetSharedPrefKey.equals(KEY_TASKLIST))
+                        numTasks.add(new Task(title, description, time, date, location));
+                    courses.add(new Course(title, description, time, date, location, classDayList, urlID, isRegistered));
+                }
+//                if (targetSharedPrefKey.equals(KEY_TASKLIST)) {
+//                    boolean[] classDayList = {false, true};
+//                    boolean isToday = Checker.isClassToday(date);
+//                    if (isToday) {
+//                        numTasks.add(new Task(title, description, time, date, location));
+//                        courses.add(new Course(title, description, time, date, location, classDayList, 0, true));
+//                    }
+//                } else if (taskDetails.length >= 6) {
+//                    String[] stringArray = taskDetails[5].replace("[", "").replace("]", "").trim().split(" ");
+//                    int urlID = Integer.parseInt(taskDetails[6]);
+//                    boolean isRegistered = taskDetails.length > 7 ? Boolean.parseBoolean(taskDetails[7]) : false;
+//
+//                    boolean[] classDayList = new boolean[stringArray.length];
+//                    for (int i = 0; i < stringArray.length; i++)
+//                        classDayList[i] = Boolean.parseBoolean(stringArray[i]) || title.contains("Data"); // for dev purpose
+//
+//                    LocalDate today = LocalDate.now();
+//                    int todayDayOfWeek = today.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
+//                    todayDayOfWeek--; // Adjust to 0-based index (0=Monday, 6=Sunday)
+//
+//                    boolean isToday = Checker.isClassToday(date);
+//                    if (isToday && classDayList[todayDayOfWeek])
+//                        courses.add(new Course(title, description, time, date, location, classDayList, urlID, isRegistered));
+//                }
             }
         }
     }
