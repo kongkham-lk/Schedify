@@ -21,17 +21,14 @@ import com.example.schedify.R;
 import com.example.schedify.Util.Checker;
 import com.example.schedify.Util.Transformer;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 public class CreateTaskActivity extends AppCompatActivity {
 
     private EditText titleInput, descriptionInput, locationInput;
     private Button datePickerStart, timePickerStart, datePickerEnd, timePickerEnd;
-    int year, month, day, minute, hour;
+//    int year, month, day, minute, hour;
     int index = -1;
     private boolean fromHome = false;
     private boolean editing = false;
@@ -70,26 +67,26 @@ public class CreateTaskActivity extends AppCompatActivity {
             int position = edit_intent.getIntExtra("index", -1);
             if (loaded_title != null) {
                 editing = true;
-                titleInput.setText(loaded_title);
+                titleInput.setText(loaded_title.replaceAll("_", ","));
                 deleteBtn.setVisibility(View.VISIBLE);
             }
             if (loaded_description != null) {
-                descriptionInput.setText(loaded_description);
+                descriptionInput.setText(loaded_description.replaceAll("_", ","));
             }
             if (loaded_date != null) {
                 String[] dates = loaded_date.split(" - ");
-                datePickerStart.setText(Transformer.convertDateRawToStringDateDisplay(dates[0]));
-                datePickerEnd.setText(Transformer.convertDateRawToStringDateDisplay(dates[1]));
+                datePickerStart.setText(Transformer.convertStringDateRawToStringDateDisplay(dates[0]));
+                datePickerEnd.setText(Transformer.convertStringDateRawToStringDateDisplay(dates[1]));
                 prevSaveDates = dates;
             }
             if (loaded_time != null) {
                 String[] times = loaded_time.split(" - ");
-                timePickerStart.setText(times[0]);
-                timePickerEnd.setText(times[1]);
+                timePickerStart.setText(Transformer.convertStringTimeRawToStringTimeDisplay(times[0]));
+                timePickerEnd.setText(Transformer.convertStringTimeRawToStringTimeDisplay(times[1]));
                 prevSaveTimes = times;
             }
             if (loaded_location != null) {
-                locationInput.setText(loaded_location);
+                locationInput.setText(loaded_location.replaceAll("_", ","));
             }
             if (position != -1) {
                 index = position;
@@ -128,8 +125,8 @@ public class CreateTaskActivity extends AppCompatActivity {
             }
 
             if (!Checker.isContainNullElement(prevSaveDates)) {
-                String startDate = Transformer.convertDateRawToStringDateDisplay(prevSaveDates[0]);
-                String endDate = Transformer.convertDateRawToStringDateDisplay(prevSaveDates[1]);
+                String startDate = Transformer.convertStringDateRawToStringDateDisplay(prevSaveDates[0]);
+                String endDate = Transformer.convertStringDateRawToStringDateDisplay(prevSaveDates[1]);
                 datePickerStart.setText(startDate);
                 datePickerEnd.setText(endDate);
             } else {
@@ -151,16 +148,16 @@ public class CreateTaskActivity extends AppCompatActivity {
         timePickerStart.setOnClickListener(view -> {
             Calendar calendar = Calendar.getInstance();
             LocalTime prevSaveStartTime = getPrevSaveTime(prevSaveTimes != null ? prevSaveTimes[0] : null);
-            hour = prevSaveStartTime.getHour();
-            minute = prevSaveStartTime.getMinute();
+            int hour = prevSaveStartTime.getHour();
+            int minute = prevSaveStartTime.getMinute();
 
-            TimePickerDialog timePickerDialog = new TimePickerDialog(CreateTaskActivity.this, 2, (view1, hourOfDay, minute) -> {
-                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                calendar.set(Calendar.MINUTE, minute);
-                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
-                String formattedTime = sdf.format(calendar.getTime());
+            TimePickerDialog timePickerDialog = new TimePickerDialog(CreateTaskActivity.this, 2, (tempView, tempHourOfDay, tempMinute) -> {
+                calendar.set(Calendar.HOUR_OF_DAY, tempHourOfDay);
+                calendar.set(Calendar.MINUTE, tempMinute);
+//                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+                String formattedTime = Transformer.convertObjectToStringTimeDisplay(calendar.getTime());
                 timePickerStart.setText(formattedTime);
-                prevSaveTimes[0] = Transformer.convertObjectToStringTimeDisplay(calendar.getTime());
+                prevSaveTimes[0] = Transformer.convertObjectTimeToStringTimeRaw(calendar.getTime());
             }, hour, minute, false);
             timePickerDialog.show();
         });
@@ -168,16 +165,16 @@ public class CreateTaskActivity extends AppCompatActivity {
         timePickerEnd.setOnClickListener(view -> {
             Calendar calendar = Calendar.getInstance();
             LocalTime prevSaveEndTime = getPrevSaveTime(prevSaveTimes != null ? prevSaveTimes[1] : null);
-            hour = prevSaveEndTime.getHour();
-            minute = prevSaveEndTime.getMinute();
+            int hour = prevSaveEndTime.getHour();
+            int minute = prevSaveEndTime.getMinute();
 
-            TimePickerDialog timePickerDialog = new TimePickerDialog(CreateTaskActivity.this, 2,(view1, hourOfDay, minute) -> {
-                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                calendar.set(Calendar.MINUTE, minute);
-                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
-                String formattedTime = sdf.format(calendar.getTime());
+            TimePickerDialog timePickerDialog = new TimePickerDialog(CreateTaskActivity.this, 2,(tempView, tempHourOfDay, tempMinute) -> {
+                calendar.set(Calendar.HOUR_OF_DAY, tempHourOfDay);
+                calendar.set(Calendar.MINUTE, tempMinute);
+//                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+                String formattedTime = Transformer.convertObjectToStringTimeDisplay(calendar.getTime());
                 timePickerEnd.setText(formattedTime);
-                prevSaveTimes[1] = Transformer.convertObjectToStringDateRaw(calendar.getTime());
+                prevSaveTimes[1] = Transformer.convertObjectTimeToStringTimeRaw(calendar.getTime());
             }, hour, minute, false);
 
             timePickerDialog.show();
@@ -204,15 +201,15 @@ public class CreateTaskActivity extends AppCompatActivity {
             int month = prevSaveStartDate.get(Calendar.MONTH);
             int day = prevSaveStartDate.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(CreateTaskActivity.this, (view1, year1, month1, dayOfMonth) -> {
-                calendar.set(Calendar.YEAR, year1);
-                calendar.set(Calendar.MONTH, month1);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);
-                String formattedDate = sdf.format(calendar.getTime());// + getDayOfMonthSuffix(dayOfMonth);
+            DatePickerDialog datePickerDialog = new DatePickerDialog(CreateTaskActivity.this, (tempView, tempYear, tempMonth, tempDayOfMonth) -> {
+                calendar.set(Calendar.YEAR, tempYear);
+                calendar.set(Calendar.MONTH, tempMonth);
+                calendar.set(Calendar.DAY_OF_MONTH, tempDayOfMonth);
+//                SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);
+                String formattedDate = Transformer.convertObjectToStringDateDisplay(calendar.getTime());// + getDayOfMonthSuffix(dayOfMonth);
                 datePickerStart.setText(formattedDate);
                 setMinDateForEndDatePicker(calendar);
-                prevSaveDates[0] = ++month1 + "/" + dayOfMonth + "/" + year1;
+                prevSaveDates[0] = Transformer.convertObjectToStringDateRaw(calendar.getTime());
             }, year, month, day);
             datePickerDialog.getDatePicker().setMaxDate(maxDateForStartDate);
 
@@ -226,15 +223,15 @@ public class CreateTaskActivity extends AppCompatActivity {
             int month = prevSaveEndDate.get(Calendar.MONTH);
             int day = prevSaveEndDate.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(CreateTaskActivity.this, (view1, year1, month1, dayOfMonth) -> {
-                calendar.set(Calendar.YEAR, year1);
-                calendar.set(Calendar.MONTH, month1);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);
-                String formattedDate = sdf.format(calendar.getTime());// + getDayOfMonthSuffix(dayOfMonth);
+            DatePickerDialog datePickerDialog = new DatePickerDialog(CreateTaskActivity.this, (tempView, tempYear, tempMonth, tempDayOfMonth) -> {
+                calendar.set(Calendar.YEAR, tempYear);
+                calendar.set(Calendar.MONTH, tempMonth);
+                calendar.set(Calendar.DAY_OF_MONTH, tempDayOfMonth);
+//                SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);
+                String formattedDate = Transformer.convertObjectToStringDateDisplay(calendar.getTime());// + getDayOfMonthSuffix(dayOfMonth);
                 datePickerEnd.setText(formattedDate);
                 setMaxDateForStartDate(calendar);
-                prevSaveDates[1] = ++month1 + "/" + dayOfMonth + "/" + year1;
+                prevSaveDates[1] = Transformer.convertObjectToStringDateRaw(calendar.getTime());
             }, year, month, day);
 
             datePickerDialog.show();
@@ -242,11 +239,13 @@ public class CreateTaskActivity extends AppCompatActivity {
         });
 
         saveBtn.setOnClickListener(view -> {
-            if(titleInput.getText().toString().isEmpty() || datePickerStart.getText().toString().isEmpty() || datePickerEnd.getText().toString().isEmpty() || timePickerStart.getText().toString().isEmpty() || timePickerEnd.getText().toString().isEmpty()) {
+            if(titleInput.getText().toString().isEmpty() || datePickerStart.getText().toString().isEmpty() || datePickerEnd.getText().toString().isEmpty()
+                    || timePickerStart.getText().toString().isEmpty() || timePickerEnd.getText().toString().isEmpty()) {
                 Toast.makeText(getApplicationContext(), "Title and Date cannot be empty", Toast.LENGTH_SHORT).show();
             } else {
-                String title = titleInput.getText().toString();
-                String description = descriptionInput.getText().toString();
+                String title = titleInput.getText().toString().replaceAll(",", "_");
+                String description = descriptionInput.getText().toString().replaceAll(",", "_");
+                String location = locationInput.getText().toString().replaceAll(",", "_");
 
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 if (fromHome) {
@@ -258,7 +257,7 @@ public class CreateTaskActivity extends AppCompatActivity {
                 intent.putExtra("description", description);
                 intent.putExtra("date", (String.join(" - ", prevSaveDates)));
                 intent.putExtra("time", (String.join(" - ", prevSaveTimes)));
-                intent.putExtra("location", locationInput.getText().toString());
+                intent.putExtra("location", location);
                 if (editing) {
                     intent.putExtra("index", index);
                 }
@@ -297,7 +296,7 @@ public class CreateTaskActivity extends AppCompatActivity {
     private LocalTime getPrevSaveTime(String prevSaveTime) {
         LocalTime resultTime;
         if (!Checker.isNull(prevSaveTime))
-            resultTime = Transformer.convertTimeDisplayToObjectTimeRaw(prevSaveTime);//
+            resultTime = Transformer.convertTimeDisplayToLocalTimeObjectRaw(prevSaveTime);//
         else
             resultTime = LocalTime.now();
         return resultTime;

@@ -83,9 +83,12 @@ public class CreateFragment extends Fragment {
 
         StringBuilder sb = new StringBuilder();
         for (Task task : taskList) {
-            sb.append(task.getTitle()).append(",").append(task.getDescription()).append(",").append(task.getTime()).append(",").append(task.getDate()).append(",").append(task.getLocation()).append(",;");
+            sb.append(task.getTitle()).append(",")
+                    .append(task.getDescription()).append(",")
+                    .append(task.getTime()).append(",")
+                    .append(task.getDate()).append(",")
+                    .append(task.getLocation()).append(",;");
         }
-
         editor.putString("taskList", sb.toString());
         editor.apply();
     }

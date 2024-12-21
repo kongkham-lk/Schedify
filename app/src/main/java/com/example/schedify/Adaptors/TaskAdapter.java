@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.schedify.Models.Task;
 import com.example.schedify.Activities.CreateTaskActivity;
 import com.example.schedify.R;
+import com.example.schedify.Util.Transformer;
 
 import java.util.List;
 
@@ -39,10 +40,20 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.taskViewHolder
     @Override
     public void onBindViewHolder(@NonNull TaskAdapter.taskViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Task task = taskList.get(position);
-        holder.titleText.setText(task.getTitle());
-        holder.timeText.setText(task.getTime());
-        holder.dateText.setText(task.getDate());
-        holder.locationText.setText(task.getLocation());
+        String[] times = task.getTime().split(" - ");
+        String[] dates = task.getDate().split(" - ");
+        for (int i = 0; i < times.length; i++) {
+            String newTime = Transformer.convertStringTimeRawToStringTimeDisplay(times[i]);
+            times[i] = newTime;
+        }
+        for (int i = 0; i < dates.length; i++) {
+            String newDate = Transformer.convertStringDateRawToStringDateDisplay(dates[i]);
+            dates[i] = newDate;
+        }
+        holder.titleText.setText(task.getTitle().replaceAll("_", ","));
+        holder.timeText.setText(String.join(" - ", times));
+        holder.dateText.setText(String.join(" - ", dates));
+        holder.locationText.setText(task.getLocation().replaceAll("_", ","));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

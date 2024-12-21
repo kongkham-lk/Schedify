@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.example.schedify.Models.Course;
 import com.example.schedify.Util.SharePreference;
+import com.example.schedify.Util.Transformer;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -55,7 +56,9 @@ public class CourseRegistrationResponse {
                     boolean isRegistered = courseItem.getString("statusDescription").toLowerCase().equals("registered") ? true : false;
                     JSONObject meetingDetail = courseItem.getJSONArray("meetingTimes").getJSONObject(0);
                     String startTime = meetingDetail.getString("beginTime");
+                    startTime = Transformer.convertUnSplitToSplitStringTimeRow(startTime);
                     String endTime = meetingDetail.getString("endTime");
+                    endTime = Transformer.convertUnSplitToSplitStringTimeRow(endTime);
                     String startDate = meetingDetail.getString("startDate");
                     String endDate = meetingDetail.getString("endDate");
                     String building = meetingDetail.getString("building");
