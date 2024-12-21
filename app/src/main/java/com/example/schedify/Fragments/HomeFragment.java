@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
-
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -20,6 +19,7 @@ import com.example.schedify.Models.Task;
 import com.example.schedify.Adaptors.HomePageAdaptor;
 import com.example.schedify.Models.Course;
 import com.example.schedify.R;
+import com.example.schedify.Util.Checker;
 import com.example.schedify.Util.Transformer;
 
 import java.time.LocalDate;
@@ -29,8 +29,6 @@ import java.util.Calendar;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
-
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private String mParam1;
     private String mParam2;
     private static final String ARG_PARAM1 = "param1";
@@ -43,7 +41,7 @@ public class HomeFragment extends Fragment {
     private ArrayList<Task> numTasks;
     Button syncBtn;
 
-    private Handler handler = new Handler();
+    Handler handler = new Handler();
     private int lastCheckedMinute = -1;
 
     public HomeFragment() {
@@ -383,39 +381,45 @@ public class HomeFragment extends Fragment {
 
     private void sortCourses(boolean isDisplayOnScreen) {
         courses.sort((course1, course2) -> {
-            String[] schduleTimeCourse1 = course1.getTime().split(" - ");
-            String[] schduleTimeCourse2 = course2.getTime().split(" - ");
-            String[] schduleDateCourse1 = course1.getDate().split(" - ");
-            String[] schduleDateCourse2 = course2.getDate().split(" - ");
 
-            Calendar currentDate = Calendar.getInstance();
-            Calendar startTime1 = Calendar.getInstance();
-            Calendar startTime2 = Calendar.getInstance();
-            Calendar endTime1 = Calendar.getInstance();
-            Calendar endTime2 = Calendar.getInstance();
+//            String[] schduleTimeCourse1 = course1.getTime().split(" - ");
+//            String[] schduleTimeCourse2 = course2.getTime().split(" - ");
+//            String[] schduleDateCourse1 = course1.getDate().split(" - ");
+//            String[] schduleDateCourse2 = course2.getDate().split(" - ");
+//
+//            Calendar currentDate = Calendar.getInstance();
+//            Calendar startTime1 = Calendar.getInstance();
+//            Calendar startTime2 = Calendar.getInstance();
+//            Calendar endTime1 = Calendar.getInstance();
+//            Calendar endTime2 = Calendar.getInstance();
+//
+////            if (!isDisplayOnScreen) {
+//            Calendar[] localDatesCourse1 =  {
+//                !isDisplayOnScreen ? Transformer.convertDateRawToObject(schduleDateCourse1[0]) : currentDate,
+//                !isDisplayOnScreen ? Transformer.convertDateRawToObject(schduleDateCourse1[1]) : currentDate,
+//            };
+//            Calendar[] localDatesCourse2 = {
+//                !isDisplayOnScreen ? Transformer.convertDateRawToObject(schduleDateCourse2[0]) : currentDate,
+//                !isDisplayOnScreen ? Transformer.convertDateRawToObject(schduleDateCourse2[1]) : currentDate,
+//            };
+//
+//            updateTimeObject(endTime1, schduleTimeCourse1[1], localDatesCourse1[1]);
+//            updateTimeObject(endTime2, schduleTimeCourse2[1], localDatesCourse2[1]);
 
-//            if (!isDisplayOnScreen) {
-            Calendar[] localDatesCourse1 =  {
-                !isDisplayOnScreen ? Transformer.convertDateRawToObject(schduleDateCourse1[0]) : currentDate,
-                !isDisplayOnScreen ? Transformer.convertDateRawToObject(schduleDateCourse1[1]) : currentDate,
-            };
-            Calendar[] localDatesCourse2 = {
-                !isDisplayOnScreen ? Transformer.convertDateRawToObject(schduleDateCourse2[0]) : currentDate,
-                !isDisplayOnScreen ? Transformer.convertDateRawToObject(schduleDateCourse2[1]) : currentDate,
-            };
+//            boolean isExpired1 = endTime1.getTime().before(currentDate.getTime());
+//            boolean isExpired2 = endTime2.getTime().before(currentDate.getTime());
 
-            updateTimeObject(endTime1, schduleTimeCourse1[1], localDatesCourse1[1]);
-            updateTimeObject(endTime2, schduleTimeCourse2[1], localDatesCourse2[1]);
-
-            boolean isExpired1 = endTime1.getTime().before(currentDate.getTime());
-            boolean isExpired2 = endTime2.getTime().before(currentDate.getTime());
+            boolean isExpired1 = Checker.isEndTimeExpired(course1);
+            boolean isExpired2 = Checker.isEndTimeExpired(course2);
             if (isExpired1 && !isExpired2) return 1;
             if (!isExpired1 && isExpired2) return -1;
 
-            updateTimeObject(startTime1, schduleTimeCourse1[0], localDatesCourse1[0]);
-            updateTimeObject(startTime2, schduleTimeCourse2[0], localDatesCourse2[0]);
+            return Checker.isBefore(course1, course2);
 
-            return startTime1.getTime().compareTo(startTime2.getTime());
+//            updateTimeObject(startTime1, schduleTimeCourse1[0], localDatesCourse1[0]);
+//            updateTimeObject(startTime2, schduleTimeCourse2[0], localDatesCourse2[0]);
+
+//            return startTime1.getTime().compareTo(startTime2.getTime());
 //            } else {
 //                updateTimeObject(endTime1, schduleTimeCourse1[1], currentDate);
 //                updateTimeObject(endTime2, schduleTimeCourse2[1], currentDate);
@@ -433,24 +437,23 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void updateTimeObject(Calendar targetCal, String time, Calendar date) {
-        targetCal.setTime(Transformer.convertTimeRawToObject(time).getTime());
-        targetCal.set(Calendar.YEAR, date.get(Calendar.YEAR));
-        targetCal.set(Calendar.MONTH, date.get(Calendar.MONTH));
-        targetCal.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
-    }
-
-    public boolean compareDate(String date) {
-        if (date.toLowerCase().contains("null"))
-            return false;
-
-        String[] dates = date.split(" - ");
-        Calendar startDate = Transformer.convertDateRawToObject(dates[0]);
-        Calendar endDate = Transformer.convertDateRawToObject(dates[1]);
-
-        // Get today's date
-        Calendar todayDate = Calendar.getInstance();
-        return todayDate.equals(startDate) || todayDate.equals(endDate)
-                || todayDate.after(startDate);// && todayDate.before(endDate); // for dev purpose
-    }
+//    private void updateTimeObject(Calendar targetCal, String time, Calendar date) {
+//        targetCal.setTime(Transformer.convertTimeRawToObject(time).getTime());
+//        targetCal.set(Calendar.YEAR, date.get(Calendar.YEAR));
+//        targetCal.set(Calendar.MONTH, date.get(Calendar.MONTH));
+//        targetCal.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+//    }
+//
+//    public boolean compareDate(String date) {
+//        if (date.toLowerCase().contains("null"))
+//            return false;
+//
+//        String[] dates = date.split(" - ");
+//        Calendar startDate = Transformer.convertDateRawToObject(dates[0]);
+//        Calendar endDate = Transformer.convertDateRawToObject(dates[1]);
+//
+//        // Get today's date
+//        Calendar todayDate = Calendar.getInstance();
+//        return todayDate.equals(startDate) || todayDate.equals(endDate) || todayDate.after(startDate);// && todayDate.before(endDate); // for dev purpose
+//    }
 }

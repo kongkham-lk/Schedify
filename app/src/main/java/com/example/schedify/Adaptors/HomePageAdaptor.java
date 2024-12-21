@@ -19,6 +19,7 @@ import com.example.schedify.Models.Course;
 import com.example.schedify.Activities.CreateTaskActivity;
 import com.example.schedify.R;
 import com.example.schedify.Components.WebViewLoginDialog;
+import com.example.schedify.Util.Checker;
 import com.example.schedify.Util.Transformer;
 
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class HomePageAdaptor extends ArrayAdapter<Course> {
 
         Course course = courses.get(position);
         String[] times = course.getTime().split(" - ");
-        setBackgroundColor(convertView, course.isExpired());
+        setBackgroundColor(convertView, Checker.isStartTimeExpired(course));
 
         viewHolder.tv_title.setText(Transformer.replaceUnderscoreWithComma(Transformer.replaceUnderscoreWithComma(course.getTitle())));
         viewHolder.tv_location.setText(Transformer.replaceUnderscoreWithComma(Transformer.replaceUnderscoreWithComma(course.getLocation())));
