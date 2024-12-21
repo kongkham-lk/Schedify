@@ -272,10 +272,10 @@ public class HomeFragment extends Fragment {
             StringBuilder serializedCourses = new StringBuilder();
 
             for (Course newCourse : newCourseList) {
-               String title = newCourse.getTitle().replace(",", "_");
-               String description = newCourse.getDescription().replace(",", "_");
-               String location = newCourse.getLocation().replace(",", "_");
-               String classDay = (Arrays.toString(newCourse.getClassDayList())).replaceAll(",", "");
+                String title = newCourse.getTitle().replace(",", "_");
+                String description = newCourse.getDescription().replace(",", "_");
+                String location = newCourse.getLocation().replace(",", "_");
+                String classDay = (Arrays.toString(newCourse.getClassDayList())).replaceAll(",", "");
 
                 serializedCourses
                         .append(title).append(",")
@@ -391,6 +391,6 @@ public class HomeFragment extends Fragment {
         // Get today's date
         Calendar todayDate = Calendar.getInstance();
         return todayDate.equals(startDate) || todayDate.equals(endDate)
-                || (todayDate.after(startDate));// && todayDate.before(endDate)); // TEMP NOT CHECK FOR END DATE
+                || todayDate.after(startDate);// && todayDate.before(endDate); // for dev purpose
     }
 }
