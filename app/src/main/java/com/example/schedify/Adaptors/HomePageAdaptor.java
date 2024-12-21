@@ -51,7 +51,7 @@ public class HomePageAdaptor extends ArrayAdapter<Course> {
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.home_items_view_holder, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.tv_courseCode = convertView.findViewById(R.id.tv_title);
+            viewHolder.tv_title = convertView.findViewById(R.id.tv_title);
             viewHolder.tv_location = convertView.findViewById(R.id.tv_location);
             viewHolder.tv_start_time = convertView.findViewById(R.id.tv_startTime);
             viewHolder.tv_end_time = convertView.findViewById(R.id.tv_endTime);
@@ -64,8 +64,8 @@ public class HomePageAdaptor extends ArrayAdapter<Course> {
         String[] times = course.getTime().split(" - ");
         setBackgroundColor(convertView, course.isExpired());
 
-        viewHolder.tv_courseCode.setText(Transformer.replaceUnderscoreWithComma(course.getTitle()));
-        viewHolder.tv_location.setText(Transformer.replaceUnderscoreWithComma(course.getLocation()));
+        viewHolder.tv_title.setText(Transformer.replaceUnderscoreWithComma(Transformer.replaceUnderscoreWithComma(course.getTitle())));
+        viewHolder.tv_location.setText(Transformer.replaceUnderscoreWithComma(Transformer.replaceUnderscoreWithComma(course.getLocation())));
         viewHolder.tv_start_time.setText(Transformer.convertStringTimeRawToStringTimeDisplay(times[0]));
         viewHolder.tv_end_time.setText(Transformer.convertStringTimeRawToStringTimeDisplay(times[1]));
 
@@ -117,7 +117,7 @@ public class HomePageAdaptor extends ArrayAdapter<Course> {
     }
 
     private static class ViewHolder {
-        TextView tv_courseCode;
+        TextView tv_title;
         TextView tv_location;
         TextView tv_start_time;
         TextView tv_end_time;
