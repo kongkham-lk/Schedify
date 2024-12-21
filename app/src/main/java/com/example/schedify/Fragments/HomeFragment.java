@@ -385,8 +385,8 @@ public class HomeFragment extends Fragment {
             return false;
 
         String[] dates = date.split(" - ");
-        Calendar startDate = Transformer.convertDateDisplayToObject(dates[0]);
-        Calendar endDate = Transformer.convertDateDisplayToObject(dates[1]);
+        Calendar startDate = Transformer.convertDateRawToObject(dates[0]);
+        Calendar endDate = Transformer.convertDateRawToObject(dates[1]);
 
         // Get today's date
         Calendar todayDate = Calendar.getInstance();
