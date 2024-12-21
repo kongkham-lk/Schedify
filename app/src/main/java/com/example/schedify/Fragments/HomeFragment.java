@@ -164,75 +164,64 @@ public class HomeFragment extends Fragment {
 
     private void createList() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
-        String taskData = sharedPreferences.getString(KEY_TASKLIST, "");
-        String courseData = sharedPreferences.getString(KEY_COURSELIST, "");
         courses.clear();
-        if (!taskData.isEmpty()) {
-            String[] tasks = taskData.split(";");
-            for (String task : tasks) {
-                String[] taskDetails = task.split(",");
-                Log.d(taskDetails.length + "", Arrays.toString(taskDetails));
-                if (taskDetails.length == 5) { // Task data - full detail
-                    String title = Transformer.replaceUnderscoreWithComma(taskDetails[0]);
-                    String description = Transformer.replaceUnderscoreWithComma(taskDetails[1]);
-                    String location = taskDetails[4];
-                    String time = taskDetails[2];
-                    String date = taskDetails[3];
-                    boolean[] classDayList = {false, true};
-                    boolean isToday = compareDate(date);
-                    if (isToday) {
-                        numTasks.add(new Task(title, description, time, date, location));
-                        courses.add(new Course(title, description, time, date, location, classDayList, 0, true));
-                    }
-                } else if (taskDetails.length == 4) { // Task data - without location
-                    String title = taskDetails[0];
-                    String description = taskDetails[1];
-                    String time = taskDetails[2];
-                    String date = taskDetails[3];
-                    boolean[] classDayList = {false, true};
-                    boolean isToday =  compareDate(date);
-                    if (isToday) {
-                        numTasks.add(new Task(title, description, time, date, ""));
-                        courses.add(new Course(title, description, time, date, "", classDayList, 0, true));
-                    }
-                }
-            }
-        }
-
-        if (!courseData.isEmpty()) {
-            String[] tasks = courseData.split(";");
-            for (String task : tasks) {
-                String[] taskDetails = task.split(",");
-                if (taskDetails.length >= 6) {
-                    String title = taskDetails[0];
-                    String description = taskDetails[1];
-                    String time = taskDetails[2];
-                    String date = taskDetails[3];
-                    String location = taskDetails[4];
-                    int urlID = Integer.parseInt(taskDetails[6]);
-                    boolean isRegistered = taskDetails.length > 7 ? Boolean.parseBoolean(taskDetails[7]) : false;
-
-                    String[] stringArray = taskDetails[5].replace("[", "").replace("]", "").trim().split(" ");
-                    boolean[] classDayList = new boolean[stringArray.length];
-                    for (int i = 0; i < stringArray.length; i++) {
-                            classDayList[i] = Boolean.parseBoolean(stringArray[i]);
-                    }
-
-                    LocalDate today = LocalDate.now();
-                    int todayDayOfWeek = today.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
-                    todayDayOfWeek--; // Adjust to 0-based index (0=Monday, 6=Sunday)
-
-                    boolean isToday = compareDate(date);
-                    boolean exactDay = false;
-
-                    if (isToday && classDayList[todayDayOfWeek])
-                        exactDay = true;  // Set exactDay to true if today is a class day
-
-                    if (isToday && exactDay)
-                        courses.add(new Course(title, description, time, date, location, classDayList, urlID, isRegistered));
-                }
-            }
-        }
+        updateTaskList(sharedPreferences, KEY_TASKLIST);
+        updateTaskList(sharedPreferences, KEY_COURSELIST);
+//        String taskData = sharedPreferences.getString(KEY_TASKLIST, "");
+//        String courseData = sharedPreferences.getString(KEY_COURSELIST, "");
+//        if (!taskData.isEmpty()) {
+//            String[] tasks = taskData.split(";");
+//            for (String task : tasks) {
+//                String[] taskDetails = task.split(",");
+//
+//                String title = Transformer.replaceUnderscoreWithComma(taskDetails[0]);
+//                String description = Transformer.replaceUnderscoreWithComma(taskDetails[1]);
+//                String time = taskDetails[2];
+//                String date = taskDetails[3];
+//                String location = taskDetails.length == 5 ? Transformer.replaceUnderscoreWithComma(taskDetails[4]) : "";
+//                boolean[] classDayList = {false, true};
+//                boolean isToday = compareDate(date);
+//                if (isToday) {
+//                    numTasks.add(new Task(title, description, time, date, location));
+//                    courses.add(new Course(title, description, time, date, location, classDayList, 0, true));
+//                }
+//            }
+//        }
+//
+//        if (!courseData.isEmpty()) {
+//            String[] tasks = courseData.split(";");
+//            for (String task : tasks) {
+//                String[] taskDetails = task.split(",");
+//                if (taskDetails.length >= 6) {
+//                    String title = Transformer.replaceUnderscoreWithComma(taskDetails[0]);
+//                    String description = Transformer.replaceUnderscoreWithComma(taskDetails[1]);
+//                    String time = taskDetails[2];
+//                    String date = taskDetails[3];
+//                    String location = Transformer.replaceUnderscoreWithComma(taskDetails[4]);
+//                    String[] stringArray = taskDetails[5].replace("[", "").replace("]", "").trim().split(" ");
+//                    int urlID = Integer.parseInt(taskDetails[6]);
+//                    boolean isRegistered = taskDetails.length > 7 ? Boolean.parseBoolean(taskDetails[7]) : false;
+//
+//                    boolean[] classDayList = new boolean[stringArray.length];
+//                    for (int i = 0; i < stringArray.length; i++) {
+//                        classDayList[i] = Boolean.parseBoolean(stringArray[i]) || title.contains("Data"); // for dev purpose
+//                    }
+//
+//                    LocalDate today = LocalDate.now();
+//                    int todayDayOfWeek = today.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
+//                    todayDayOfWeek--; // Adjust to 0-based index (0=Monday, 6=Sunday)
+//
+//                    boolean isToday = compareDate(date);
+//                    boolean exactDay = false;
+//
+//                    if (isToday && classDayList[todayDayOfWeek])
+//                        exactDay = true;  // Set exactDay to true if today is a class day
+//
+//                    if (isToday && exactDay)
+//                        courses.add(new Course(title, description, time, date, location, classDayList, urlID, isRegistered));
+//                }
+//            }
+//        }
         sortCourses(true);
 
 //        courses.sort((course1, course2) -> {
@@ -261,6 +250,46 @@ public class HomeFragment extends Fragment {
 
         HomePageAdaptor homePageAdaptor = new HomePageAdaptor(requireContext(), R.layout.home_items_view_holder, courses, numTasks);
         list_view_home.setAdapter(homePageAdaptor);
+    }
+
+    private void updateTaskList(SharedPreferences sharedPreferences, String targetSharedPrefKey) {
+        String taskData = sharedPreferences.getString(targetSharedPrefKey, "");
+        if (!taskData.isEmpty()) {
+            String[] tasks = taskData.split(";");
+            for (String task : tasks) {
+                String[] taskDetails = task.split(",");
+                String title = Transformer.replaceUnderscoreWithComma(taskDetails[0]);
+                String description = Transformer.replaceUnderscoreWithComma(taskDetails[1]);
+                String time = taskDetails[2];
+                String date = taskDetails[3];
+                String location = taskDetails.length > 4 ? Transformer.replaceUnderscoreWithComma(taskDetails[4]) : "";
+
+                if (targetSharedPrefKey.equals(KEY_TASKLIST)) {
+                    boolean[] classDayList = {false, true};
+                    boolean isToday = compareDate(date);
+                    if (isToday) {
+                        numTasks.add(new Task(title, description, time, date, location));
+                        courses.add(new Course(title, description, time, date, location, classDayList, 0, true));
+                    }
+                } else if (taskDetails.length >= 6) {
+                    String[] stringArray = taskDetails[5].replace("[", "").replace("]", "").trim().split(" ");
+                    int urlID = Integer.parseInt(taskDetails[6]);
+                    boolean isRegistered = taskDetails.length > 7 ? Boolean.parseBoolean(taskDetails[7]) : false;
+
+                    boolean[] classDayList = new boolean[stringArray.length];
+                    for (int i = 0; i < stringArray.length; i++)
+                        classDayList[i] = Boolean.parseBoolean(stringArray[i]) || title.contains("Data"); // for dev purpose
+
+                    LocalDate today = LocalDate.now();
+                    int todayDayOfWeek = today.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
+                    todayDayOfWeek--; // Adjust to 0-based index (0=Monday, 6=Sunday)
+
+                    boolean isToday = compareDate(date);
+                    if (isToday && classDayList[todayDayOfWeek])
+                        courses.add(new Course(title, description, time, date, location, classDayList, urlID, isRegistered));
+                }
+            }
+        }
     }
 
     public void filterOutCourseList(List<Course> newCourseList) {
