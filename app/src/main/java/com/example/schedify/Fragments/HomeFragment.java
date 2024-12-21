@@ -159,15 +159,8 @@ public class HomeFragment extends Fragment {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        StringBuilder sb = new StringBuilder();
-        for (Task task : numTasks)
-            sb.append(task.getTitle()).append(",")
-                    .append(task.getDescription()).append(",")
-                    .append(task.getTime()).append(",")
-                    .append(task.getDate()).append(",")
-                    .append(task.getLocation()).append(",;");
-
-        editor.putString(KEY_TASKLIST, sb.toString());
+        StringBuilder serializedTask = getTskSharedPreference(numTasks);
+        editor.putString(KEY_TASKLIST, serializedTask.toString());
         editor.apply();
     }
 
@@ -281,25 +274,7 @@ public class HomeFragment extends Fragment {
         createList();
 
         if (newCourseList != null) {
-            StringBuilder serializedCourses = new StringBuilder();
-
-            for (Course newCourse : newCourseList) {
-                String title = Transformer.replaceCommaWithUnderscore(newCourse.getTitle());
-                String description = Transformer.replaceCommaWithUnderscore(newCourse.getDescription());
-                String location = Transformer.replaceCommaWithUnderscore(newCourse.getLocation());
-                String classDay = Transformer.replaceCommaWithUnderscore(Arrays.toString(newCourse.getClassDayList()));
-
-                serializedCourses
-                        .append(title).append(",")
-                        .append(description).append(",")
-                        .append(newCourse.getTime()).append(",")
-                        .append(newCourse.getDate()).append(",")
-                        .append(location).append(",")
-                        .append(classDay).append(",")
-                        .append(newCourse.getUrlID()).append(",")
-                        .append(newCourse.isRegistered()).append(";");// Remove commas from days list
-            }
-
+            StringBuilder serializedCourses = this.getCourseSharedPreference(newCourseList);
             editor.putString(KEY_COURSELIST, serializedCourses.toString());
             editor.apply();
 
@@ -312,6 +287,44 @@ public class HomeFragment extends Fragment {
                 Log.e("HomeFragment", "Adapter is not of the expected type HomePageAdaptor");
             }
         }
+    }
+
+    private StringBuilder getTskSharedPreference(List<Task> numTasks) {
+        StringBuilder serializedTask = new StringBuilder();
+        for (Task task : numTasks) {
+            String title = Transformer.replaceCommaWithUnderscore(task.getTitle());
+            String description = Transformer.replaceCommaWithUnderscore(task.getDescription());
+            String location = Transformer.replaceCommaWithUnderscore(task.getLocation());
+
+            serializedTask.append(title).append(",")
+                    .append(description).append(",")
+                    .append(task.getTime()).append(",")
+                    .append(task.getDate()).append(",")
+                    .append(location).append(",;");
+        }
+        return serializedTask;
+    }
+
+    private StringBuilder getCourseSharedPreference(List<Course> newCourseList) {
+        StringBuilder serializedCourses = new StringBuilder();
+
+        for (Course newCourse : newCourseList) {
+            String title = Transformer.replaceCommaWithUnderscore(newCourse.getTitle());
+            String description = Transformer.replaceCommaWithUnderscore(newCourse.getDescription());
+            String location = Transformer.replaceCommaWithUnderscore(newCourse.getLocation());
+            String classDay = Transformer.replaceCommaWithUnderscore(Arrays.toString(newCourse.getClassDayList()));
+
+            serializedCourses
+                    .append(title).append(",")
+                    .append(description).append(",")
+                    .append(newCourse.getTime()).append(",")
+                    .append(newCourse.getDate()).append(",")
+                    .append(location).append(",")
+                    .append(classDay).append(",")
+                    .append(newCourse.getUrlID()).append(",")
+                    .append(newCourse.isRegistered()).append(";");// Remove commas from days list
+        }
+        return serializedCourses;
     }
 
     private void startMinuteChangeCheck() {
