@@ -118,7 +118,7 @@ public class HomeFragment extends Fragment {
 
         if ((title != null && description != null && date != null) && index != -1) {
             Task targetTask = numTasks.get(index);
-            int pos = indexOf(targetTask);
+            int pos = indexOf(targetTask, courses);
             if (pos != -1) {
                 Course targetCourse = courses.get(pos);
                 updateTaskProperty(targetCourse, title, description, date, time, location);
@@ -128,12 +128,11 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private int indexOf(Task targetTask) {
+    private int indexOf(Task targetTask, ArrayList<Course> courses) {
         for (int i = 0; i < courses.size(); i++) {
             Course targetCourse = courses.get(i);
-            if (isEqual(targetCourse, targetTask)) {
+            if (isEqual(targetCourse, targetTask))
                 return i;
-            }
         }
         return  -1;
     }
@@ -146,8 +145,7 @@ public class HomeFragment extends Fragment {
                 && targetCourse.getDate().equals(targetTask.getDate());
     }
 
-    private void updateTaskProperty(Task targetTask, String title, String description, String date,
-                                    String time, String location) {
+    private void updateTaskProperty(Task targetTask, String title, String description, String date, String time, String location) {
         targetTask.setTitle(title);
         targetTask.setDescription(description);
         targetTask.setDate(date);
