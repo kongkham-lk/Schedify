@@ -16,21 +16,12 @@ public class CourseRegistrationResponse {
 
     private List<Course> courseList;
     private static final String[] DayInAWeek = new String[]{"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
-//    private String requestMethod = "";
     private Context context;
 
     public CourseRegistrationResponse(Context context) {
         courseList = new ArrayList<>();
         this.context = context;
     }
-
-//    public String getRequestMethod() {
-//        return requestMethod;
-//    }
-//
-//    public void setRequestMethod(String requestMethod) {
-//        this.requestMethod = requestMethod;
-//    }
 
     // Callable task to fetch API data
     public List<Course> retrievedCourseSchedule() {
@@ -41,7 +32,6 @@ public class CourseRegistrationResponse {
     // Parsing logic for the articles
     private void extractJSONResponse() {
         try {
-//            JSONObject jsonObject = new JSONObject(jsonResponse);
             JSONObject jsonObject = SharePreference.loadJson(context);
             JSONArray registeredCourseList = jsonObject.getJSONObject("data").getJSONArray("registrations");
 
@@ -53,7 +43,7 @@ public class CourseRegistrationResponse {
                     String courseCode = subject + " " + courseNumber;
                     String courseTitle = courseItem.getString("courseTitle");
                     String title = courseCode + ": " + courseTitle;
-                    boolean isRegistered = courseItem.getString("statusDescription").toLowerCase().equals("registered") ? true : false;
+                    boolean isRegistered = courseItem.getString("statusDescription").equalsIgnoreCase("registered");
                     JSONObject meetingDetail = courseItem.getJSONArray("meetingTimes").getJSONObject(0);
                     String startTime = meetingDetail.getString("beginTime");
                     startTime = Transformer.convertUnSplitToSplitStringTimeRow(startTime);

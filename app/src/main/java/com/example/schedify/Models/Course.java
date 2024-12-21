@@ -2,11 +2,7 @@ package com.example.schedify.Models;
 
 import com.example.schedify.Util.Transformer;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Calendar;
-import java.util.Locale;
 
 public class Course extends Task {
 
@@ -44,10 +40,8 @@ public class Course extends Task {
     }
 
     public boolean isExpired() {
-//        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
         Calendar currentDate = Calendar.getInstance();
 
-//        try {
         // Parse end time and associate it with today's date
         Calendar endTime = Calendar.getInstance();
         String[] scheduleTimes = this.getTime().split(" - ");
@@ -58,10 +52,6 @@ public class Course extends Task {
 
         // Check if end time is before the current time
         return endTime.getTime().before(currentDate.getTime());
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//        return false;
     }
 
 
