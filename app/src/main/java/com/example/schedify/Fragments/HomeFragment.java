@@ -242,33 +242,31 @@ public class HomeFragment extends Fragment {
                 }
             }
         }
-        sortCourses();
+        sortCourses(true);
 
-        courses.sort((course1, course2) -> {
-            String[] schduleTimeCourse1 = course1.getTime().split(" - ");
-            String[] schduleTimeCourse2 = course2.getTime().split(" - ");
-
-            Calendar currentDate = Calendar.getInstance();
-
-            Calendar endTime1 = Calendar.getInstance();
-            endTime1.setTime(Transformer.convertTimeRawToObject(schduleTimeCourse1[1]).getTime());
-            Calendar endTime2 = Calendar.getInstance();
-            endTime2.setTime(Transformer.convertTimeRawToObject(schduleTimeCourse2[1]).getTime());
-
-            course1.setExpired(endTime1.getTime().before(currentDate.getTime()));
-            course2.setExpired(endTime2.getTime().before(currentDate.getTime()));
-
-            if (course1.isExpired() && !course2.isExpired()) return 1;
-            if (!course1.isExpired() && course2.isExpired()) return -1;
-
-            Calendar startTime1 = Calendar.getInstance();
-            startTime1.setTime(Transformer.convertTimeRawToObject(schduleTimeCourse1[0]).getTime());
-
-            Calendar startTime2 = Calendar.getInstance();
-            startTime2.setTime(Transformer.convertTimeRawToObject(schduleTimeCourse2[0]).getTime());
-
-            return startTime1.getTime().compareTo(startTime2.getTime());
-        });
+//        courses.sort((course1, course2) -> {
+//            String[] schduleTimeCourse1 = course1.getTime().split(" - ");
+//            String[] schduleTimeCourse2 = course2.getTime().split(" - ");
+//
+//            Calendar endTime1 = Calendar.getInstance();
+//            Calendar endTime2 = Calendar.getInstance();
+//            endTime1.setTime(Transformer.convertTimeRawToObject(schduleTimeCourse1[1]).getTime());
+//            endTime2.setTime(Transformer.convertTimeRawToObject(schduleTimeCourse2[1]).getTime());
+//
+//            Calendar currentDate = Calendar.getInstance();
+//            course1.setExpired(endTime1.getTime().before(currentDate.getTime()));
+//            course2.setExpired(endTime2.getTime().before(currentDate.getTime()));
+//
+//            if (course1.isExpired() && !course2.isExpired()) return 1;
+//            if (!course1.isExpired() && course2.isExpired()) return -1;
+//
+//            Calendar startTime1 = Calendar.getInstance();
+//            Calendar startTime2 = Calendar.getInstance();
+//            startTime1.setTime(Transformer.convertTimeRawToObject(schduleTimeCourse1[0]).getTime());
+//            startTime2.setTime(Transformer.convertTimeRawToObject(schduleTimeCourse2[0]).getTime());
+//
+//            return startTime1.getTime().compareTo(startTime2.getTime());
+//        });
 
         HomePageAdaptor homePageAdaptor = new HomePageAdaptor(requireContext(), R.layout.home_items_view_holder, courses, numTasks);
         list_view_home.setAdapter(homePageAdaptor);
@@ -305,7 +303,7 @@ public class HomeFragment extends Fragment {
             editor.putString(KEY_COURSELIST, serializedCourses.toString());
             editor.apply();
 
-            sortCourses();
+            sortCourses(false);
 
             if (list_view_home.getAdapter() instanceof HomePageAdaptor) {
                 HomePageAdaptor adaptor = (HomePageAdaptor) list_view_home.getAdapter();
@@ -343,55 +341,63 @@ public class HomeFragment extends Fragment {
         handler.removeCallbacksAndMessages(null);
     }
 
-    private void sortCourses() {
+    private void sortCourses(boolean isDisplayOnScreen) {
         courses.sort((course1, course2) -> {
             String[] schduleTimeCourse1 = course1.getTime().split(" - ");
             String[] schduleTimeCourse2 = course2.getTime().split(" - ");
             String[] schduleDateCourse1 = course1.getDate().split(" - ");
             String[] schduleDateCourse2 = course2.getDate().split(" - ");
-            Calendar[] localDatesCourse1 = {
-                    Transformer.convertDateRawToObject(schduleDateCourse1[0]),
-                    Transformer.convertDateRawToObject(schduleDateCourse1[1]),
-            };
-            Calendar[] localDatesCourse2 = {
-                    Transformer.convertDateRawToObject(schduleDateCourse2[0]),
-                    Transformer.convertDateRawToObject(schduleDateCourse2[1]),
-            };
 
             Calendar currentDate = Calendar.getInstance();
-
+            Calendar startTime1 = Calendar.getInstance();
+            Calendar startTime2 = Calendar.getInstance();
             Calendar endTime1 = Calendar.getInstance();
-            endTime1.setTime(Transformer.convertTimeRawToObject(schduleTimeCourse1[1]).getTime());
-            endTime1.set(Calendar.YEAR, localDatesCourse1[1].get(Calendar.YEAR));
-            endTime1.set(Calendar.MONTH, localDatesCourse1[1].get(Calendar.MONTH));
-            endTime1.set(Calendar.DAY_OF_MONTH, localDatesCourse1[1].get(Calendar.DAY_OF_MONTH));
-
             Calendar endTime2 = Calendar.getInstance();
-            endTime2.setTime(Transformer.convertTimeRawToObject(schduleTimeCourse2[1]).getTime());
-            endTime2.set(Calendar.YEAR, localDatesCourse2[1].get(Calendar.YEAR));
-            endTime2.set(Calendar.MONTH, localDatesCourse2[1].get(Calendar.MONTH));
-            endTime2.set(Calendar.DAY_OF_MONTH, localDatesCourse2[1].get(Calendar.DAY_OF_MONTH));
+
+//            if (!isDisplayOnScreen) {
+            Calendar[] localDatesCourse1 =  {
+                !isDisplayOnScreen ? Transformer.convertDateRawToObject(schduleDateCourse1[0]) : currentDate,
+                !isDisplayOnScreen ? Transformer.convertDateRawToObject(schduleDateCourse1[1]) : currentDate,
+            };
+            Calendar[] localDatesCourse2 = {
+                !isDisplayOnScreen ? Transformer.convertDateRawToObject(schduleDateCourse2[0]) : currentDate,
+                !isDisplayOnScreen ? Transformer.convertDateRawToObject(schduleDateCourse2[1]) : currentDate,
+            };
+
+            updateTimeObject(endTime1, schduleTimeCourse1[1], localDatesCourse1[1]);
+            updateTimeObject(endTime2, schduleTimeCourse2[1], localDatesCourse2[1]);
 
             boolean isExpired1 = endTime1.getTime().before(currentDate.getTime());
             boolean isExpired2 = endTime2.getTime().before(currentDate.getTime());
-
             if (isExpired1 && !isExpired2) return 1;
             if (!isExpired1 && isExpired2) return -1;
 
-            Calendar startTime1 = Calendar.getInstance();
-            startTime1.setTime(Transformer.convertTimeRawToObject(schduleTimeCourse1[0]).getTime());
-            startTime1.set(Calendar.YEAR, localDatesCourse1[0].get(Calendar.YEAR));
-            startTime1.set(Calendar.MONTH, localDatesCourse1[0].get(Calendar.MONTH));
-            startTime1.set(Calendar.DAY_OF_MONTH, localDatesCourse1[0].get(Calendar.DAY_OF_MONTH));
-
-            Calendar startTime2 = Calendar.getInstance();
-            startTime2.setTime(Transformer.convertTimeRawToObject(schduleTimeCourse2[0]).getTime());
-            startTime2.set(Calendar.YEAR, localDatesCourse2[0].get(Calendar.YEAR));
-            startTime2.set(Calendar.MONTH, localDatesCourse2[0].get(Calendar.MONTH));
-            startTime2.set(Calendar.DAY_OF_MONTH, localDatesCourse2[0].get(Calendar.DAY_OF_MONTH));
+            updateTimeObject(startTime1, schduleTimeCourse1[0], localDatesCourse1[0]);
+            updateTimeObject(startTime2, schduleTimeCourse2[0], localDatesCourse2[0]);
 
             return startTime1.getTime().compareTo(startTime2.getTime());
+//            } else {
+//                updateTimeObject(endTime1, schduleTimeCourse1[1], currentDate);
+//                updateTimeObject(endTime2, schduleTimeCourse2[1], currentDate);
+//
+//                boolean isExpired1 = endTime1.getTime().before(currentDate.getTime());
+//                boolean isExpired2 = endTime2.getTime().before(currentDate.getTime());
+//                if (isExpired1 && !isExpired2) return 1;
+//                if (!isExpired1 && isExpired2) return -1;
+//
+//                updateTimeObject(startTime1, schduleTimeCourse1[0], currentDate);
+//                updateTimeObject(startTime2, schduleTimeCourse2[0], currentDate);
+//
+//                return startTime1.getTime().compareTo(startTime2.getTime());
+//            }
         });
+    }
+
+    private void updateTimeObject(Calendar targetCal, String time, Calendar date) {
+        targetCal.setTime(Transformer.convertTimeRawToObject(time).getTime());
+        targetCal.set(Calendar.YEAR, date.get(Calendar.YEAR));
+        targetCal.set(Calendar.MONTH, date.get(Calendar.MONTH));
+        targetCal.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
     }
 
     public boolean compareDate(String date) {
