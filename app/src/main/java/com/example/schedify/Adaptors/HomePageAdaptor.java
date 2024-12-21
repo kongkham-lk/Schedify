@@ -64,8 +64,8 @@ public class HomePageAdaptor extends ArrayAdapter<Course> {
         String[] times = course.getTime().split(" - ");
         setBackgroundColor(convertView, course.isExpired());
 
-        viewHolder.tv_courseCode.setText(course.getTitle().replaceAll("_", ","));
-        viewHolder.tv_location.setText(course.getLocation().replaceAll("_", ","));
+        viewHolder.tv_courseCode.setText(Transformer.replaceUnderscoreWithComma(course.getTitle()));
+        viewHolder.tv_location.setText(Transformer.replaceUnderscoreWithComma(course.getLocation()));
         viewHolder.tv_start_time.setText(Transformer.convertStringTimeRawToStringTimeDisplay(times[0]));
         viewHolder.tv_end_time.setText(Transformer.convertStringTimeRawToStringTimeDisplay(times[1]));
 

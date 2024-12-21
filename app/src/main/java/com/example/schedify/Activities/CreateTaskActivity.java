@@ -66,11 +66,11 @@ public class CreateTaskActivity extends AppCompatActivity {
             int position = edit_intent.getIntExtra("index", -1);
             if (loaded_title != null) {
                 editing = true;
-                titleInput.setText(loaded_title.replaceAll("_", ","));
+                titleInput.setText(Transformer.replaceUnderscoreWithComma(loaded_title));
                 deleteBtn.setVisibility(View.VISIBLE);
             }
             if (loaded_description != null) {
-                descriptionInput.setText(loaded_description.replaceAll("_", ","));
+                descriptionInput.setText(Transformer.replaceUnderscoreWithComma(loaded_description));
             }
             if (loaded_date != null) {
                 String[] dates = loaded_date.split(" - ");
@@ -85,7 +85,7 @@ public class CreateTaskActivity extends AppCompatActivity {
                 prevSaveTimes = times;
             }
             if (loaded_location != null) {
-                locationInput.setText(loaded_location.replaceAll("_", ","));
+                locationInput.setText(Transformer.replaceUnderscoreWithComma(loaded_location));
             }
             if (position != -1) {
                 index = position;
@@ -227,9 +227,9 @@ public class CreateTaskActivity extends AppCompatActivity {
                     || timePickerStart.getText().toString().isEmpty() || timePickerEnd.getText().toString().isEmpty()) {
                 Toast.makeText(getApplicationContext(), "Title and Date cannot be empty", Toast.LENGTH_SHORT).show();
             } else {
-                String title = titleInput.getText().toString().replaceAll(",", "_");
-                String description = descriptionInput.getText().toString().replaceAll(",", "_");
-                String location = locationInput.getText().toString().replaceAll(",", "_");
+                String title = Transformer.replaceCommaWithUnderscore(titleInput.getText().toString());
+                String description = Transformer.replaceCommaWithUnderscore(descriptionInput.getText().toString());
+                String location = Transformer.replaceCommaWithUnderscore(locationInput.getText().toString());
 
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 if (fromHome)

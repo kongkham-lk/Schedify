@@ -50,10 +50,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.taskViewHolder
             String newDate = Transformer.convertStringDateRawToStringDateDisplay(dates[i]);
             dates[i] = newDate;
         }
-        holder.titleText.setText(task.getTitle().replaceAll("_", ","));
+        holder.titleText.setText(Transformer.replaceUnderscoreWithComma(task.getTitle()));
         holder.timeText.setText(String.join(" - ", times));
         holder.dateText.setText(String.join(" - ", dates));
-        holder.locationText.setText(task.getLocation().replaceAll("_", ","));
+        holder.locationText.setText(Transformer.replaceUnderscoreWithComma(task.getLocation()));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

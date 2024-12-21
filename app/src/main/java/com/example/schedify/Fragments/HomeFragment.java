@@ -168,8 +168,8 @@ public class HomeFragment extends Fragment {
                 String[] taskDetails = task.split(",");
                 Log.d(taskDetails.length + "", Arrays.toString(taskDetails));
                 if (taskDetails.length == 5) { // Task data - full detail
-                    String title = taskDetails[0].replaceAll("_", ",");
-                    String description = taskDetails[1].replaceAll("_", ",");
+                    String title = Transformer.replaceUnderscoreWithComma(taskDetails[0]);
+                    String description = Transformer.replaceUnderscoreWithComma(taskDetails[1]);
                     String location = taskDetails[4];
                     String time = taskDetails[2];
                     String date = taskDetails[3];
@@ -272,10 +272,10 @@ public class HomeFragment extends Fragment {
             StringBuilder serializedCourses = new StringBuilder();
 
             for (Course newCourse : newCourseList) {
-                String title = newCourse.getTitle().replace(",", "_");
-                String description = newCourse.getDescription().replace(",", "_");
-                String location = newCourse.getLocation().replace(",", "_");
-                String classDay = (Arrays.toString(newCourse.getClassDayList())).replaceAll(",", "");
+                String title = Transformer.replaceCommaWithUnderscore(newCourse.getTitle());
+                String description = Transformer.replaceCommaWithUnderscore(newCourse.getDescription());
+                String location = Transformer.replaceCommaWithUnderscore(newCourse.getLocation());
+                String classDay = Transformer.replaceCommaWithUnderscore(Arrays.toString(newCourse.getClassDayList()));
 
                 serializedCourses
                         .append(title).append(",")
