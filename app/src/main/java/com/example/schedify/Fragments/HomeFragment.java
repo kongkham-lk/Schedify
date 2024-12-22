@@ -220,7 +220,8 @@ public class HomeFragment extends Fragment {
 //                }
 //            }
 //        }
-        sortCourses(true);
+//        sortCourses(false);
+        sortCourses();
 
 //        courses.sort((course1, course2) -> {
 //            String[] schduleTimeCourse1 = course1.getTime().split(" - ");
@@ -328,7 +329,7 @@ public class HomeFragment extends Fragment {
             editor.putString(KEY_COURSELIST, serializedCourses.toString());
             editor.apply();
 
-            sortCourses(false);
+            sortCourses();
 
             if (list_view_home.getAdapter() instanceof HomePageAdaptor) {
                 HomePageAdaptor adaptor = (HomePageAdaptor) list_view_home.getAdapter();
@@ -404,7 +405,7 @@ public class HomeFragment extends Fragment {
         handler.removeCallbacksAndMessages(null);
     }
 
-    private void sortCourses(boolean isDisplayOnScreen) {
+    private void sortCourses() {
         courses.sort((course1, course2) -> {
 
 //            String[] schduleTimeCourse1 = course1.getTime().split(" - ");
@@ -434,8 +435,8 @@ public class HomeFragment extends Fragment {
 //            boolean isExpired1 = endTime1.getTime().before(currentDate.getTime());
 //            boolean isExpired2 = endTime2.getTime().before(currentDate.getTime());
 
-            boolean isExpired1 = Checker.isEndTimeExpired(course1);
-            boolean isExpired2 = Checker.isEndTimeExpired(course2);
+            boolean isExpired1 = Checker.isTimeExpired(course1);
+            boolean isExpired2 = Checker.isTimeExpired(course2);
             if (isExpired1 && !isExpired2) return 1;
             if (!isExpired1 && isExpired2) return -1;
 

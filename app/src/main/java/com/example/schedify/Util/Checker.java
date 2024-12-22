@@ -25,46 +25,39 @@ public class Checker {
         return false;
     }
 
-
-    public static boolean isStartTimeExpired(Course course) {
+    public static boolean isTimeExpired(Course course) {
         String[] scheduleTimes = course.getTime().split(" - ");
-        return isExpired(scheduleTimes[0]);
-    }
-
-    public static boolean isEndTimeExpired(Course course) {
-        String[] scheduleTimes = course.getTime().split(" - ");
-        return isExpired(scheduleTimes[1]);
-    }
-
-    public static boolean isExpired(String targetTime) {
         Calendar currentDate = Calendar.getInstance();
-        Calendar targetCal = getCurrentTimeDateCal(targetTime, currentDate);
+        Calendar targetCal = getCurrentTimeObject(scheduleTimes[0], currentDate);
 
         // Check if end time is before the current time
         return targetCal.getTime().before(currentDate.getTime());
     }
 
-    private static Calendar getCurrentTimeDateCal(String targetTime, Calendar currentDate) {
-        Calendar targetCal = Transformer.convertTimeRawToObject(targetTime);
-        targetCal.set(Calendar.YEAR, currentDate.get(Calendar.YEAR));
-        targetCal.set(Calendar.MONTH, currentDate.get(Calendar.MONTH));
-        targetCal.set(Calendar.DAY_OF_MONTH, currentDate.get(Calendar.DAY_OF_MONTH));
+    private static Calendar getCurrentTimeObject(String targetTime, Calendar targetDate) {
+        Calendar targetCal = getCurrentTimeObject(targetTime);
+        targetCal.set(Calendar.YEAR, targetDate.get(Calendar.YEAR));
+        targetCal.set(Calendar.MONTH, targetDate.get(Calendar.MONTH));
+        targetCal.set(Calendar.DAY_OF_MONTH, targetDate.get(Calendar.DAY_OF_MONTH));
 
         return targetCal;
+    }
+
+    private static Calendar getCurrentTimeObject(String targetTime) {
+        return Transformer.convertTimeRawToObject(targetTime);
     }
 
     public static int isBefore(Course course1, Course course2) {
         String[] schduleTimeCourse1 = course1.getTime().split(" - ");
         String[] schduleTimeCourse2 = course2.getTime().split(" - ");
-        String[] schduleDateCourse1 = course1.getDate().split(" - ");
-        String[] schduleDateCourse2 = course2.getDate().split(" - ");
-        Calendar startTime1 = getCurrentTimeDateCal(schduleTimeCourse1[0], Transformer.convertDateRawToObject(schduleDateCourse1[0]));
-        Calendar startTime2 = getCurrentTimeDateCal(schduleTimeCourse2[0], Transformer.convertDateRawToObject(schduleDateCourse2[0]));
+
+        Calendar startTime1 = getCurrentTimeObject(schduleTimeCourse1[0]);
+        Calendar startTime2 = getCurrentTimeObject(schduleTimeCourse2[0]);
 
         return startTime1.getTime().compareTo(startTime2.getTime());
     }
 
-    public static boolean isClassToday(String date) {
+    public static boolean isDateExpired(String date) {
         if (date.toLowerCase().contains("null"))
             return false;
 
