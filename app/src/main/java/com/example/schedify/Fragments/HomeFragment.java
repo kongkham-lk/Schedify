@@ -165,89 +165,10 @@ public class HomeFragment extends Fragment {
         courses.clear();
         updateTaskListAndFilterOutInvalidDate(sharedPreferences, KEY_TASKLIST);
         updateTaskListAndFilterOutInvalidDate(sharedPreferences, KEY_COURSELIST);
-//        String taskData = sharedPreferences.getString(KEY_TASKLIST, "");
-//        String courseData = sharedPreferences.getString(KEY_COURSELIST, "");
-//        if (!taskData.isEmpty()) {
-//            String[] tasks = taskData.split(";");
-//            for (String task : tasks) {
-//                String[] taskDetails = task.split(",");
-//
-//                String title = Transformer.replaceUnderscoreWithComma(taskDetails[0]);
-//                String description = Transformer.replaceUnderscoreWithComma(taskDetails[1]);
-//                String time = taskDetails[2];
-//                String date = taskDetails[3];
-//                String location = taskDetails.length == 5 ? Transformer.replaceUnderscoreWithComma(taskDetails[4]) : "";
-//                boolean[] classDayList = {false, true};
-//                boolean isToday = compareDate(date);
-//                if (isToday) {
-//                    numTasks.add(new Task(title, description, time, date, location));
-//                    courses.add(new Course(title, description, time, date, location, classDayList, 0, true));
-//                }
-//            }
-//        }
-//
-//        if (!courseData.isEmpty()) {
-//            String[] tasks = courseData.split(";");
-//            for (String task : tasks) {
-//                String[] taskDetails = task.split(",");
-//                if (taskDetails.length >= 6) {
-//                    String title = Transformer.replaceUnderscoreWithComma(taskDetails[0]);
-//                    String description = Transformer.replaceUnderscoreWithComma(taskDetails[1]);
-//                    String time = taskDetails[2];
-//                    String date = taskDetails[3];
-//                    String location = Transformer.replaceUnderscoreWithComma(taskDetails[4]);
-//                    String[] stringArray = taskDetails[5].replace("[", "").replace("]", "").trim().split(" ");
-//                    int urlID = Integer.parseInt(taskDetails[6]);
-//                    boolean isRegistered = taskDetails.length > 7 ? Boolean.parseBoolean(taskDetails[7]) : false;
-//
-//                    boolean[] classDayList = new boolean[stringArray.length];
-//                    for (int i = 0; i < stringArray.length; i++) {
-//                        classDayList[i] = Boolean.parseBoolean(stringArray[i]) || title.contains("Data"); // for dev purpose
-//                    }
-//
-//                    LocalDate today = LocalDate.now();
-//                    int todayDayOfWeek = today.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
-//                    todayDayOfWeek--; // Adjust to 0-based index (0=Monday, 6=Sunday)
-//
-//                    boolean isToday = compareDate(date);
-//                    boolean exactDay = false;
-//
-//                    if (isToday && classDayList[todayDayOfWeek])
-//                        exactDay = true;  // Set exactDay to true if today is a class day
-//
-//                    if (isToday && exactDay)
-//                        courses.add(new Course(title, description, time, date, location, classDayList, urlID, isRegistered));
-//                }
-//            }
-//        }
-//        sortCourses(false);
+        
         sortCourses();
-
-//        courses.sort((course1, course2) -> {
-//            String[] schduleTimeCourse1 = course1.getTime().split(" - ");
-//            String[] schduleTimeCourse2 = course2.getTime().split(" - ");
-//
-//            Calendar endTime1 = Calendar.getInstance();
-//            Calendar endTime2 = Calendar.getInstance();
-//            endTime1.setTime(Transformer.convertTimeRawToObject(schduleTimeCourse1[1]).getTime());
-//            endTime2.setTime(Transformer.convertTimeRawToObject(schduleTimeCourse2[1]).getTime());
-//
-//            Calendar currentDate = Calendar.getInstance();
-//            course1.setExpired(endTime1.getTime().before(currentDate.getTime()));
-//            course2.setExpired(endTime2.getTime().before(currentDate.getTime()));
-//
-//            if (course1.isExpired() && !course2.isExpired()) return 1;
-//            if (!course1.isExpired() && course2.isExpired()) return -1;
-//
-//            Calendar startTime1 = Calendar.getInstance();
-//            Calendar startTime2 = Calendar.getInstance();
-//            startTime1.setTime(Transformer.convertTimeRawToObject(schduleTimeCourse1[0]).getTime());
-//            startTime2.setTime(Transformer.convertTimeRawToObject(schduleTimeCourse2[0]).getTime());
-//
-//            return startTime1.getTime().compareTo(startTime2.getTime());
-//        });
-
-        HomePageAdaptor homePageAdaptor = new HomePageAdaptor(requireContext(), R.layout.home_items_view_holder, courses, numTasks);
+        
+        HomePageAdaptor homePageAdaptor = new HomePageAdaptor(requireContext(), R.layout.home_items_view_holder, displayItems, tasks);
         list_view_home.setAdapter(homePageAdaptor);
     }
 
@@ -291,30 +212,6 @@ public class HomeFragment extends Fragment {
                         numTasks.add(new Task(title, description, time, date, location));
                     courses.add(new Course(title, description, time, date, location, classDayList, urlID, isRegistered));
                 }
-//                if (targetSharedPrefKey.equals(KEY_TASKLIST)) {
-//                    boolean[] classDayList = {false, true};
-//                    boolean isToday = Checker.isClassToday(date);
-//                    if (isToday) {
-//                        numTasks.add(new Task(title, description, time, date, location));
-//                        courses.add(new Course(title, description, time, date, location, classDayList, 0, true));
-//                    }
-//                } else if (taskDetails.length >= 6) {
-//                    String[] stringArray = taskDetails[5].replace("[", "").replace("]", "").trim().split(" ");
-//                    int urlID = Integer.parseInt(taskDetails[6]);
-//                    boolean isRegistered = taskDetails.length > 7 ? Boolean.parseBoolean(taskDetails[7]) : false;
-//
-//                    boolean[] classDayList = new boolean[stringArray.length];
-//                    for (int i = 0; i < stringArray.length; i++)
-//                        classDayList[i] = Boolean.parseBoolean(stringArray[i]) || title.contains("Data"); // for dev purpose
-//
-//                    LocalDate today = LocalDate.now();
-//                    int todayDayOfWeek = today.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
-//                    todayDayOfWeek--; // Adjust to 0-based index (0=Monday, 6=Sunday)
-//
-//                    boolean isToday = Checker.isClassToday(date);
-//                    if (isToday && classDayList[todayDayOfWeek])
-//                        courses.add(new Course(title, description, time, date, location, classDayList, urlID, isRegistered));
-//                }
             }
         }
     }
@@ -409,80 +306,13 @@ public class HomeFragment extends Fragment {
     }
 
     private void sortCourses() {
-        courses.sort((course1, course2) -> {
-
-//            String[] schduleTimeCourse1 = course1.getTime().split(" - ");
-//            String[] schduleTimeCourse2 = course2.getTime().split(" - ");
-//            String[] schduleDateCourse1 = course1.getDate().split(" - ");
-//            String[] schduleDateCourse2 = course2.getDate().split(" - ");
-//
-//            Calendar currentDate = Calendar.getInstance();
-//            Calendar startTime1 = Calendar.getInstance();
-//            Calendar startTime2 = Calendar.getInstance();
-//            Calendar endTime1 = Calendar.getInstance();
-//            Calendar endTime2 = Calendar.getInstance();
-//
-////            if (!isDisplayOnScreen) {
-//            Calendar[] localDatesCourse1 =  {
-//                !isDisplayOnScreen ? Transformer.convertDateRawToObject(schduleDateCourse1[0]) : currentDate,
-//                !isDisplayOnScreen ? Transformer.convertDateRawToObject(schduleDateCourse1[1]) : currentDate,
-//            };
-//            Calendar[] localDatesCourse2 = {
-//                !isDisplayOnScreen ? Transformer.convertDateRawToObject(schduleDateCourse2[0]) : currentDate,
-//                !isDisplayOnScreen ? Transformer.convertDateRawToObject(schduleDateCourse2[1]) : currentDate,
-//            };
-//
-//            updateTimeObject(endTime1, schduleTimeCourse1[1], localDatesCourse1[1]);
-//            updateTimeObject(endTime2, schduleTimeCourse2[1], localDatesCourse2[1]);
-
-//            boolean isExpired1 = endTime1.getTime().before(currentDate.getTime());
-//            boolean isExpired2 = endTime2.getTime().before(currentDate.getTime());
-
+        displayItems.sort((course1, course2) -> {
             boolean isExpired1 = Checker.isTimeExpired(course1);
             boolean isExpired2 = Checker.isTimeExpired(course2);
             if (isExpired1 && !isExpired2) return 1;
             if (!isExpired1 && isExpired2) return -1;
 
             return Checker.isBefore(course1, course2);
-
-//            updateTimeObject(startTime1, schduleTimeCourse1[0], localDatesCourse1[0]);
-//            updateTimeObject(startTime2, schduleTimeCourse2[0], localDatesCourse2[0]);
-
-//            return startTime1.getTime().compareTo(startTime2.getTime());
-//            } else {
-//                updateTimeObject(endTime1, schduleTimeCourse1[1], currentDate);
-//                updateTimeObject(endTime2, schduleTimeCourse2[1], currentDate);
-//
-//                boolean isExpired1 = endTime1.getTime().before(currentDate.getTime());
-//                boolean isExpired2 = endTime2.getTime().before(currentDate.getTime());
-//                if (isExpired1 && !isExpired2) return 1;
-//                if (!isExpired1 && isExpired2) return -1;
-//
-//                updateTimeObject(startTime1, schduleTimeCourse1[0], currentDate);
-//                updateTimeObject(startTime2, schduleTimeCourse2[0], currentDate);
-//
-//                return startTime1.getTime().compareTo(startTime2.getTime());
-//            }
         });
     }
-
-//    private void updateTimeObject(Calendar targetCal, String time, Calendar date) {
-//        targetCal.setTime(Transformer.convertTimeRawToObject(time).getTime());
-//        targetCal.set(Calendar.YEAR, date.get(Calendar.YEAR));
-//        targetCal.set(Calendar.MONTH, date.get(Calendar.MONTH));
-//        targetCal.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
-//    }
-//
-//    public boolean compareDate(String date) {
-//        if (date.toLowerCase().contains("null"))
-//            return false;
-//
-//        String[] dates = date.split(" - ");
-//        Calendar startDate = Transformer.convertDateRawToObject(dates[0]);
-//        Calendar endDate = Transformer.convertDateRawToObject(dates[1]);
-//
-//        // Get today's date
-//        Calendar todayDate = Calendar.getInstance();
-//        return todayDate.equals(startDate) || todayDate.equals(endDate) || todayDate.after(startDate);// && todayDate.before(endDate); // for dev purpose
-//    }
 }
