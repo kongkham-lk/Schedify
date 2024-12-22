@@ -23,6 +23,18 @@ public class Checker {
         return str == null || Arrays.asList(invalidStringList).contains(str);
     }
 
+    public static boolean isDateExpired(String date) {
+        if (date.toLowerCase().contains("null"))
+            return false;
+
+        String[] dates = date.split(" - ");
+        Calendar startDate = Transformer.convertDateRawToObject(dates[0]);
+        Calendar endDate = Transformer.convertDateRawToObject(dates[1]);
+
+        Calendar todayDate = Calendar.getInstance();
+        return todayDate.equals(startDate) || todayDate.equals(endDate) || todayDate.after(startDate);// && todayDate.before(endDate); // for dev purpose
+    }
+
     public static boolean isTimeExpired(Course course) {
         String[] scheduleTimes = course.getTime().split(" - ");
         Calendar currentDate = Calendar.getInstance();
@@ -48,23 +60,9 @@ public class Checker {
     public static int isBefore(Course course1, Course course2) {
         String[] schduleTimeCourse1 = course1.getTime().split(" - ");
         String[] schduleTimeCourse2 = course2.getTime().split(" - ");
-
         Calendar startTime1 = getCurrentTimeObject(schduleTimeCourse1[0]);
         Calendar startTime2 = getCurrentTimeObject(schduleTimeCourse2[0]);
 
         return startTime1.getTime().compareTo(startTime2.getTime());
-    }
-
-    public static boolean isDateExpired(String date) {
-        if (date.toLowerCase().contains("null"))
-            return false;
-
-        String[] dates = date.split(" - ");
-        Calendar startDate = Transformer.convertDateRawToObject(dates[0]);
-        Calendar endDate = Transformer.convertDateRawToObject(dates[1]);
-
-        // Get today's date
-        Calendar todayDate = Calendar.getInstance();
-        return todayDate.equals(startDate) || todayDate.equals(endDate) || todayDate.after(startDate);// && todayDate.before(endDate); // for dev purpose
     }
 }

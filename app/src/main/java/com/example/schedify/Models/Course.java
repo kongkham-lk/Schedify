@@ -1,13 +1,8 @@
 package com.example.schedify.Models;
 
-import com.example.schedify.Util.Transformer;
-
-import java.util.Calendar;
-
 public class Course extends Task {
 
     private boolean isRegistered;
-//    private boolean isExpired;
     private boolean[] classDayList; // Class day in a week, start from monday
     private int urlID;
 
@@ -26,14 +21,6 @@ public class Course extends Task {
     public void setRegistered(boolean registered) {
         isRegistered = registered;
     }
-
-//    public boolean isExpire() {
-//        return isExpired;
-//    }
-
-//    public void setExpired(boolean expired) {
-//        isExpired = expired;
-//    }
 
     public boolean[] getClassDayList() {
         return classDayList;

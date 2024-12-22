@@ -25,8 +25,7 @@ import java.util.List;
 public class CreateFragment extends Fragment {
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create, container, false);
 
         Button buttonToFragmentB = view.findViewById(R.id.btn_create);
@@ -37,7 +36,6 @@ public class CreateFragment extends Fragment {
         });
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_create);
-
         List<Task> taskList = loadTaskList();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
