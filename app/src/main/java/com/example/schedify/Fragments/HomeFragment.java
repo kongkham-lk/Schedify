@@ -37,8 +37,8 @@ public class HomeFragment extends Fragment {
     private final String KEY_COURSELIST = "courseList";
 
     private ListView list_view_home;
-    private ArrayList<Course> courses;
-    private ArrayList<Task> numTasks;
+    private ArrayList<Course> displayItems; // courses and tasks combined
+    private ArrayList<Task> tasks;
     Button syncBtn;
 
     Handler handler = new Handler();
@@ -83,20 +83,16 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-
-        list_view_home = view.findViewById(R.id.list_view_home); // Initialize the ListView
+        list_view_home = view.findViewById(R.id.list_view_home);
         syncBtn = view.findViewById(R.id.btn_sync);
-
-        // Initialize course data (Replace with your data source)
-        courses = new ArrayList<>();
-        numTasks = new ArrayList<>();
-
         syncBtn.setOnClickListener(v -> {
-            if (mListener != null) {
+            if (mListener != null)
                 mListener.onSyncButtonClicked();
-            }
         });
-        createList();
+
+        displayItems = new ArrayList<>();
+        tasks = new ArrayList<>();
+        updateDisplayItemsList();
 
         // get the latest task property from create task screen
         if (getActivity() != null && getActivity().getIntent() != null)
@@ -115,13 +111,13 @@ public class HomeFragment extends Fragment {
         int index = intent.getIntExtra("index", -1);
 
         if ((title != null && description != null && date != null) && index != -1) {
-            Task targetTask = numTasks.get(index);
-            int pos = indexOf(targetTask, courses);
+            Task targetTask = tasks.get(index);
+            int pos = indexOf(targetTask, displayItems);
             if (pos != -1) {
-                Course targetCourse = courses.get(pos);
-                updateTaskProperty(targetCourse, title, description, date, time, location);
-                updateTaskProperty(targetTask, title, description, date, time, location);
-                saveTaskList(numTasks);
+                Course targetCourse = displayItems.get(pos);
+                updateTaskPropertyValue(targetCourse, title, description, date, time, location);
+                updateTaskPropertyValue(targetTask, title, description, date, time, location);
+                saveTaskListToSharedPreferences(tasks);
             }
         }
     }
@@ -143,7 +139,7 @@ public class HomeFragment extends Fragment {
                 && targetCourse.getDate().equals(targetTask.getDate());
     }
 
-    private void updateTaskProperty(Task targetTask, String title, String description, String date, String time, String location) {
+    private void updateTaskPropertyValue(Task targetTask, String title, String description, String date, String time, String location) {
         targetTask.setTitle(title);
         targetTask.setDescription(description);
         targetTask.setDate(date);
@@ -151,22 +147,22 @@ public class HomeFragment extends Fragment {
         targetTask.setLocation(location);
     }
 
-    private void saveTaskList(List<Task> taskList) {
+    private void saveTaskListToSharedPreferences(List<Task> taskList) {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        StringBuilder serializedTask = getTskSharedPreference(numTasks);
-        editor.putString(KEY_TASKLIST, serializedTask.toString());
+        String serializedTask = serializeTaskList(taskList).toString();
+        editor.putString(KEY_TASKLIST, serializedTask);
         editor.apply();
     }
 
-    private void createList() {
+    private void updateDisplayItemsList() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
-        courses.clear();
+        displayItems.clear();
         updateTaskListAndFilterOutInvalidDate(sharedPreferences, KEY_TASKLIST);
         updateTaskListAndFilterOutInvalidDate(sharedPreferences, KEY_COURSELIST);
         
-        sortCourses();
+        sortDisplayItemsBasedOnTime();
         
         HomePageAdaptor homePageAdaptor = new HomePageAdaptor(requireContext(), R.layout.home_items_view_holder, displayItems, tasks);
         list_view_home.setAdapter(homePageAdaptor);
@@ -209,8 +205,8 @@ public class HomeFragment extends Fragment {
                 boolean isTodayHasClass = classDayList[todayDayOfWeek]; // for specifically course which
                 if (isTodayWithinValidDates && isTodayHasClass) {
                     if (targetSharedPrefKey.equals(KEY_TASKLIST))
-                        numTasks.add(new Task(title, description, time, date, location));
-                    courses.add(new Course(title, description, time, date, location, classDayList, urlID, isRegistered));
+                        this.tasks.add(new Task(title, description, time, date, location));
+                    displayItems.add(new Course(title, description, time, date, location, classDayList, urlID, isRegistered));
                 }
             }
         }
@@ -218,18 +214,17 @@ public class HomeFragment extends Fragment {
 
     public void filterOutCourseList(List<Course> newCourseList) {
         Log.d("HomeFragment", "Updating course list");
-
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        createList();
+        updateDisplayItemsList();
 
         if (newCourseList != null) {
-            StringBuilder serializedCourses = this.getCourseSharedPreference(newCourseList);
+            StringBuilder serializedCourses = this.serializeCourseList(newCourseList);
             editor.putString(KEY_COURSELIST, serializedCourses.toString());
             editor.apply();
 
-            sortCourses();
+            sortDisplayItemsBasedOnTime();
 
             if (list_view_home.getAdapter() instanceof HomePageAdaptor) {
                 HomePageAdaptor adaptor = (HomePageAdaptor) list_view_home.getAdapter();
@@ -240,23 +235,23 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private StringBuilder getTskSharedPreference(List<Task> numTasks) {
+    private StringBuilder serializeTaskList(List<Task> newTaskList) {
         StringBuilder serializedTask = new StringBuilder();
-        for (Task task : numTasks) {
-            String title = Transformer.replaceCommaWithUnderscore(task.getTitle());
-            String description = Transformer.replaceCommaWithUnderscore(task.getDescription());
-            String location = Transformer.replaceCommaWithUnderscore(task.getLocation());
+        for (Task newTask : newTaskList) {
+            String title = Transformer.replaceCommaWithUnderscore(newTask.getTitle());
+            String description = Transformer.replaceCommaWithUnderscore(newTask.getDescription());
+            String location = Transformer.replaceCommaWithUnderscore(newTask.getLocation());
 
             serializedTask.append(title).append(",")
                     .append(description).append(",")
-                    .append(task.getTime()).append(",")
-                    .append(task.getDate()).append(",")
+                    .append(newTask.getTime()).append(",")
+                    .append(newTask.getDate()).append(",")
                     .append(location).append(",;");
         }
         return serializedTask;
     }
 
-    private StringBuilder getCourseSharedPreference(List<Course> newCourseList) {
+    private StringBuilder serializeCourseList(List<Course> newCourseList) {
         StringBuilder serializedCourses = new StringBuilder();
 
         for (Course newCourse : newCourseList) {
@@ -296,7 +291,7 @@ public class HomeFragment extends Fragment {
 
     private void onMinuteChanged() {
         Log.d("List Creation", "New list created");
-        createList();
+        updateDisplayItemsList();
     }
 
     @Override
@@ -305,7 +300,7 @@ public class HomeFragment extends Fragment {
         handler.removeCallbacksAndMessages(null);
     }
 
-    private void sortCourses() {
+    private void sortDisplayItemsBasedOnTime() {
         displayItems.sort((course1, course2) -> {
             boolean isExpired1 = Checker.isTimeExpired(course1);
             boolean isExpired2 = Checker.isTimeExpired(course2);
