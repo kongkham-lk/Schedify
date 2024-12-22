@@ -92,7 +92,7 @@ public class HomeFragment extends Fragment {
 
         displayItems = new ArrayList<>();
         tasks = new ArrayList<>();
-        updateDisplayItemsList();
+        getAllValidDateItems();
 
         // get the latest task property from create task screen
         if (getActivity() != null && getActivity().getIntent() != null)
@@ -156,11 +156,11 @@ public class HomeFragment extends Fragment {
         editor.apply();
     }
 
-    private void updateDisplayItemsList() {
+    private void getAllValidDateItems() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
         displayItems.clear();
-        updateTaskListAndFilterOutInvalidDate(sharedPreferences, KEY_TASKLIST);
-        updateTaskListAndFilterOutInvalidDate(sharedPreferences, KEY_COURSELIST);
+        getAllValidDateItems(sharedPreferences, KEY_TASKLIST);
+        getAllValidDateItems(sharedPreferences, KEY_COURSELIST);
         
         sortDisplayItemsBasedOnTime();
         
@@ -168,7 +168,7 @@ public class HomeFragment extends Fragment {
         list_view_home.setAdapter(homePageAdaptor);
     }
 
-    private void updateTaskListAndFilterOutInvalidDate(SharedPreferences sharedPreferences, String targetSharedPrefKey) {
+    private void getAllValidDateItems(SharedPreferences sharedPreferences, String targetSharedPrefKey) {
         String taskData = sharedPreferences.getString(targetSharedPrefKey, "");
         if (!taskData.isEmpty()) {
             String[] tasks = taskData.split(";");
@@ -217,14 +217,12 @@ public class HomeFragment extends Fragment {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        updateDisplayItemsList();
-
         if (newCourseList != null) {
             StringBuilder serializedCourses = this.serializeCourseList(newCourseList);
             editor.putString(KEY_COURSELIST, serializedCourses.toString());
             editor.apply();
 
-            sortDisplayItemsBasedOnTime();
+            getAllValidDateItems();
 
             if (list_view_home.getAdapter() instanceof HomePageAdaptor) {
                 HomePageAdaptor adaptor = (HomePageAdaptor) list_view_home.getAdapter();
@@ -291,7 +289,7 @@ public class HomeFragment extends Fragment {
 
     private void onMinuteChanged() {
         Log.d("List Creation", "New list created");
-        updateDisplayItemsList();
+        getAllValidDateItems();
     }
 
     @Override
