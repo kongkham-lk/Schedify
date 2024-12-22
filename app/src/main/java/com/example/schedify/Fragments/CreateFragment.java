@@ -97,21 +97,12 @@ public class CreateFragment extends Fragment {
             String[] tasks = taskData.split(";");
             for (String task : tasks) {
                 String[] taskDetails = task.split(",");
-
-                if (taskDetails.length == 5) {
-                    String title = taskDetails[0];
-                    String description = taskDetails[1];
-                    String time = taskDetails[2];
-                    String date = taskDetails[3];
-                    String location = taskDetails[4];
-                    taskList.add(new Task(title, description, time, date, location));
-                } else if (taskDetails.length == 4) {
-                    String title = taskDetails[0];
-                    String description = taskDetails[1];
-                    String time = taskDetails[2];
-                    String date = taskDetails[3];
-                    taskList.add(new Task(title, description, time, date, ""));
-                }
+                String title = taskDetails[0];
+                String description = taskDetails[1];
+                String time = taskDetails[2];
+                String date = taskDetails[3];
+                String location = taskDetails.length > 4 ? taskDetails[4] : "";
+                taskList.add(new Task(title, description, time, date, location));
             }
         }
         return taskList;

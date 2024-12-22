@@ -20,9 +20,7 @@ public class Checker {
     }
 
     public static boolean isNull (String str) {
-        if (str == null || Arrays.asList(invalidStringList).contains(str))
-            return true;
-        return false;
+        return str == null || Arrays.asList(invalidStringList).contains(str);
     }
 
     public static boolean isTimeExpired(Course course) {
