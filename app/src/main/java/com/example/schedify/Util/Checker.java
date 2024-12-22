@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 
 public class Checker {
-    private static String[] invalidStringList = {"", "null"};
+    private static final String[] invalidStringList = {"", "null"};
 
     public static boolean isContainNullElement (String[] arr) {
         if (arr == null)

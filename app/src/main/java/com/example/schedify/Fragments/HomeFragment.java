@@ -163,8 +163,8 @@ public class HomeFragment extends Fragment {
     private void createList() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
         courses.clear();
-        updateTaskList(sharedPreferences, KEY_TASKLIST);
-        updateTaskList(sharedPreferences, KEY_COURSELIST);
+        updateTaskListAndFilterOutInvalidDate(sharedPreferences, KEY_TASKLIST);
+        updateTaskListAndFilterOutInvalidDate(sharedPreferences, KEY_COURSELIST);
 //        String taskData = sharedPreferences.getString(KEY_TASKLIST, "");
 //        String courseData = sharedPreferences.getString(KEY_COURSELIST, "");
 //        if (!taskData.isEmpty()) {
@@ -251,11 +251,12 @@ public class HomeFragment extends Fragment {
         list_view_home.setAdapter(homePageAdaptor);
     }
 
-    private void updateTaskList(SharedPreferences sharedPreferences, String targetSharedPrefKey) {
+    private void updateTaskListAndFilterOutInvalidDate(SharedPreferences sharedPreferences, String targetSharedPrefKey) {
         String taskData = sharedPreferences.getString(targetSharedPrefKey, "");
         if (!taskData.isEmpty()) {
             String[] tasks = taskData.split(";");
             for (String task : tasks) {
+                // Retrieved all property from share preference
                 String[] taskDetails = task.split(",");
                 String title = Transformer.replaceUnderscoreWithComma(taskDetails[0]);
                 String description = Transformer.replaceUnderscoreWithComma(taskDetails[1]);
@@ -263,13 +264,13 @@ public class HomeFragment extends Fragment {
                 String date = taskDetails[3];
                 String location = taskDetails.length > 4 ? Transformer.replaceUnderscoreWithComma(taskDetails[4]) : "";
                 boolean[] classDayList;
-                int todayDayOfWeek = 1;
+                int todayDayOfWeek = 0;
                 String[] stringArray = taskDetails.length > 5
                         ? taskDetails[5].replace("[", "").replace("]", "").trim().split(" ")
                         : null;
 
                 if (stringArray == null)
-                    classDayList = new boolean[] {false, true};
+                    classDayList = new boolean[] { true };
                 else {
                     classDayList = new boolean[stringArray.length];
                     for (int i = 0; i < stringArray.length; i++)
@@ -282,8 +283,10 @@ public class HomeFragment extends Fragment {
                 int urlID = taskDetails.length > 6 ? Integer.parseInt(taskDetails[6]) : 0;
                 boolean isRegistered = taskDetails.length > 7 && Boolean.parseBoolean(taskDetails[7]);
 
-                boolean isToday = Checker.isClassToday(date);
-                if (isToday && classDayList[todayDayOfWeek]) {
+                // Filter out invalid-date's task
+                boolean isTodayWithinValidDates = Checker.isDateExpired(date); // checking if today is in between the starting and endaring date
+                boolean isTodayHasClass = classDayList[todayDayOfWeek]; // for specifically course which
+                if (isTodayWithinValidDates && isTodayHasClass) {
                     if (targetSharedPrefKey.equals(KEY_TASKLIST))
                         numTasks.add(new Task(title, description, time, date, location));
                     courses.add(new Course(title, description, time, date, location, classDayList, urlID, isRegistered));
