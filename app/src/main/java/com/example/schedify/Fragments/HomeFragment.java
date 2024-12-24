@@ -256,7 +256,7 @@ public class HomeFragment extends Fragment {
             String title = Transformer.replaceCommaWithUnderscore(newCourse.getTitle());
             String description = Transformer.replaceCommaWithUnderscore(newCourse.getDescription());
             String location = Transformer.replaceCommaWithUnderscore(newCourse.getLocation());
-            String classDay = Transformer.replaceCommaWithUnderscore(Arrays.toString(newCourse.getClassDayList()));
+            String classDay = Arrays.toString(newCourse.getClassDayList()).replaceAll(",", "");
 
             serializedCourses
                     .append(title).append(",")
