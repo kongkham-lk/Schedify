@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class HomeFragment extends Fragment {
     private String mParam1;
@@ -191,8 +192,7 @@ public class HomeFragment extends Fragment {
                     classDayList = new boolean[] { true };
                 else {
                     classDayList = new boolean[stringArray.length];
-                    for (int i = 0; i < stringArray.length; i++)
-                        classDayList[i] = Boolean.parseBoolean(stringArray[i]) || title.contains("Data"); // for dev purpose
+                    IntStream.range(0, stringArray.length).forEach(n -> classDayList[n] = Boolean.parseBoolean(stringArray[n]));
                 }
                 int urlID = taskDetails.length > 6 ? Integer.parseInt(taskDetails[6]) : 0;
                 boolean isRegistered = taskDetails.length > 7 && Boolean.parseBoolean(taskDetails[7]);
