@@ -182,9 +182,7 @@ public class HomeFragment extends Fragment {
                 String time = taskDetails[2];
                 String date = taskDetails[3];
                 String location = taskDetails.length > 4 ? Transformer.replaceUnderscoreWithComma(taskDetails[4]) : "";
-                String[] stringArray = taskDetails.length > 5
-                        ? taskDetails[5].replace("[", "").replace("]", "").trim().split(" ")
-                        : new String[0];
+                String[] stringArray = taskDetails.length > 5 ? taskDetails[5].substring(1, taskDetails[5].length()-1).split(" ") : new String[0];
                 int urlID = taskDetails.length > 6 ? Integer.parseInt(taskDetails[6]) : 0;
                 boolean isRegistered = taskDetails.length > 7 && Boolean.parseBoolean(taskDetails[7]);
 
@@ -193,7 +191,7 @@ public class HomeFragment extends Fragment {
                     IntStream.range(0, stringArray.length).forEach(n -> classDayList[n] = Boolean.parseBoolean(stringArray[n]));
 
                 boolean isTodayWithinValidDates = Checker.isDateExpired(date); // checking if today is in between the starting and ending date
-                boolean isTodayHasClass = stringArray.length == 0 || classDayList[todayDayOfWeek]; // check if it is task item or today have the class
+                boolean isTodayHasClass = stringArray.length == 0 || classDayList[todayDayOfWeek]; // true if it is task item or today have the class
                 if (isTodayWithinValidDates && isTodayHasClass) {
                     if (targetSharedPrefKey.equals(KEY_TASKLIST))
                         this.tasks.add(new Task(title, description, time, date, location));
