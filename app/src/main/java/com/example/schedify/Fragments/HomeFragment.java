@@ -182,24 +182,18 @@ public class HomeFragment extends Fragment {
                 String time = taskDetails[2];
                 String date = taskDetails[3];
                 String location = taskDetails.length > 4 ? Transformer.replaceUnderscoreWithComma(taskDetails[4]) : "";
-                boolean[] classDayList;
-                int todayDayOfWeek = 0;
                 String[] stringArray = taskDetails.length > 5
                         ? taskDetails[5].replace("[", "").replace("]", "").trim().split(" ")
-                        : null;
-
-                if (stringArray == null)
-                    classDayList = new boolean[] { true };
-                else {
-                    classDayList = new boolean[stringArray.length];
-                    IntStream.range(0, stringArray.length).forEach(n -> classDayList[n] = Boolean.parseBoolean(stringArray[n]));
-                }
+                        : new String[0];
                 int urlID = taskDetails.length > 6 ? Integer.parseInt(taskDetails[6]) : 0;
                 boolean isRegistered = taskDetails.length > 7 && Boolean.parseBoolean(taskDetails[7]);
 
-                // Filter out invalid-date's task
-                boolean isTodayWithinValidDates = Checker.isDateExpired(date); // checking if today is in between the starting and endaring date
-                boolean isTodayHasClass = classDayList[todayDayOfWeek]; // for specifically course which
+                boolean[] classDayList = new boolean[stringArray.length];
+                if (stringArray.length > 0)
+                    IntStream.range(0, stringArray.length).forEach(n -> classDayList[n] = Boolean.parseBoolean(stringArray[n]));
+
+                boolean isTodayWithinValidDates = Checker.isDateExpired(date); // checking if today is in between the starting and ending date
+                boolean isTodayHasClass = stringArray.length == 0 || classDayList[todayDayOfWeek]; // check if it is task item or today have the class
                 if (isTodayWithinValidDates && isTodayHasClass) {
                     if (targetSharedPrefKey.equals(KEY_TASKLIST))
                         this.tasks.add(new Task(title, description, time, date, location));
