@@ -172,6 +172,7 @@ public class HomeFragment extends Fragment {
         String taskData = sharedPreferences.getString(targetSharedPrefKey, "");
         if (!taskData.isEmpty()) {
             String[] tasks = taskData.split(";");
+            int todayDayOfWeek = Calendar.getInstance().getTime().getDay() - 1;
             for (String task : tasks) {
                 // Retrieved all property from share preference
                 String[] taskDetails = task.split(",");
@@ -192,10 +193,6 @@ public class HomeFragment extends Fragment {
                     classDayList = new boolean[stringArray.length];
                     for (int i = 0; i < stringArray.length; i++)
                         classDayList[i] = Boolean.parseBoolean(stringArray[i]) || title.contains("Data"); // for dev purpose
-
-                    LocalDate today = LocalDate.now();
-                    todayDayOfWeek = today.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
-                    todayDayOfWeek--; // Adjust to 0-based index (0=Monday, 6=Sunday)
                 }
                 int urlID = taskDetails.length > 6 ? Integer.parseInt(taskDetails[6]) : 0;
                 boolean isRegistered = taskDetails.length > 7 && Boolean.parseBoolean(taskDetails[7]);
