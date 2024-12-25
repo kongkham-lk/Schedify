@@ -27,18 +27,19 @@
 
             <TextView
                 android:id="@+id/tv_title"
-                android:layout_width="260dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:gravity="left"
-                android:maxLines="1"
                 android:ellipsize="end"
+                android:gravity="start"
+                android:maxLines="1"
                 android:singleLine="true"
                 android:text="@string/label_title"
                 android:textColor="@color/white"
                 android:textSize="22sp"
                 android:textStyle="bold"
+                app:layout_constraintWidth_percent="0.7"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -46,7 +47,7 @@
                 android:id="@+id/tv_startTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
                 android:fontFamily="sans-serif-light"
                 android:gravity="center"
                 android:text="@string/label_start_time"
@@ -54,7 +55,6 @@
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_title"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/line"
                 app:layout_constraintTop_toTopOf="@+id/tv_title" />
 
             <TextView
@@ -89,12 +89,12 @@
                 android:id="@+id/line"
                 android:layout_width="2dp"
                 android:layout_height="0dp"
-                android:layout_marginStart="8dp"
-                android:contentDescription="@string/time_set_text"
+                android:layout_marginEnd="16dp"
                 android:background="@color/white"
+                android:contentDescription="@string/time_set_text"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tv_startTime"
                 app:layout_constraintHeight_percent="0.8"
-                app:layout_constraintStart_toEndOf="@+id/tv_title"
                 app:layout_constraintTop_toTopOf="parent" /> <!-- Replace with your drawable resource -->
 
         </androidx.constraintlayout.widget.ConstraintLayout>

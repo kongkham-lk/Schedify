@@ -1,12 +1,12 @@
-package com.example.schedify;
+package com.example.schedify.Models;
 
 import java.util.List;
 
-public class AssignmentGroup {
+public class AssignmentsByDateGroup {
     private String date;
     private List<AssignmentDetail> assignments;
 
-    public AssignmentGroup(String date, List<AssignmentDetail> assignments) {
+    public AssignmentsByDateGroup(String date, List<AssignmentDetail> assignments) {
         this.date = date;
         this.assignments = assignments;
     }

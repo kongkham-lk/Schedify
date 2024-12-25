@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,13 +12,19 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.schedify.Activities.LoginActivity;
+import com.example.schedify.Adaptors.SettingsAdapter;
+import com.example.schedify.Models.Settings;
+import com.example.schedify.R;
+import com.example.schedify.Util.SessionManager;
+
 import java.util.ArrayList;
 
 public class SettingsFragment extends Fragment {
 
     private RecyclerView recycler_view_settings;
     private SettingsAdapter settingsAdapter;
-    private ArrayList<SettingsModel> settings;
+    private ArrayList<Settings> settings;
     SessionManager sessionManager;
 
     @Nullable
@@ -29,7 +35,7 @@ public class SettingsFragment extends Fragment {
         sessionManager = new SessionManager(requireContext());
         recycler_view_settings = view.findViewById(R.id.recycler_view_create);
         settings = new ArrayList<>();
-        settings.add(new SettingsModel("Log out"));
+        settings.add(new Settings("Log out"));
 
         settingsAdapter = new SettingsAdapter(settings);
         recycler_view_settings.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -40,7 +46,7 @@ public class SettingsFragment extends Fragment {
 
     public void signOut(View view) {
         sessionManager.signOut();
-        Intent intent = new Intent(getContext().getApplicationContext(), Login.class);
+        Intent intent = new Intent(getContext().getApplicationContext(), LoginActivity.class);
         startActivity(intent);
     }
 }

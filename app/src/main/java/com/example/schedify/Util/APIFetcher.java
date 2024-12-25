@@ -1,10 +1,9 @@
-package com.example.schedify;
+package com.example.schedify.Util;
 
 import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.Callable;
@@ -130,5 +129,4 @@ public class APIFetcher {
             driver.quit();
         }
     }
-
 }

@@ -1,9 +1,9 @@
-package com.example.schedify;
+package com.example.schedify.Models;
 
-public class SettingsModel {
+public class Settings {
     private final String optionName;
 
-    public SettingsModel(String optionName) {
+    public Settings(String optionName) {
         this.optionName = optionName;
     }
 

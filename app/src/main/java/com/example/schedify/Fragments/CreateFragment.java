@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,18 +14,18 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.schedify.Activities.CreateTaskActivity;
+import com.example.schedify.Models.Task;
+import com.example.schedify.Adaptors.TaskAdapter;
+import com.example.schedify.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class CreateFragment extends Fragment {
 
-    private RecyclerView recyclerView;
-    private taskAdapter taskAdapter;
-    private List<Task> taskList;
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create, container, false);
 
         Button buttonToFragmentB = view.findViewById(R.id.btn_create);
@@ -36,11 +36,10 @@ public class CreateFragment extends Fragment {
         });
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_create);
-
         List<Task> taskList = loadTaskList();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        com.example.schedify.taskAdapter taskAdapter = new taskAdapter(taskList, requireActivity());
+        TaskAdapter taskAdapter = new TaskAdapter(taskList, requireActivity());
         recyclerView.setAdapter(taskAdapter);
 
         if (getActivity() != null && getActivity().getIntent() != null) {
@@ -67,7 +66,6 @@ public class CreateFragment extends Fragment {
                 saveTaskList(taskList);
             }
         }
-
         return view;
     }
 
@@ -78,9 +76,12 @@ public class CreateFragment extends Fragment {
 
         StringBuilder sb = new StringBuilder();
         for (Task task : taskList) {
-            sb.append(task.getTitle()).append(",").append(task.getDescription()).append(",").append(task.getTime()).append(",").append(task.getDate()).append(",").append(task.getLocation()).append(",;");
+            sb.append(task.getTitle()).append(",")
+                    .append(task.getDescription()).append(",")
+                    .append(task.getTime()).append(",")
+                    .append(task.getDate()).append(",")
+                    .append(task.getLocation()).append(",;");
         }
-
         editor.putString("taskList", sb.toString());
         editor.apply();
     }
@@ -94,27 +95,14 @@ public class CreateFragment extends Fragment {
             String[] tasks = taskData.split(";");
             for (String task : tasks) {
                 String[] taskDetails = task.split(",");
-//                Log.println(taskDetails.length, "uu", taskDetails.length + "");
-//                for (int i = 0; i < taskDetails.length; i++) {
-//                    Log.println(taskDetails.length, "Counting number of tasks", taskDetails[i] + "");
-//                }
-                if (taskDetails.length == 5) {
-                    String title = taskDetails[0];
-                    String description = taskDetails[1];
-                    String time = taskDetails[2];
-                    String date = taskDetails[3];
-                    String location = taskDetails[4];
-                    taskList.add(new Task(title, description, time, date, location));
-                } else if (taskDetails.length == 4) {
-                    String title = taskDetails[0];
-                    String description = taskDetails[1];
-                    String time = taskDetails[2];
-                    String date = taskDetails[3];
-                    taskList.add(new Task(title, description, time, date, ""));
-                }
+                String title = taskDetails[0];
+                String description = taskDetails[1];
+                String time = taskDetails[2];
+                String date = taskDetails[3];
+                String location = taskDetails.length > 4 ? taskDetails[4] : "";
+                taskList.add(new Task(title, description, time, date, location));
             }
         }
         return taskList;
     }
-
 }

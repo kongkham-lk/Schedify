@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,13 +7,9 @@ import android.os.Handler;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.example.schedify.HomeFragment;
 import com.example.schedify.R;
-import com.example.schedify.SessionManager;
+import com.example.schedify.Util.SessionManager;
 
 public class SplashScreen extends AppCompatActivity {
 
@@ -35,7 +31,7 @@ public class SplashScreen extends AppCompatActivity {
                 if (isLoginPrev)
                     intent = new Intent(SplashScreen.this, MainActivity.class);
                 else
-                    intent = new Intent(SplashScreen.this, Login.class);
+                    intent = new Intent(SplashScreen.this, LoginActivity.class);
 
                 startActivity(intent);
 

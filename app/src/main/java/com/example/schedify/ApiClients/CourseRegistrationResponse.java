@@ -1,6 +1,10 @@
-package com.example.schedify;
+package com.example.schedify.ApiClients;
 
 import android.content.Context;
+
+import com.example.schedify.Models.Course;
+import com.example.schedify.Util.SharePreference;
+import com.example.schedify.Util.Transformer;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -10,9 +14,8 @@ import java.util.List;
 
 public class CourseRegistrationResponse {
 
-    private List<CourseModel> courseList;
+    private List<Course> courseList;
     private static final String[] DayInAWeek = new String[]{"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
-//    private String requestMethod = "";
     private Context context;
 
     public CourseRegistrationResponse(Context context) {
@@ -20,16 +23,8 @@ public class CourseRegistrationResponse {
         this.context = context;
     }
 
-//    public String getRequestMethod() {
-//        return requestMethod;
-//    }
-//
-//    public void setRequestMethod(String requestMethod) {
-//        this.requestMethod = requestMethod;
-//    }
-
     // Callable task to fetch API data
-    public List<CourseModel> retrievedCourseSchedule() {
+    public List<Course> retrievedCourseSchedule() {
         extractJSONResponse(); // Bind data and save to courseList
         return courseList;
     }
@@ -37,8 +32,7 @@ public class CourseRegistrationResponse {
     // Parsing logic for the articles
     private void extractJSONResponse() {
         try {
-//            JSONObject jsonObject = new JSONObject(jsonResponse);
-            JSONObject jsonObject = Helper.loadJsonFromPreferences(context);
+            JSONObject jsonObject = SharePreference.loadJson(context);
             JSONArray registeredCourseList = jsonObject.getJSONObject("data").getJSONArray("registrations");
 
             for (int i = 0; i < registeredCourseList.length(); i++) {
@@ -49,10 +43,12 @@ public class CourseRegistrationResponse {
                     String courseCode = subject + " " + courseNumber;
                     String courseTitle = courseItem.getString("courseTitle");
                     String title = courseCode + ": " + courseTitle;
-                    boolean isRegistered = courseItem.getString("statusDescription").toLowerCase().equals("registered") ? true : false;
+                    boolean isRegistered = courseItem.getString("statusDescription").equalsIgnoreCase("registered");
                     JSONObject meetingDetail = courseItem.getJSONArray("meetingTimes").getJSONObject(0);
                     String startTime = meetingDetail.getString("beginTime");
+                    startTime = Transformer.convertUnSplitToSplitStringTimeRow(startTime);
                     String endTime = meetingDetail.getString("endTime");
+                    endTime = Transformer.convertUnSplitToSplitStringTimeRow(endTime);
                     String startDate = meetingDetail.getString("startDate");
                     String endDate = meetingDetail.getString("endDate");
                     String building = meetingDetail.getString("building");
@@ -83,7 +79,7 @@ public class CourseRegistrationResponse {
                             urlID = 56165;
                             break;
                     }
-                    CourseModel course = new CourseModel(courseTitle, location, startTime, endTime, startDate, endDate, classDayList, urlID, isRegistered, "");
+                    Course course = new Course(title, "", startTime + " - " + endTime, startDate + " - " + endDate, location, classDayList, urlID, isRegistered);
                     courseList.add(course);
                 } catch (Exception e) {
                     e.printStackTrace();

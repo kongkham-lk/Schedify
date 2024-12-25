@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Adaptors;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,16 +13,25 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
+import com.example.schedify.Activities.MainActivity;
+import com.example.schedify.Models.Task;
+import com.example.schedify.Models.Course;
+import com.example.schedify.Activities.CreateTaskActivity;
+import com.example.schedify.R;
+import com.example.schedify.Components.WebViewLoginDialog;
+import com.example.schedify.Util.Checker;
+import com.example.schedify.Util.Transformer;
+
 import java.util.ArrayList;
 
-public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
+public class HomePageAdaptor extends ArrayAdapter<Course> {
 
-    private final ArrayList<CourseModel> courses;
+    private final ArrayList<Course> courses;
     private final ArrayList<Task> tasks;
     private final LayoutInflater layoutInflater;
     private Context context;
 
-    public HomePageAdaptor(@NonNull Context context, int resource, @NonNull ArrayList<CourseModel> objects, ArrayList<Task> tasks) {
+    public HomePageAdaptor(@NonNull Context context, int resource, @NonNull ArrayList<Course> objects, ArrayList<Task> tasks) {
         super(context, resource, objects);
         this.context = context;
         this.courses = objects;
@@ -43,7 +52,7 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.home_items_view_holder, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.tv_courseCode = convertView.findViewById(R.id.tv_title);
+            viewHolder.tv_title = convertView.findViewById(R.id.tv_title);
             viewHolder.tv_location = convertView.findViewById(R.id.tv_location);
             viewHolder.tv_start_time = convertView.findViewById(R.id.tv_startTime);
             viewHolder.tv_end_time = convertView.findViewById(R.id.tv_endTime);
@@ -52,13 +61,14 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        CourseModel course = courses.get(position);
-        setBackgroundColor(convertView, course.isExpired());
+        Course course = courses.get(position);
+        String[] times = course.getTime().split(" - ");
+        setBackgroundColor(convertView, Checker.isTimeExpired(course));
 
-        viewHolder.tv_courseCode.setText(course.getTitle());
-        viewHolder.tv_location.setText(course.getLocation());
-        viewHolder.tv_start_time.setText(course.getStartTime());
-        viewHolder.tv_end_time.setText(course.getEndTime());
+        viewHolder.tv_title.setText(Transformer.replaceUnderscoreWithComma(Transformer.replaceUnderscoreWithComma(course.getTitle())));
+        viewHolder.tv_location.setText(Transformer.replaceUnderscoreWithComma(Transformer.replaceUnderscoreWithComma(course.getLocation())));
+        viewHolder.tv_start_time.setText(Transformer.convertStringTimeRawToStringTimeDisplay(times[0]));
+        viewHolder.tv_end_time.setText(Transformer.convertStringTimeRawToStringTimeDisplay(times[1]));
 
         convertView.findViewById(R.id.card_container).setOnClickListener(v -> {
             boolean isWebViewOpen = WebViewLoginDialog.isOpen;
@@ -70,16 +80,16 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
                         if (targetTask.getTitle().toString().equals(course.getTitle()) &&
                                 targetTask.getDescription().toString().equals(course.getDescription()) &&
                                 targetTask.getLocation().toString().equals(course.getLocation()) &&
-                                targetTask.getTime().toString().equals(course.getStartTime() + " - " + course.getEndTime()) &&
-                                targetTask.getDate().toString().equals(course.getStartDate() + " - " + course.getEndDate())) {
+                                targetTask.getTime().toString().equals(course.getTime()) &&
+                                targetTask.getDate().toString().equals(course.getDate())) {
                             newPosition = i;
                             break;
                         }
                     }
                     Intent edit_task = new Intent(context, CreateTaskActivity.class);
                     edit_task.putExtra("title", course.getTitle());
-                    edit_task.putExtra("date", course.getStartDate() + " - " + course.getEndDate());
-                    edit_task.putExtra("time", course.getStartTime() + " - " + course.getEndTime());
+                    edit_task.putExtra("date", course.getDate());
+                    edit_task.putExtra("time", course.getTime());
                     edit_task.putExtra("index", newPosition);
                     edit_task.putExtra("location", course.getLocation());
                     edit_task.putExtra("homePage", "HOMEEDIT");
@@ -108,7 +118,7 @@ public class HomePageAdaptor extends ArrayAdapter<CourseModel> {
     }
 
     private static class ViewHolder {
-        TextView tv_courseCode;
+        TextView tv_title;
         TextView tv_location;
         TextView tv_start_time;
         TextView tv_end_time;

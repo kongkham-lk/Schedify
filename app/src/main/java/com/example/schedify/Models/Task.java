@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Models;
 
 public class Task {
     private String title;
@@ -9,8 +9,8 @@ public class Task {
 
     public Task(String title, String description, String time, String date, String location) {
         this.title = title;
-        this.time = time;
         this.description = description;
+        this.time = time;
         this.date = date;
         this.location = location;
     }

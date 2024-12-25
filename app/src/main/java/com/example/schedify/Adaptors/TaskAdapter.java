@@ -1,4 +1,4 @@
-package com.example.schedify;
+package com.example.schedify.Adaptors;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,33 +12,48 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.example.schedify.Models.Task;
+import com.example.schedify.Activities.CreateTaskActivity;
+import com.example.schedify.R;
+import com.example.schedify.Util.Transformer;
+
 import java.util.List;
 
-public class taskAdapter extends RecyclerView.Adapter<taskAdapter.taskViewHolder> {
+public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.taskViewHolder> {
     @NonNull
     private final List<Task> taskList;
     Context context;
 
-    public taskAdapter(@NonNull List<Task> taskList, Context context) {
+    public TaskAdapter(@NonNull List<Task> taskList, Context context) {
         this.taskList = taskList;
         this.context = context;
     }
 
     @NonNull
     @Override
-    public taskAdapter.taskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public TaskAdapter.taskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.task_list_view_holder, parent, false);
         return new taskViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull taskAdapter.taskViewHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull TaskAdapter.taskViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Task task = taskList.get(position);
-        holder.titleText.setText(task.getTitle());
-        holder.timeText.setText(task.getTime());
-        holder.dateText.setText(task.getDate());
-        holder.locationText.setText(task.getLocation());
+        String[] times = task.getTime().split(" - ");
+        String[] dates = task.getDate().split(" - ");
+        for (int i = 0; i < times.length; i++) {
+            String newTime = Transformer.convertStringTimeRawToStringTimeDisplay(times[i]);
+            times[i] = newTime;
+        }
+        for (int i = 0; i < dates.length; i++) {
+            String newDate = Transformer.convertStringDateRawToStringDateDisplay(dates[i]);
+            dates[i] = newDate;
+        }
+        holder.titleText.setText(Transformer.replaceUnderscoreWithComma(task.getTitle()));
+        holder.timeText.setText(String.join(" - ", times));
+        holder.dateText.setText(String.join(" - ", dates));
+        holder.locationText.setText(Transformer.replaceUnderscoreWithComma(task.getLocation()));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
