@@ -22,7 +22,6 @@ import com.example.schedify.R;
 import com.example.schedify.Util.Checker;
 import com.example.schedify.Util.Transformer;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -40,10 +39,12 @@ public class HomeFragment extends Fragment {
     private ListView list_view_home;
     private ArrayList<Course> displayItems; // courses and tasks combined
     private ArrayList<Task> tasks;
+    private boolean isUpdated;
     Button syncBtn;
 
     Handler handler = new Handler();
     private int lastCheckedMinute = -1;
+    private int lastCheckedDay = -1;
 
     public HomeFragment() {
     }
@@ -93,6 +94,7 @@ public class HomeFragment extends Fragment {
 
         displayItems = new ArrayList<>();
         tasks = new ArrayList<>();
+        isUpdated = true;
         getAllValidDateItems();
 
         // get the latest task property from create task screen
@@ -149,6 +151,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void saveTaskListToSharedPreferences(List<Task> taskList) {
+//        isUpdated = true;
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -159,9 +162,12 @@ public class HomeFragment extends Fragment {
 
     private void getAllValidDateItems() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
-        displayItems.clear();
-        getAllValidDateItems(sharedPreferences, KEY_TASKLIST);
-        getAllValidDateItems(sharedPreferences, KEY_COURSELIST);
+        if (isUpdated) {
+            displayItems.clear();
+            getAllValidDateItems(sharedPreferences, KEY_TASKLIST);
+            getAllValidDateItems(sharedPreferences, KEY_COURSELIST);
+            isUpdated = false;
+        }
         
         sortDisplayItemsBasedOnTime();
         
@@ -202,6 +208,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void filterOutCourseList(List<Course> newCourseList) {
+        isUpdated = true;
         Log.d("HomeFragment", "Updating course list");
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -266,11 +273,17 @@ public class HomeFragment extends Fragment {
             public void run() {
                 Calendar calendar = Calendar.getInstance();
                 int currentMinute = calendar.get(Calendar.MINUTE);
+                int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
 
+                if (currentDay != lastCheckedDay) {
+                    lastCheckedDay = currentDay;
+                    isUpdated = true;
+                }
                 if (currentMinute != lastCheckedMinute) {
                     lastCheckedMinute = currentMinute;
                     onMinuteChanged();  // Call your action here
                 }
+
                 handler.postDelayed(this, 1000);
             }
         }, 1000);
